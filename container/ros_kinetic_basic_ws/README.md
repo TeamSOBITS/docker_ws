@@ -9,10 +9,16 @@
 
 ## How to run
 ```
+#CPUの場合
 cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/cpu
 
+#GPUの場合(バージョンは各自で合わせる)
+cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/gpu/CUDAxx_cuDNNxx/
+
+#イメージのビルド
 bash build.sh
 
+#イメージからコンテナを起動
 bash run.sh
 ```
 コンテナが起動できたら、ウェブブラウザを開いて http://127.0.0.1:6080/ にアクセスしてください。  

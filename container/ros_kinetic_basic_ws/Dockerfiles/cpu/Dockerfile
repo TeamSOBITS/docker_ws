@@ -105,24 +105,24 @@ RUN apt-get install -y \
     libeigen3-dev
 
 # clone & build
-RUN cd /home/ubuntu/ &&\
+RUN cd /home/sobits/ &&\
     git clone https://github.com/opencv/opencv.git &&\
     cd opencv &&\
     git checkout ${OPENCV_VERSION} &&\
-    cd /home/ubuntu/ &&\
+    cd /home/sobtis/ &&\
     git clone https://github.com/opencv/opencv_contrib.git &&\
     cd opencv_contrib &&\
     git checkout ${OPENCV_VERSION} &&\
-    cd /home/ubuntu/opencv &&\
+    cd /home/sobits/opencv &&\
     mkdir build &&\
     cd build &&\
     cmake \
     -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_INSTALL_PREFIX=/usr/local \
-    -D OPENCV_EXTRA_MODULES_PATH=/home/ubuntu/opencv_contrib/modules \
+    -D OPENCV_EXTRA_MODULES_PATH=/home/sobits/opencv_contrib/modules \
     .. &&\
     make && make install
-RUN rm -rf /home/ubuntu/opencv && rm -rf /home/ubuntu/opencv_contrib
+RUN rm -rf /home/sobits/opencv && rm -rf /home/sobits/opencv_contrib
 
 # finish install & build opencv #
 

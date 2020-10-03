@@ -20,6 +20,10 @@ sudo apt update
 sudo apt install -y docker-ce
 
 #run as a normal user
+sudo groupadd docker
 sudo usermod -aG docker $USER
+sudo su - $USER
+
+sudo systemctl enable docker
 
 echo "=== FINISH ==="

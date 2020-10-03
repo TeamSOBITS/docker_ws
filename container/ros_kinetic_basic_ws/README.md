@@ -49,6 +49,7 @@ docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 - sobit_common
 - web_speech_recognition
 - display_text
+- text_to_speech
 - ssd_node
 
 

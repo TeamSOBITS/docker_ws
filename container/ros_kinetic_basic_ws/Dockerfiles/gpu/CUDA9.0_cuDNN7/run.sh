@@ -8,4 +8,4 @@ docker run \
     --shm-size=512m \
     --name ros_kinetic_basic_ws_gpu \
     --privileged \
-    ros_kinetic_basic_ws_gpu
+    sobits/ros_kinetic_basic_ws_gpu

@@ -7,4 +7,4 @@ docker run \
     --shm-size=512m \
     --name ros_kinetic_basic_ws \
     --privileged \
-    ros_kinetic_basic_ws
+    sobits/ros_kinetic_basic_ws

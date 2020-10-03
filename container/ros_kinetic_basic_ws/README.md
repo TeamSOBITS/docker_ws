@@ -23,6 +23,7 @@ bash build.sh
 #イメージからコンテナを生成
 bash run.sh
 
+-----
 #コンテナの終了
 docker stop ros_kinetic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
 
@@ -43,6 +44,12 @@ docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  
 
 
+## ROS Packages
+`git_clone_ros_packages.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
+- sobit_common
+- web_speech_recognition
+- display_text
+- ssd_node
 
 
 

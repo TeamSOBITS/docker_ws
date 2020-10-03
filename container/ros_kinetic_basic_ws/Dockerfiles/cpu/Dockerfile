@@ -109,7 +109,7 @@ RUN cd /home/sobits/ &&\
     git clone https://github.com/opencv/opencv.git &&\
     cd opencv &&\
     git checkout ${OPENCV_VERSION} &&\
-    cd /home/sobtis/ &&\
+    cd /home/sobits/ &&\
     git clone https://github.com/opencv/opencv_contrib.git &&\
     cd opencv_contrib &&\
     git checkout ${OPENCV_VERSION} &&\

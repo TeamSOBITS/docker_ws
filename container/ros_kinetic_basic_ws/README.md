@@ -13,15 +13,13 @@
 ```
 #CPUの場合
 cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/cpu
+#bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
+bash run.sh #コンテナの起動
 
 #GPUの場合(バージョンは各自で合わせる)
 cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/gpu/CUDAxx_cuDNNxx/
-
-#イメージのビルド
-bash build.sh
-
-#イメージからコンテナを生成
-bash run.sh
+bash build.sh #コンテナの生成
+bash run.sh #コンテナの起動
 
 -----
 #コンテナの終了
@@ -53,6 +51,36 @@ docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 - ssd_node
 
 
+## 分散処理の方法
+- #### コンテナとホストPC間での分散処理
+
+    デフォルトだとコンテナとホストPCはbridge接続されています。  
+    - ホストPCのIP：172.17.0.1  
+    - コンテナのIP：172.17.0.x
+
+    .bashrcにROSIPとROS_MASTERの設定をすれば、分散処理が可能です。  
+    同一ホストPC上にあれば、複数コンテナ間でも分散処理できます。
+
+- #### コンテナと外部ネットワーク上にあるROSノード間での分散処理  
+    ホストPC上のコンテナと、LANケーブルでつないでいるraspberry piやJetsonなどと分散処理する場合はこちらになります。  
+    まずはじめに、ホストPCと外部PC間でpingが通るようにネットワークの設定をしてください。
+
+    - 外部PCのIP：192.168.0.2
+    - ホストPCのIP：192.168.0.3
+
+    この状態で docker run する際に、" -p 80:80 --network=host"の２つのオプションを付けてください。  
+    こうすることで、コンテナのIPがそのままホストPCのIPになります。
+
+    - 外部PCのIP：192.168.0.2
+    - ホストPCのIP：192.168.0.3
+    - コンテナのIP：192.168.0.3 (デフォルトだと 172.17.0.x だったIPがホストPCと同じIPに変わる)
+
+    あとは、.bashrcにROSIPとROS_MASTERの設定をすれば分散処理することができます。  
+    また、この場合でコンテナをGUIで開くときは、http://127.0.0.1:80/ にアクセスしてください。  
+
+
+- #### 別々のホストPC上にあるコンテナ間での分散処理
+    調査中
 
 ## Alias commands
 デフォルトで以下のエイリアスコマンドを設定しています。

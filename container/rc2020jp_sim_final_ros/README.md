@@ -3,12 +3,13 @@
 ## Container Environment
 - Ubuntu : 16.04
 - ROS : Kinetic
-- OpenCV : 3.4.2
-- Python : 2.7
-- Tensorflow-GPU : 1.5.0
 - UserName : sobits
+- OpenCV : 3.4.2
 - CUDA : 9.0
 - cuDNN : 7.0.5
+- Python : 2.7
+- Tensorflow-GPU : 1.5.0
+- Keras : 2.2.0
 
 ## How to run
 デフォルトではイメージとコンテナの名前は一緒にしています。  

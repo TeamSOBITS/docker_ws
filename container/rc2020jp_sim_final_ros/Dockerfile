@@ -74,7 +74,7 @@ RUN apt-get update && \
     apt-get remove -y python-enum34 &&\
     pip install \
     tensorflow-gpu==1.5.0 \
-    keras
+    keras==2.2.0
 
 ##### finish nvidia driver setting #####
 

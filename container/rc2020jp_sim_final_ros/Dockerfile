@@ -71,7 +71,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 #install tensorflow-gpu==1.5.0
 RUN apt-get update && \
-    apt-get remove python-enum34 &&\
+    apt-get remove -y python-enum34 &&\
     pip install \
     tensorflow-gpu==1.5.0 \
     keras

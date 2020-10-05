@@ -129,6 +129,12 @@ RUN rm -rf /home/sobits/opencv && rm -rf /home/sobits/opencv_contrib
 # set time zone
 ENV TZ Asia/Tokyo
 
+# set Language
+RUN locale-gen ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP:ja
+ENV LC_ALL ja_JP.UTF-8
+
 # clean cache
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/

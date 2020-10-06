@@ -1,11 +1,12 @@
 #! /bin/bash
-cd ~/docker_ws/container/rc2020/sim/final_ros
+cd ~/docker_ws/container/rc2020jp/sim/final_ros
+
 docker run \
     -p 6080:80 \
     --gpus all \
     --device /dev/dri:/dev/dri \
     --device /dev/video0:/dev/video0:mwr \
-    -v ~/docker_ws/container/rc2020jp_sim_final_ros/src:/home/sobits/catkin_ws/src \
+    -v ~/docker_ws/container/rc2020jp/sim/final_ros/src:/home/sobits/catkin_ws/src \
     --shm-size=512m \
     --name rc2020jp_sim_final_ros \
     --privileged \

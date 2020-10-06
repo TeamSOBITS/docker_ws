@@ -1,4 +1,5 @@
 #! /bin/bash
+cd ~/docker_ws/container/rc2020/sim/final_ros
 docker run \
     -p 6080:80 \
     --gpus all \

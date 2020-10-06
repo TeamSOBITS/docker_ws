@@ -1,7 +1,7 @@
 #!/bin/bash
-sudo rm -rf ~/docker_ws/container/rc2020jp_sim_final_ros/src/
-mkdir  ~/docker_ws/container/rc2020jp_sim_final_ros/src/
-cd ~/docker_ws/container/rc2020jp_sim_final_ros/src/
+sudo rm -rf ~/docker_ws/container/rc2020jp/sim/final_ros/src/
+mkdir  ~/docker_ws/container/rc2020jp/sim/final_ros/src/
+cd ~/docker_ws/container/rc2020jp/sim/final_ros/src/
 
 #git cloneしたいTeamSOBITSのROSパッケージを記述
 ros_packages=( \

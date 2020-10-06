@@ -1,11 +1,13 @@
 #!/bin/bash
-
+sudo rm -rf ~/docker_ws/container/rc2020jp_sim_final_ros/src/
+mkdir  ~/docker_ws/container/rc2020jp_sim_final_ros/src/
 cd ~/docker_ws/container/rc2020jp_sim_final_ros/src/
 
 #git cloneしたいTeamSOBITSのROSパッケージを記述
 ros_packages=( \
     "display_text" \
     "ssd_node" \
+    "avatars_uncertainty_recognizer"
 )
 
 for ((i = 0; i < ${#ros_packages[@]}; i++)) {

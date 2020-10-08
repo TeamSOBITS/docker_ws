@@ -1,11 +1,13 @@
 #! /bin/bash
+cd ~/docker_ws/container/ros_melodic_sobit_pro/
+
 docker run \
     -d \
     -p 6080:80 \
     --gpus all \
     --device /dev:/dev \
-    -v ~/docker_ws/container/ros_melodic_basic_ws/src:/home/sobits/catkin_ws/src \
+    --mount type=bind,src=$(pwd)/src,dst=/home/sobits/catkin_ws/src,readonly \
     --shm-size=512m \
-    --name ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0 \
+    --name ros_melodic_sobit_pro \
     --privileged \
     sobits/ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0

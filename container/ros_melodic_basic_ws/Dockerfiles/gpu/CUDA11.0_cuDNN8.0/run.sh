@@ -6,7 +6,7 @@ docker run \
     -p 6080:80 \
     --gpus all \
     --device /dev:/dev \
-    --mount type=bind,src=$(pwd)/src,dst=/home/sobits/catkin_ws/src,readonly \
+    --mount type=bind,src=$(pwd)/src,dst=/home/sobits/catkin_ws/src \
     --shm-size=512m \
     --name ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0 \
     --privileged \

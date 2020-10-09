@@ -27,3 +27,5 @@ sudo su - $USER
 sudo systemctl enable docker
 
 echo "=== FINISH ==="
+
+echo "Please, reboot OS"

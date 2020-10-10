@@ -30,6 +30,7 @@ bash run.sh #コンテナの起動
 `git_clone_ros_packages.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。
 - display_text
 - ssd_node
+- avatars_uncertainty_recognizer
 
 ## Alias commands
 デフォルトで以下のエイリアスコマンドを設定しています。
@@ -43,6 +44,12 @@ bash run.sh #コンテナの起動
     - ~/catkin_ws/src 内のすべてのrosパッケージに対してgit pullを行う
 
 ## Tips
+- コンテナと共有しているフォルダ内のファイルを編集する方法
+  ```
+  cd ~/docker_ws/container/rc2020jp/sim/final_ros/src
+  sudo code . --user-data-dir='~/.vscode-root'
+  ```
+
 
 ## memo
 - 2020/10/05

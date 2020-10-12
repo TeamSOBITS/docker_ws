@@ -6,7 +6,9 @@ docker run \
     -p 6080:80 \
     --gpus all \
     --device /dev:/dev \
-    --mount type=bind,src=$(pwd)/src,dst=/home/sobits/catkin_ws/src \
+    --mount type=bind,src=$(pwd)/src/,dst=/home/sobits/catkin_ws/src/,bind-propagation=shared \
+    -e LOCAL_UID=$(id -u $USER) \
+    -e LOCAL_GID=$(id -g $USER) \
     --shm-size=512m \
     --name ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0 \
     --privileged \

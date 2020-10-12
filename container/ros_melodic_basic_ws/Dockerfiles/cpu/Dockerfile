@@ -1,34 +1,44 @@
-FROM tiryoh/ros-desktop-vnc:melodic
+FROM dorowu/ubuntu-desktop-lxde-vnc:bionic
 
 MAINTAINER Tsurue Takumi
 
+ENV USER_ID=${LOCAL_UID:-1000}
+ENV GROUP_ID=${LOCAL_GID:-1000}
+
 # Do NOT rewrite manually
+RUN apt-get update -q && \
+    apt-get upgrade -yq && \
+    apt-get install -yq wget curl git build-essential vim sudo lsb-release locales bash-completion tzdata gosu && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && \
     apt-get install -y \
     yum \
     iputils-ping
 
 # add user
-RUN useradd -m sobits && \
-    gpasswd -a sobits sudo && \
+RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group --groups adm,sudo -u ${USER_ID} sobits && \
+    groupmod -g ${GROUP_ID} -o sobits && \
     echo sobits:robotgroup | chpasswd && \
-    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers &&\
-    touch /home/sobits/.sudo_as_admin_successful
+    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 ENV USER sobits
+
+RUN git clone https://github.com/Tiryoh/ros_setup_scripts_ubuntu.git /tmp/ros_setup_scripts_ubuntu && \
+    gosu sobits /tmp/ros_setup_scripts_ubuntu/ros-melodic-desktop.sh && \
+    rm -rf /var/lib/apt/lists/*
 
 # set initial position
 WORKDIR /home/sobits/
 
-# copy bashrc file from user:ubuntu
-RUN cp /home/ubuntu/.bashrc /home/sobits/
-
 # install pip
-#RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py &&\
-#    python2 get-pip.py &&\
-#    rm get-pip.py &&\
-#    pip install -U pip
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python2 get-pip.py && \
+    rm get-pip.py && \
+    pip install -U pip
 
-RUN apt-get install -y python3 python3-pip && \
+RUN apt-get update -q && \
+    apt-get upgrade -yq && \
+    apt-get install -y python3 python3-pip && \
     pip3 install -U pip
 
 # create catkin_ws

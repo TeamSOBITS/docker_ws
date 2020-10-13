@@ -6,6 +6,6 @@ docker run \
     --device /dev/video0:/dev/video0:mwr \
     -v ~/docker_ws/container/ros_kinetic_basic_ws/src:/home/sobits/catkin_ws/src \
     --shm-size=512m \
-    --name ros_kinetic_basic_ws_gpu_CUDA10.0_cuDNN7 \
+    --name ros_kinetic_basic_ws_gpu_cuda10.0_cudnn7 \
     --privileged \
-    sobits/ros_kinetic_basic_ws_gpu_CUDA10.0_cuDNN7
+    sobits/ros_kinetic_basic_ws_gpu_cuda10.0_cudnn7

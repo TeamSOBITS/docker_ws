@@ -66,11 +66,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ##### finish nvidia driver setting #####
 
 
-#install tensorflow-gpu==1.13.0
+#install tensorflow-gpu==1.13.1
 RUN apt-get update && \
     apt-get remove -y python-enum34 &&\
     pip install \
-    tensorflow-gpu==1.13.0 \
+    tensorflow-gpu==1.13.1 \
     keras==2.2.0
 
 

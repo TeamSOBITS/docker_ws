@@ -15,8 +15,8 @@ bash install_nvidia_docker.sh
 ```
 
 ## 使い方
-containerディレクトリ内に様々な環境のDockerfileを用意しています。
-build.shでイメージのビルド、run.shでイメージからコンテナを作成できます。
+containerディレクトリ内に様々な環境のDockerfileを用意しています。  
+コンテナの環境情報や起動方法等は、各ディレクトリの中にあるREADMEを参照してください。
 
 ## Tips
 - ### コンテナ起動時に "docker: Error response from daemon: linux runtime spec devices: could not select device driver "" with capabilities: [[gpu]]. "と出た場合。

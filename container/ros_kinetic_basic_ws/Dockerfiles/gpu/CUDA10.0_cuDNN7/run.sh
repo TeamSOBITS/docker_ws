@@ -8,12 +8,6 @@ docker run \
     -e LOCAL_UID=$(id -u $USER) \
     -e LOCAL_GID=$(id -g $USER) \
     --shm-size=512m \
-<<<<<<< HEAD
     --name ros_kinetic_basic_ws_gpu_cuda10.0_cudnn7 \
     --privileged \
     sobits/ros_kinetic_basic_ws_gpu_cuda10.0_cudnn7
-=======
-    --name ros_kinetic_basic_ws_gpu_cuda10.0_cudnn7 \
-    --privileged \
-    sobits/ros_kinetic_basic_ws_gpu_cuda10.0_cudnn7
->>>>>>> 50455bb1ee2fb227865cd322164cd0a463b5e308

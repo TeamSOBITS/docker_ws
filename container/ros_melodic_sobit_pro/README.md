@@ -1,4 +1,4 @@
-# ros_melodic_basic_ws
+# ros_melodic_sobit_pro
 ## Container Environment
 イメージからコンテナを起動すると以下の環境が構築されます（イメージサイズが22GBほどあるのでストレージ容量に注意）。
 - Ubuntu : 18.04
@@ -12,27 +12,27 @@
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
 ```
 #CPUの場合
-cd ~/docker_ws/container/ros_melodic_basic_ws/Dockerfiles/cpu
+cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/cpu
 #bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
 bash run.sh #コンテナの起動
 
 #GPUの場合(バージョンは各自で合わせる)
-cd ~/docker_ws/container/ros_melodic_basic_ws/Dockerfiles/gpu/CUDAxx_cuDNNxx/
+cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/gpu/CUDAxx_cuDNNxx/
 bash build.sh #コンテナの生成
 bash run.sh #コンテナの起動
 
 -----
 #コンテナの終了
-docker stop ros_melodic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
+docker stop ros_melodic_sobit_pro  #docker stop <CONTAINER NAME or CONTAINER ID>
 
 #コンテナを再起動する場合
-docker start ros_melodic_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
+docker start ros_melodic_sobit_pro #docker start <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの削除
-docker rm ros_melodic_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
+docker rm ros_melodic_sobit_pro #docker rm <CONTAINER NAME or CONTAINER ID>
 
 #イメージの削除
-docker rmi ros_melodic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
+docker rmi ros_melodic_sobit_pro #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
 コンテナが起動できたら、ウェブブラウザを開いて http://127.0.0.1:6080/ にアクセスしてください。  
@@ -44,12 +44,10 @@ docker rmi ros_melodic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ## ROS Packages
 `git_clone_ros_packages.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
+- sobit_pro
 - sobit_common
 - web_speech_recognition
-- display_text
 - text_to_speech
-- ssd_node
-- sobit_pro
 - DynamixelSDK
 
 

@@ -6,8 +6,6 @@ cd ~/docker_ws/container/ros_melodic_sobit_pro/src/
 ros_packages=( \
     "sobit_pro" \
     "sobit_common" \
-    "web_speech_recognition" \
-    "text_to_speech" \
 )
 
 for ((i = 0; i < ${#ros_packages[@]}; i++)) {
@@ -15,10 +13,6 @@ for ((i = 0; i < ${#ros_packages[@]}; i++)) {
     echo "${ros_packages[i]}"
     git clone https://gitlab.com/TeamSOBITS/${ros_packages[i]}.git
 }
-
-# DynamixelSDK git clone
-echo "DynamixelSDK"
-git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git
 
 cd 
 

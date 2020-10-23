@@ -1,0 +1,16 @@
+#!/bin/bash
+cd ~/docker_ws/container/ros_melodic_basic_ws/
+
+docker run \
+    -d \
+    -p 6080:80 \
+    --gpus all \
+    --device /dev:/dev \
+    --mount type=bind,src=/dev,dst=/dev,bind-propagation=shared \
+    --mount type=bind,src=$(pwd)/src/,dst=/home/sobits/catkin_ws/src/,bind-propagation=shared \
+    -e LOCAL_UID=$(id -u $USER) \
+    -e LOCAL_GID=$(id -g $USER) \
+    --shm-size=512m \
+    --name ros_melodic_basic_ws_gpu_cuda10.1_cudnn7.0 \
+    --privileged \
+    sobits/ros_melodic_basic_ws_gpu_cuda10.1_cudnn7.0

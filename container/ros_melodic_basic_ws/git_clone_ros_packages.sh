@@ -9,7 +9,6 @@ ros_packages=( \
     "display_text" \
     "text_to_speech" \
     "ssd_node" \
-    "sobit_pro" \
 )
 
 for ((i = 0; i < ${#ros_packages[@]}; i++)) {
@@ -17,6 +16,3 @@ for ((i = 0; i < ${#ros_packages[@]}; i++)) {
     echo "${ros_packages[i]}"
     git clone https://gitlab.com/TeamSOBITS/${ros_packages[i]}.git
 }
-
-echo "DynamixelSDK"
-git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git

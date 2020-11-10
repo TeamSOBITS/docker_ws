@@ -10,22 +10,80 @@
 ## How to run
 デフォルトではイメージとコンテナの名前は一緒にしています。  
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
+
+- VNC-Server  
+    1. Dockerfileがある階層まで移動(例としてcpu版の実行手順を示します)
+        ```
+        cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/VNC-Server/cpu
+        ```
+
+    2. Dockerfileからイメージをビルド 
+        ```
+        bash build.sh
+        ```
+        
+        - ※ DockerfileでOpenCVのビルドをしている場合は時間がかかるので要注意  
+            DockerHubにpush済みのイメージを持ってくることも可能  
+            ```
+            #https://hub.docker.com/u/sobits pull可能なイメージはここで確認
+            docker pull sobits/xxxxxxxxxx 
+            ```
+
+    3. イメージからコンテナを起動
+        ```
+        bash run.sh 
+        ```
+        コンソールが流れ始めたらOK
+    
+    4. http://127.0.0.1:6080/ にアクセス
+    
+- CUI
+    1. Dockerfileがある階層まで移動(例としてcpu版の実行手順を示します)
+        ```
+        cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/CUI/cpu
+        ```
+
+    2. Dockerfileからイメージをビルド 
+        ```
+        bash build.sh
+        ```
+        
+        - ※ DockerfileでOpenCVのビルドをしている場合は時間がかかるので要注意  
+            DockerHubにpush済みのイメージを持ってくることも可能  
+            ```
+            #https://hub.docker.com/u/sobits pull可能なイメージはここで確認
+            docker pull sobits/xxxxxxxxxx 
+            ```
+
+    3. イメージからコンテナを起動
+        ```
+        bash run.sh 
+        >> root@e44dd2e39c7c:/home/sobits#　←この表示がでればOK 
+        ```
+        ``` exit ``` と入力すればコンテナから抜けれる。
+
+    4. 起動中のコンテナに別端末からアクセスする方法
+        ```
+        bash exec.sh
+        >> root@e44dd2e39c7c:/home/sobits#　←この表示がでればOK 
+        ```
+        しかし、 ``` docker exec ``` でアクセスした場合はDockerfileに記述したENTRYPOINTやCMDが実行されないので、~/.bashrcの読み込まれない。  
+        手動で ``` source ~/catkin_ws/devel/setup.bash ``` すればros周りの機能は特に問題なく使える。  
+        Dockerは本来、プロセスごとにコンテナを切り分けて使うのが主流なので、 ``` docker exec ``` の使用は非推奨。  
+
+
+## Docker commands
 ```
-#CPUの場合
-cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/cpu
-#bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
-bash run.sh #コンテナの起動
+#起動中のコンテナ一覧
+docker ps
 
-#GPUの場合(バージョンは各自で合わせる)
-cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/gpu/CUDAxx_cuDNNxx/
-bash build.sh #コンテナの生成
-bash run.sh #コンテナの起動
+#コンテナ一覧（停止中も含む）
+docker ps -a
 
------
 #コンテナの終了
 docker stop ros_kinetic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
 
-#コンテナを再起動する場合
+#コンテナの再起動
 docker start ros_kinetic_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの削除
@@ -35,8 +93,6 @@ docker rm ros_kinetic_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
 docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
-コンテナが起動できたら、ウェブブラウザを開いて http://127.0.0.1:6080/ にアクセスしてください。  
-デフォルトのrun.shで実行すると、ホストPCの /dev/video0 が使えます。
 
 コンテナ内の catkin_ws/src は、ros_kinetic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
 ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  

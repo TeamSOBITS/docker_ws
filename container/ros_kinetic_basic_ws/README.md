@@ -67,7 +67,7 @@
         bash exec.sh
         >> root@e44dd2e39c7c:/home/sobits#　←この表示がでればOK 
         ```
-        しかし、 ``` docker exec ``` でアクセスした場合はDockerfileに記述したENTRYPOINTやCMDが実行されないので、~/.bashrcの読み込まれない。  
+        しかし、 ``` docker exec ``` でアクセスした場合はDockerfileに記述したENTRYPOINTやCMDが実行されないので、~/.bashrcは読み込まれない。  
         手動で ``` source ~/catkin_ws/devel/setup.bash ``` すればros周りの機能は特に問題なく使える。  
         Dockerは本来、プロセスごとにコンテナを切り分けて使うのが主流なので、 ``` docker exec ``` の使用は非推奨。  
 
@@ -80,16 +80,16 @@ docker ps
 #コンテナ一覧（停止中も含む）
 docker ps -a
 
-#コンテナの終了
+#コンテナの停止
 docker stop ros_kinetic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの再起動
 docker start ros_kinetic_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
 
-#コンテナの削除
+#コンテナの削除(起動中のコンテナは削除できない)
 docker rm ros_kinetic_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
 
-#イメージの削除
+#イメージの削除(コンテナが残っている場合は削除できない)
 docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```

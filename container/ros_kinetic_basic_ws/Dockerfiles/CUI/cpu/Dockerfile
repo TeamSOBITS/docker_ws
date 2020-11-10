@@ -1,4 +1,6 @@
-FROM dorowu/ubuntu-desktop-lxde-vnc:xenial
+FROM nvidia/opengl:1.1-glvnd-devel-ubuntu16.04
+#https://hub.docker.com/r/nvidia/opengl
+#FROM ubuntu:16.04
 
 MAINTAINER Kouta Ohishi
 
@@ -8,47 +10,91 @@ ENV GROUP_ID=${LOCAL_GID:-1000}
 # Do NOT rewrite manually
 RUN apt-get update -q && \
     apt-get upgrade -yq && \
-    apt-get install -yq wget curl git build-essential vim sudo lsb-release locales bash-completion tzdata gosu && \
+    apt-get install -yq \
+    wget \
+    curl \
+    git \
+    build-essential \
+    vim \
+    sudo \
+    lsb-release \
+    locales \
+    bash-completion \
+    tzdata \
+    gosu \
+    yum \
+    dirmngr \
+    gnupg2 \
+    lsb-release \
+    gedit \
+    iputils-ping && \
     rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    apt-get install -y \
-    yum \
-    iputils-ping
-
-# add user
+############
+# add user #
+############
 RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group --groups adm,sudo -u ${USER_ID} sobits && \
-    groupmod -g ${GROUP_ID} -o sobits && \
-    echo sobits:robotgroup | chpasswd && \
-    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+	    groupmod -g ${GROUP_ID} -o sobits && \
+	    echo sobits:robotgroup | chpasswd && \
+	    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 ENV USER sobits
 
-RUN git clone https://github.com/Tiryoh/ros_setup_scripts_ubuntu.git /tmp/ros_setup_scripts_ubuntu && \
-    gosu sobits /tmp/ros_setup_scripts_ubuntu/ros-kinetic-desktop.sh && \
-    rm -rf /var/lib/apt/lists/*
-
 # set initial position
-WORKDIR /home/sobits/
+WORKDIR /home/sobits/ 
 
-#install pip
+###############
+# install pip #
+###############
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py &&\
-python2 get-pip.py &&\
-rm get-pip.py &&\
-pip install -U pip
+	python2 get-pip.py &&\
+	rm get-pip.py &&\
+	pip install -U pip
+
+###############
+# install ros #
+###############
+ENV ROS_DISTRO kinetic
+
+RUN apt-get update && \
+	apt-get install -y \
+    	dirmngr \
+    	gnupg2 && \
+    	rm -rf /var/lib/apt/lists/*
+
+RUN apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 &&\
+	echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
+
+# install bootstrap tools
+RUN apt-get update &&\
+	apt-get install --no-install-recommends -y \
+    	python-rosdep \
+    	python-rosinstall \
+    	python-vcstools \
+    	&& rm -rf /var/lib/apt/lists/*
+
+RUN rosdep init && rosdep update
+
+RUN apt-get update && \
+	apt-get install -y \
+    	ros-${ROS_DISTRO}-desktop-full \
+    	ros-${ROS_DISTRO}-rosbash \
+    	python-catkin-tools \
+    	&& rm -rf /var/lib/apt/lists/*
 
 #create catkin_ws
-RUN echo "### create catkin_ws ###"
-RUN mkdir -p /home/sobits/catkin_ws/src
-RUN cd /home/sobits/catkin_ws/src && \
-	/bin/bash -c /bin/bash -c "source /opt/ros/kinetic/setup.bash; catkin_init_workspace"
-RUN cd /home/sobits/catkin_ws/ && /bin/bash -c "source /opt/ros/kinetic/setup.bash; catkin_make"
-
-RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/sobits/.bashrc &&\
+RUN mkdir -p /home/sobits/catkin_ws/src &&\
+	cd /home/sobits/catkin_ws/src &&\
+	/bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_init_workspace" &&\
+	cd /home/sobits/catkin_ws &&\
+	/bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin_make" &&\
+	echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/sobits/.bashrc &&\
 	echo "source /home/sobits/catkin_ws/devel/setup.bash" >> /home/sobits/.bashrc &&\
 	echo "export ROS_PACKAGE_PATH=\${ROS_PACKAGE_PATH}:/home/sobits/catkin_ws" >> /home/sobits/.bashrc &&\
 	echo "export ROS_WORKSPACE=/home/sobits/catkin_ws" >> /home/sobits/.bashrc
 
-# alias setting
+#################
+# Alias setting #
+#################
 RUN cd /home/sobits/ && \
     git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits-setup.git &&\
     chmod 755 /home/sobits/sobits-setup/chmod_all.py && \
@@ -63,8 +109,30 @@ RUN cd /home/sobits/ &&\
     chmod 755 /home/sobits/git_pull_all/git_pull_all.py &&\
     echo "alias gpa='python /home/sobits/git_pull_all/git_pull_all.py'" >> /home/sobits/.bashrc
 
+###################
+# Graphic setting #
+###################
+RUN apt-get update &&\
+	apt-get install -y \
+        pkg-config \
+        libxau-dev \
+        libxdmcp-dev \
+        libxcb1-dev \
+        libxext-dev \
+        freeglut3-dev \
+        libglew-dev \
+        mesa-utils \
+        libx11-dev && \
+    	rm -rf /var/lib/apt/lists/*
 
-# Install & build OpenCV
+
+# nvidia-container-runtime
+ENV NVIDIA_VISIBLE_DEVICES ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+##################
+# Install OpenCV #
+##################
 ARG OPENCV_VERSION="3.4.2"
 
 # Build tools:
@@ -130,11 +198,12 @@ RUN cd /home/sobits/ &&\
     -D CMAKE_INSTALL_PREFIX=/usr/local \
     -D OPENCV_EXTRA_MODULES_PATH=/home/sobits/opencv_contrib/modules \
     .. &&\
-    make && make install
+    make -j4 && make install
 RUN rm -rf /home/sobits/opencv && rm -rf /home/sobits/opencv_contrib
 
-# finish install & build opencv #
-
+##################
+# other settings #
+##################
 # set time zone
 ENV TZ Asia/Tokyo
 
@@ -144,6 +213,13 @@ ENV LANG ja_JP.UTF-8
 ENV LANGUAGE ja_JP:ja
 ENV LC_ALL ja_JP.UTF-8
 
+# setup entrypoint
+COPY ./ros_entrypoint.sh /
+RUN chmod 777 /ros_entrypoint.sh
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]
+
 # clean cache
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/
+RUN apt-get clean &&\
+	apt-get autoremove && \	
+    	rm -rf /var/lib/apt/lists/

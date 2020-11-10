@@ -95,7 +95,7 @@ docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 ```
 
 コンテナ内の catkin_ws/src は、ros_kinetic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
-ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  
+ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  (CUIの場合、コンテナ側で作成したファイルに関してはホストPC側からアクセスできないので要注意)
 
 
 ## ROS Packages
@@ -151,7 +151,3 @@ docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ## Tips
 
-## memo
-- 2020/10/01
-    - CUDA9.0 cuDNN7のGPU環境を構築 
-    - ホストPCがUbuntu16.04の環境でCPU/GPUともに動作確認済み

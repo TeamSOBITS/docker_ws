@@ -13,7 +13,7 @@ docker run -it \
     	-e QT_X11_NO_MITSHM=1 \
     	-v /tmp/.X11-unix/:/tmp/.X11-unix \
     	--shm-size=512m \
-    	--name ros_kinetic_basic_ws_cuda9.0_cudnn7.6 \
+    	--name ros_kinetic_basic_ws_cui_cuda9.0_cudnn7.6 \
     	--privileged \
-    	sobits/ros_kinetic_basic_ws_cuda9.0_cudnn7.6 \
+    	sobits/ros_kinetic_basic_ws_cui_cuda9.0_cudnn7.6 \
     	/bin/bash --rcfile /home/sobits/.bashrc

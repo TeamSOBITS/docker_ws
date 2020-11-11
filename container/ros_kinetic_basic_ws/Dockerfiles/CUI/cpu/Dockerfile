@@ -108,6 +108,16 @@ RUN cd /home/sobits/ &&\
     git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/git_pull_all.git &&\
     chmod 755 /home/sobits/git_pull_all/git_pull_all.py &&\
     echo "alias gpa='python /home/sobits/git_pull_all/git_pull_all.py'" >> /home/sobits/.bashrc
+    
+#root bashrc
+RUN echo "alias cmd='python /home/sobits/sobits-setup/chmod_all.py'" >> ~/.bashrc &&\
+    echo "alias cmk='CULLENT_DIR=`pwd` && cd /home/sobits/catkin_ws/ && catkin_make && cd $CULLENT_DIR'" >> ~/.bashrc &&\
+    echo "alias cm='cmk && cmd'" >> ~/.bashrc &&\
+    echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc &&\
+    echo "sudo chmod 777 /dev/video0" >> ~/.bashrc &&\
+    echo "alias gpa='python /home/sobits/git_pull_all/git_pull_all.py'" >> ~/.bashrc &&\
+    echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc &&\
+    echo "source /home/sobits/catkin_ws/devel/setup.bash" >> ~/.bashrc
 
 ###################
 # Graphic setting #

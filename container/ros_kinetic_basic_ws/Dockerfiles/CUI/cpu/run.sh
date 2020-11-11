@@ -1,7 +1,7 @@
 #! /bin/bash
 cd ~/docker_ws/container/ros_kinetic_basic_ws/
 
-xhost +local:root
+xhost +local:$USER
 
 docker run -it \
 	--gpus all \
@@ -15,5 +15,6 @@ docker run -it \
     	--shm-size=512m \
     	--name ros_kinetic_basic_ws_cui \
     	--privileged \
+    	--user sobits \
     	sobits/ros_kinetic_basic_ws_cui \
-    	/bin/bash --rcfile /home/sobits/.bashrc
+    	/bin/bash 

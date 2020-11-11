@@ -73,12 +73,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-mark hold libcudnn7 && \
     rm -rf /var/lib/apt/lists/*
 
-# setup entrypoint
-COPY ./ros_entrypoint.sh /
-RUN chmod 777 /ros_entrypoint.sh
-ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]
-
 # clean cache
 RUN apt-get autoremove &&\
 	apt-get clean &&\

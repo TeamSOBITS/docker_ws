@@ -12,12 +12,32 @@ bash install_docker.sh
 
 #Dockerコンテナ内でGPUを使う人は以下のコマンドも実行してください。
 bash install_nvidia_docker.sh
+
+#container_executer.pyを使う人は以下のコマンドも実行してください。
+sudo apt-get install tk-dev
+python -m Tkinter #GUIが表示されればインストール完了
 ```
 
 ## How to use
 containerディレクトリ内に様々な環境のDockerfileを用意しています。
 コンテナの環境情報や起動方法等は、各ディレクトリの中にあるREADMEを参照してください。
 ホストPCがUbuntu16の場合、DNSサーバの設定をする必要があるので、[DNS server setting](#dns-server-setting)を参照してください。
+
+## Container Executer
+![](img/container_executer.png)
+
+起動中のコンテナの一覧を表示し、入りたいコンテナをクリックすることで中に入ることができます。
+```
+#実行方法
+python ~/docker_ws/container_executer.py
+```
+
+aliasで設定しておくと便利だと思います。  
+```
+#.bashrcに以下を追記
+alias ce="python ~/docker_ws/container_executer.py"
+```
+
 
 ## DNS server setting
 Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネットワークに繋がらない場合は、以下の設定をしてください。

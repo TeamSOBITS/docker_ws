@@ -13,8 +13,8 @@ docker run -it \
     	-e QT_X11_NO_MITSHM=1 \
     	-v /tmp/.X11-unix/:/tmp/.X11-unix \
     	--shm-size=512m \
-    	--name ros_kinetic_basic_ws_cui \
+    	--name ros_kinetic_basic_ws \
     	--privileged \
     	--user sobits \
-    	sobits/ros_kinetic_basic_ws_cui \
+    	sobits/ros_kinetic_basic_ws \
     	/bin/bash 

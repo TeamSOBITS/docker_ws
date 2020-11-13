@@ -9,12 +9,11 @@ class ContainerExecuter():
     def __init__(self):
         self.tk = Tkinter.Tk()
         self.tk.attributes("-topmost", True) #常に最前面表示
-
-
         self.running_containers_info = []
-        self.get_runnning_containers_info()
 
     def create_gui(self):
+        self.get_runnning_containers_info()
+
         self.tk.title("ContainerExecuter")
 
         if len(self.running_containers_info) == 0:
@@ -34,13 +33,17 @@ class ContainerExecuter():
 
         #GUI停止用のボタンを定義
         btn = Tkinter.Button(self.tk, text="close", command=self.quit_gui)
-        btn.place(x=10, y=10)
+        btn.place(x=0, y=0)
 
+        #GUI再起動用のボタンを定義
+        btn = Tkinter.Button(self.tk, text="reflesh", command=self.reflesh_gui)
+        btn.place(x=0, y=30)
 
         self.tk.mainloop()
 
     def button_clicked_callback(self, container_id):
         def inner():
+            print("[%s] is executed."%container_id)
             exec_container_cmd = "gnome-terminal -- bash -c 'docker exec -it --user sobits %s /bin/bash; bash'"%(container_id)
             #subprocess.call(exec_cmd.split(" "), shell=True) #subprocessだとgnome-terminalの起動がうまく行かない・・・
             os.system(exec_container_cmd) #回避策としてos.systemを使用
@@ -48,7 +51,17 @@ class ContainerExecuter():
     
     def quit_gui(self):
         # "close"ボタンを押すと、GUIを終了させる
+        print("[close] button is clicked.")
         self.tk.quit()
+        self.tk.destroy()
+    
+    def reflesh_gui(self):
+        # "reflesh"ボタンを押すと、GUIを再起動する
+        print("[reflesh] button is clicked.")
+        self.running_containers_info = []
+        self.tk.destroy()
+        self.__init__()
+        self.create_gui()
 
     def get_runnning_containers_info(self):
         #起動中のコンテナを返す関数

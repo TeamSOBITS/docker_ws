@@ -2,7 +2,7 @@ FROM nvidia/opengl:1.1-glvnd-devel-ubuntu16.04
 #https://hub.docker.com/r/nvidia/opengl
 #FROM ubuntu:16.04
 
-MAINTAINER Kouta Ohishi
+LABEL maintainer Kouta Ohishi
 
 ENV USER_ID=${LOCAL_UID:-1000}
 ENV GROUP_ID=${LOCAL_GID:-1000}

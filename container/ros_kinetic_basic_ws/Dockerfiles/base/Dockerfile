@@ -100,6 +100,7 @@ RUN apt-get update &&\
         freeglut3-dev \
         libglew-dev \
         mesa-utils \
+        x11-apps \
         libx11-dev && \
     	rm -rf /var/lib/apt/lists/*
 

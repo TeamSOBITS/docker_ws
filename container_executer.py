@@ -56,7 +56,7 @@ class ContainerExecuter():
         self.tk.quit()
         self.tk.destroy()
     
-    def reflesh_gui(self):
+    def refresh_gui(self):
         # "refresh"ボタンを押すと、GUIを再起動する
         print("[refresh] button is clicked.")
         self.running_containers_info = []

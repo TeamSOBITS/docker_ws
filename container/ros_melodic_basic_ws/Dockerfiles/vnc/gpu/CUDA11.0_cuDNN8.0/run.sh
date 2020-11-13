@@ -2,14 +2,14 @@
 cd ~/docker_ws/container/ros_melodic_basic_ws/
 
 docker run \
-    -d \
-    -p 6080:80 \
+    --detach \
+    --publish 6080:80 \
     --gpus all \
     --device /dev:/dev \
     --mount type=bind,src=$(pwd)/src/,dst=/home/sobits/catkin_ws/src/,bind-propagation=shared \
-    -e LOCAL_UID=$(id -u $USER) \
-    -e LOCAL_GID=$(id -g $USER) \
+    --env LOCAL_UID=$(id -u $USER) \
+    --env LOCAL_GID=$(id -g $USER) \
     --shm-size=512m \
-    --name ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0 \
+    --name ros_melodic_vnc_gpu_cuda11.0_cudnn8.0 \
     --privileged \
-    sobits/ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0
+    sobits/ros_melodic_vnc_gpu_cuda11.0_cudnn8.0

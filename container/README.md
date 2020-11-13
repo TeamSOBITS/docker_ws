@@ -10,12 +10,10 @@
 
 
 - ### ros_kinetic_basic_ws
+    - base
     - cpu
     - gpu
-        - CUDA10.0_cuDNN7
-        - CUDA9.0_cuDNN7
-        - CUDA8.0_cuDNN6(動作未確認)
-        - CUDA8.0_cuDNN5(動作未確認)
+        - CUDA9.0_cuDNN7.6
 
 
 - ### ros_melodic_basic_ws

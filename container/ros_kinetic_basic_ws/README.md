@@ -11,65 +11,30 @@
 デフォルトではイメージとコンテナの名前は一緒にしています。  
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
 
-- VNC-Server  
-    1. Dockerfileがある階層まで移動(例としてcpu版の実行手順を示します)
-        ```
-        cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/VNC-Server/cpu
-        ```
+1. Dockerfileがある階層まで移動(例としてcpu版の実行手順を示します)
+    ```
+    cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/cpu
+    ```
 
-    2. Dockerfileからイメージをビルド 
-        ```
-        bash build.sh
-        ```
+2. Dockerfileからイメージをビルド 
+    ```
+    bash build.sh
+    ```
+
+3. イメージからコンテナを起動
+    ```
+    bash run.sh 
+    >> container sobits@:~$　←この表示がでればOK 
+    ```
+    ``` exit ``` と入力すればコンテナから抜けれる。
+
+4. 起動中のコンテナに別端末からアクセスする方法
+    ```
+    bash exec.sh
+    >> container sobits@:~$　←この表示がでればOK 
+    ```
+    ``` exit ``` と入力すればコンテナから抜けれる。
         
-        - ※ DockerfileでOpenCVのビルドをしている場合は時間がかかるので要注意  
-            DockerHubにpush済みのイメージを持ってくることも可能  
-            ```
-            #https://hub.docker.com/u/sobits pull可能なイメージはここで確認
-            docker pull sobits/xxxxxxxxxx 
-            ```
-
-    3. イメージからコンテナを起動
-        ```
-        bash run.sh 
-        ```
-        コンソールが流れ始めたらOK
-    
-    4. http://127.0.0.1:6080/ にアクセス
-    
-- CUI
-    1. Dockerfileがある階層まで移動(例としてcpu版の実行手順を示します)
-        ```
-        cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/CUI/cpu
-        ```
-
-    2. Dockerfileからイメージをビルド 
-        ```
-        bash build.sh
-        ```
-        
-        - ※ DockerfileでOpenCVのビルドをしている場合は時間がかかるので要注意  
-            DockerHubにpush済みのイメージを持ってくることも可能  
-            ```
-            #https://hub.docker.com/u/sobits pull可能なイメージはここで確認
-            docker pull sobits/xxxxxxxxxx 
-            ```
-
-    3. イメージからコンテナを起動
-        ```
-        bash run.sh 
-        >> root@e44dd2e39c7c:/home/sobits#　←この表示がでればOK 
-        ```
-        ``` exit ``` と入力すればコンテナから抜けれる。
-
-    4. 起動中のコンテナに別端末からアクセスする方法
-        ```
-        bash exec.sh
-        >> root@e44dd2e39c7c:/home/sobits#　←この表示がでればOK 
-        ```
-        しかし、 ``` docker exec ``` でアクセスした場合はDockerfileに記述したENTRYPOINTやCMDが実行されないので、~/.bashrcは読み込まれない。  
-        手動で ``` source ~/catkin_ws/devel/setup.bash ``` すればros周りの機能は特に問題なく使える。  
-        Dockerは本来、プロセスごとにコンテナを切り分けて使うのが主流なので、 ``` docker exec ``` の使用は非推奨。  
 
 
 ## Docker commands

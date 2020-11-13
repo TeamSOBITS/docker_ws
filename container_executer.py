@@ -33,7 +33,7 @@ class ContainerExecuter():
             self.tk.geometry(("%sx%s")%(geometry_x, geometry_y))
 
 	#GUI再起動用のボタンを定義
-        btn = Tkinter.Button(self.tk, text="reflesh", command=self.reflesh_gui)
+        btn = Tkinter.Button(self.tk, text="refresh", command=self.refresh_gui)
         btn.place(x=0, y=0)
         
         #GUI停止用のボタンを定義
@@ -57,8 +57,8 @@ class ContainerExecuter():
         self.tk.destroy()
     
     def reflesh_gui(self):
-        # "reflesh"ボタンを押すと、GUIを再起動する
-        print("[reflesh] button is clicked.")
+        # "refresh"ボタンを押すと、GUIを再起動する
+        print("[refresh] button is clicked.")
         self.running_containers_info = []
         self.tk.destroy()
         self.__init__()

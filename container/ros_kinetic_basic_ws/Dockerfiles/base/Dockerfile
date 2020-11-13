@@ -68,6 +68,7 @@ RUN cd /home/sobits/ && \
 RUN apt-get update &&\
 	gosu sobits bash /home/sobits/sobits-setup/install_sh/install_ros_kinetic.sh &&\
 	gosu sobits bash /home/sobits/sobits-setup/install_sh/install_catkin_ws.sh &&\
+	echo "source ~/catkin_ws/devel/setup.bash" >> /home/sobits/.bashrc &&\
 	rm -rf /var/lib/apt/lists/*
 
 
@@ -179,4 +180,3 @@ ENV LC_ALL ja_JP.UTF-8
 RUN apt-get clean &&\
 	apt-get autoremove && \	
     	rm -rf /var/lib/apt/lists/
-

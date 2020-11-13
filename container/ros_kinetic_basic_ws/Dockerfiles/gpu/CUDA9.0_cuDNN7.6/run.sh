@@ -1,7 +1,7 @@
 #! /bin/bash
 cd ~/docker_ws/container/ros_kinetic_basic_ws/
 
-xhost +local:root
+xhost +local:$USER
 
 docker run -it \
 	--gpus all \

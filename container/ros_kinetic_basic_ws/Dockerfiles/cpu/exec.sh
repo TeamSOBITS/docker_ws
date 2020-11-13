@@ -2,5 +2,5 @@
 docker exec \
     -it \
     --user sobits \
-    ros_kinetic_basic_ws \
+    ros_kinetic_cpu \
     /bin/bash

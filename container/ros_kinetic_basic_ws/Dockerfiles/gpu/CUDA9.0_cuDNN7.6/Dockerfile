@@ -1,6 +1,6 @@
 FROM sobits/ros_kinetic_basic_ws
 
-MAINTAINER Kouta Ohishi
+LABEL maintainer Kouta Ohishi
 
 ########################
 # CUDA & cuDNN version #
@@ -78,6 +78,12 @@ ARG IMAGE_NAME
 ENV IMAGE_NAME ${IMAGE_NAME}
 RUN echo "\n#terminal style" >> /home/sobits/.bashrc &&\
     echo "export PS1='\[\e[1;33;40m\]${IMAGE_NAME}\[\e[0m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/sobits/.bashrc
+    
+#########################
+# Nvidia device setting #
+#########################
+ENV NVIDIA_VISIBLE_DEVICES ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
 # clean cache
 RUN apt-get autoremove &&\

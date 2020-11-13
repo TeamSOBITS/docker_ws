@@ -17,7 +17,8 @@ class ContainerExecuter():
         self.tk.title("ContainerExecuter")
 
         if len(self.running_containers_info) == 0:
-            pass
+            print("No containers are running.")
+            self.tk.geometry("500x30")
         
         else:
             for i, running_container_info in enumerate(self.running_containers_info):
@@ -31,12 +32,12 @@ class ContainerExecuter():
             geometry_y = str(30*len(self.running_containers_info))
             self.tk.geometry(("%sx%s")%(geometry_x, geometry_y))
 
+	#GUI再起動用のボタンを定義
+        btn = Tkinter.Button(self.tk, text="reflesh", command=self.reflesh_gui)
+        btn.place(x=0, y=0)
+        
         #GUI停止用のボタンを定義
         btn = Tkinter.Button(self.tk, text="close", command=self.quit_gui)
-        btn.place(x=0, y=0)
-
-        #GUI再起動用のボタンを定義
-        btn = Tkinter.Button(self.tk, text="reflesh", command=self.reflesh_gui)
         btn.place(x=0, y=30)
 
         self.tk.mainloop()

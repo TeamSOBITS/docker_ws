@@ -12,9 +12,10 @@ docker run -it \
 	-e DISPLAY=$DISPLAY \
 	-e QT_X11_NO_MITSHM=1 \
 	-v /tmp/.X11-unix/:/tmp/.X11-unix \
+	-e  CONTAINER_NAME="ros_kinetic_basic_ws" \
 	--shm-size=512m \
-	--name ros_kinetic_cpu \
+	--name ros_kinetic_basic_ws \
 	--privileged \
 	--user sobits \
-	sobits/ros_kinetic_cpu \
+	sobits/ros_kinetic_basic_ws \
 	/bin/bash 

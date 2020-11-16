@@ -11,9 +11,13 @@
 デフォルトではイメージとコンテナの名前は一緒にしています。  
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
 ```
+#ホスト側のセットアップ
+cd ~/docker_ws/container/ros_melodic_sobit_pro
+bash sobit_pro_setup.sh #必要なパッケージのインストールや、SOBIT_PROのデバイス登録などの設定を行います。
+
 #CPUの場合
 cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/cpu
-#bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
+bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
 bash run.sh #コンテナの起動
 
 #GPUの場合(バージョンは各自で合わせる)
@@ -35,7 +39,7 @@ docker rm ros_melodic_sobit_pro #docker rm <CONTAINER NAME or CONTAINER ID>
 docker rmi ros_melodic_sobit_pro #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
-コンテナが起動できたら、ウェブブラウザを開いて http://127.0.0.1:6080/ にアクセスしてください。  
+コンテナが起動できたら、ウェブブラウザを開いて http://localhost:6080/ にアクセスしてください。  
 デフォルトのrun.shで実行すると、ホストPCのデバイスが使えます。
 
 コンテナ内の catkin_ws/src は、ros_melodic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
@@ -43,13 +47,19 @@ docker rmi ros_melodic_sobit_pro #docker rmi <IMAGE NAME or IMAGE ID>
 
 
 ## ROS Packages
-`git_clone_ros_packages.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
+`sobit_pro_setup.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
 - sobit_pro
 - sobit_common
-- web_speech_recognition
-- text_to_speech
-- DynamixelSDK
 
+## SOBIT_PRO USB files
+`sobit_pro_setup.sh`を実行すると、以下の場所にUSB設定ファイルが作成されます。
+これにより、デバイスを接続すると自動的にそのデバイスを検出することができます。 
+- /etc/udev/rules.d/wheel.rules
+- /etc/udev/rules.d/arm_pantilt.rules
+
+これらを使用する際は、デバイス名を以下のように指定します。
+- "/dev/wheel"
+- "/dev/arm_pantilt"
 
 ## 分散処理の方法
 - #### コンテナとホストPC間での分散処理
@@ -97,5 +107,8 @@ docker rmi ros_melodic_sobit_pro #docker rmi <IMAGE NAME or IMAGE ID>
 
 ## memo
 - 2020/10/01
-    - CUDA11.0 cuDNN8.0のGPU環境を構築 
+    - CUDA11.0 cuDNN8.0のGPU環境を構築
+    - ホストPCがUbuntu18.04の環境でCPU/GPUともに動作確認済み
+- 2020/10/22
+    - CUDA10.1 cuDNN7.0のGPU環境を構築
     - ホストPCがUbuntu18.04の環境でCPU/GPUともに動作確認済み

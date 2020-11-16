@@ -86,13 +86,8 @@ RUN cd /home/sobits/ && \
 # Install ros & create catkin_ws #
 ##################################
 RUN apt-get update &&\
-    gosu sobits bash /home/sobits/sobits-setup/install_sh/ubuntu18.04/install_ros_melodic.sh
-
-RUN mkdir -p /home/sobits/catkin_ws/src && \
-    cd /home/sobits/catkin_ws/src && \
-	/bin/bash -c /bin/bash -c "source /opt/ros/melodic/setup.bash; catkin_init_workspace" && \
-    cd /home/sobits/catkin_ws/ && \
-    /bin/bash -c "source /opt/ros/melodic/setup.bash; catkin_make" && \
+    gosu sobits bash /home/sobits/sobits-setup/install_sh/ubuntu18.04/install_ros_melodic.sh && \
+    gosu sobits bash /home/sobits/sobits-setup/install_sh/ubuntu18.04/install_catkin_ws_melodic.sh && \
 	echo "export ROS_PACKAGE_PATH=\${ROS_PACKAGE_PATH}:/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
 	echo "export ROS_WORKSPACE=/home/sobits/catkin_ws" >> /home/sobits/.bashrc
 

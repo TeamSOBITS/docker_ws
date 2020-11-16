@@ -17,8 +17,8 @@ docker run -it \
     --env QT_X11_NO_MITSHM=1 \
     --env CONTAINER_NAME="ros_melodic_sobit_pro_cpu" \
     --shm-size=512m \
-    --name ros_melodic_sobit_pro_cpu \
+    --name ros_melodic_sobit_pro_gpu_cuda10.1_cudnn7.0 \
     --privileged \
     --user sobits \
-    sobits/ros_melodic_sobit_pro_cpu
+    sobits/ros_melodic_sobit_pro_gpu_cuda10.1_cudnn7.0
     /bin/bash 

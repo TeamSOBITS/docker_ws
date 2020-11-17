@@ -13,7 +13,7 @@ ENV CUDA_VERSION 11.0
 ENV NCCL_VERSION 2.7.8
 ENV CUDNN_VERSION 8.0.4.30
 ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics
 ENV NVIDIA_REQUIRE_CUDA "cuda>=11.0 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441"
 ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
@@ -71,7 +71,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcudnn8=$CUDNN_VERSION-1+cuda11.0 \
     libcudnn8-dev=$CUDNN_VERSION-1+cuda11.0 \
     && apt-mark hold libcudnn8
-
 
 
 # clean cache

@@ -6,6 +6,7 @@ cd ~/docker_ws/container/ros_melodic_sobit_pro/src/
 ros_packages=( \
     "sobit_pro" \
     "sobit_common" \
+    "azure_kinect_ros" \
 )
 
 for ((i = 0; i < ${#ros_packages[@]}; i++)) {
@@ -24,13 +25,28 @@ sudo /etc/init.d/udev reload
 echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6015\", ATTRS{serial}==\"E143\", SYMLINK+=\"arm_pantilt\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/arm_pantilt.rules
 sudo /etc/init.d/udev reload
 
-# Seting arm_pantilt USB
+# Seting ps4_joy_control USB
 #echo "KERNEL==\"uinput\", MODE=\"0666\"
 #      KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", ATTRS{idVendor}==\"054c\", ATTRS{idProduct}==\"05c4\", MODE=\"0666\"
 #      KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", KERNELS==\"0005:054C:05C4.*\", MODE=\"0666\"
 #      KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", ATTRS{idVendor}==\"054c\", ATTRS{idProduct}==\"09cc\", MODE=\"0666\"
 #      KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", KERNELS==\"0005:054C:09CC.*\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/50-ds4drv.rules
 #sudo /etc/init.d/udev reload
+
+# Seting azure_kinect USB
+echo "# Bus 002 Device 116: ID 045e:097a Microsoft Corp.
+      # Bus 001 Device 015: ID 045e:097b Microsoft Corp.
+      # Bus 002 Device 118: ID 045e:097c Microsoft Corp.
+      # Bus 002 Device 117: ID 045e:097d Microsoft Corp.
+      # Bus 001 Device 016: ID 045e:097e Microsoft Corp.
+      BUS!=\"usb\", ACTION!=\"add\", SUBSYSTEM!==\"usb_device\", GOTO=\"k4a_logic_rules_end\"
+      ATTRS{idVendor}==\"045e\", ATTRS{idProduct}==\"097a\", MODE=\"0666\", GROUP=\"plugdev\"
+      ATTRS{idVendor}==\"045e\", ATTRS{idProduct}==\"097b\", MODE=\"0666\", GROUP=\"plugdev\"
+      ATTRS{idVendor}==\"045e\", ATTRS{idProduct}==\"097c\", MODE=\"0666\", GROUP=\"plugdev\"
+      ATTRS{idVendor}==\"045e\", ATTRS{idProduct}==\"097d\", MODE=\"0666\", GROUP=\"plugdev\"
+      ATTRS{idVendor}==\"045e\", ATTRS{idProduct}==\"097e\", MODE=\"0666\", GROUP=\"plugdev\"
+      LABEL=\"k4a_logic_rules_end\"" | sudo tee /etc/udev/rules.d/99-k4a.rules
+sudo /etc/init.d/udev reload
 
 sudo udevadm control --reload-rules
 sudo udevadm trigger

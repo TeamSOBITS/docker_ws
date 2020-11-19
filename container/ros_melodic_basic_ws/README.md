@@ -83,6 +83,16 @@ docker rmi sobits/ros_melodic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
     .bashrcにROSIPとROS_MASTERの設定をすれば、分散処理が可能です。  
     同一ホストPC上にあれば、複数コンテナ間でも分散処理できます。
 
+    ※現在の設定では、コンテナのIPとROS_IPを同じに設定しています。
+    　ROS_MASTER_URIもROS_IPと同じにしているので他のコンテナと通信する際は、
+    　ROS_MASTER_URIをROS_MASTERを起動したコンテナのものに統一してください。
+
+    - MASTERコンテナのROS_IP：172.17.0.2
+    - ROS_MASTER_URI：http://172.17.0.2:11311
+
+    - 他のコンテナのROS_IP：172.17.0.x
+    - ROS_MASTER_URI：http://172.17.0.2:11311　<-MASTERコンテナに揃える！
+
 - #### コンテナと外部ネットワーク上にあるROSノード間での分散処理  
     ホストPC上のコンテナと、LANケーブルでつないでいるraspberry piやJetsonなどと分散処理する場合はこちらになります。  
     まずはじめに、ホストPCと外部PC間でpingが通るようにネットワークの設定をしてください。

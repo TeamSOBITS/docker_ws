@@ -36,7 +36,11 @@ RUN apt-get update -q && \
         gedit \
         usbutils \
         yum \
-        iputils-ping
+        iputils-ping \
+        alsa-utils \
+        fonts-takao-* \
+        libcanberra-gtk-module \
+        libcanberra-gtk3-module
 
 
 ###############
@@ -89,7 +93,10 @@ RUN apt-get update &&\
     gosu sobits bash /home/sobits/sobits-setup/install_sh/ubuntu18.04/install_ros_melodic.sh && \
     gosu sobits bash /home/sobits/sobits-setup/install_sh/ubuntu18.04/install_catkin_ws_melodic.sh && \
 	echo "export ROS_PACKAGE_PATH=\${ROS_PACKAGE_PATH}:/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
-	echo "export ROS_WORKSPACE=/home/sobits/catkin_ws" >> /home/sobits/.bashrc
+	echo "export ROS_WORKSPACE=/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
+    echo "export ROS_IP=\`ifconfig eth0 | grep inet | cut -d: -f2 | awk '{ print \$2}'\`" >> /home/sobits/.bashrc && \
+    echo "export ROS_MASTER_URI=http://\$ROS_IP:11311" >> /home/sobits/.bashrc && \
+    echo "export export NO_AT_BRIDGE=1" >> /home/sobits/.bashrc
 
 #################
 # Alias setting #

@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 #coding:utf-8
-#python2.7
+#python2.7 or python3.5
 import sys, os
-import Tkinter
 import subprocess
+try: #for python2.7
+    import Tkinter
+except ImportError: #for python3.5
+    import tkinter as Tkinter
 
 class ContainerExecuter():
     def __init__(self):

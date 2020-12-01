@@ -17,13 +17,23 @@ for ((i = 0; i < ${#ros_packages[@]}; i++)) {
 
 cd 
 
+# Setting Sound configure
+pacmd load-module module-native-protocol-unix socket=/tmp/pulseaudio.socket
+touch /tmp/pulseaudio.client.conf
+echo "default-server = unix:/tmp/pulseaudio.socket \n 
+      # Prevent a server running in the container \n 
+      autospawn = no \n 
+      daemon-binary = /bin/true \n
+      # Prevent the use of shared memory \n
+      enable-shm = false" >> /tmp/pulseaudio.client.conf
+
 # Seting wheel USB
 echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6014\", ATTRS{serial}==\"E148\", SYMLINK+=\"wheel\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/wheel.rules
-sudo /etc/init.d/udev reload
+#sudo /etc/init.d/udev reload
 
 # Seting arm_pantilt USB
 echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6015\", ATTRS{serial}==\"E143\", SYMLINK+=\"arm_pantilt\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/arm_pantilt.rules
-sudo /etc/init.d/udev reload
+#sudo /etc/init.d/udev reload
 
 # Seting ps4_joy_control USB
 echo "KERNEL==\"uinput\", MODE=\"0666\"
@@ -31,7 +41,7 @@ echo "KERNEL==\"uinput\", MODE=\"0666\"
       KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", KERNELS==\"0005:054C:05C4.*\", MODE=\"0666\"
       KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", ATTRS{idVendor}==\"054c\", ATTRS{idProduct}==\"09cc\", MODE=\"0666\"
       KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", KERNELS==\"0005:054C:09CC.*\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/50-ds4drv.rules
-sudo /etc/init.d/udev reload
+#sudo /etc/init.d/udev reload
 
 # Seting azure_kinect USB
 echo "# Bus 002 Device 116: ID 045e:097a Microsoft Corp.
@@ -46,21 +56,10 @@ echo "# Bus 002 Device 116: ID 045e:097a Microsoft Corp.
       ATTRS{idVendor}==\"045e\", ATTRS{idProduct}==\"097d\", MODE=\"0666\", GROUP=\"plugdev\"
       ATTRS{idVendor}==\"045e\", ATTRS{idProduct}==\"097e\", MODE=\"0666\", GROUP=\"plugdev\"
       LABEL=\"k4a_logic_rules_end\"" | sudo tee /etc/udev/rules.d/99-k4a.rules
-sudo /etc/init.d/udev reload
+#sudo /etc/init.d/udev reload
 
-sudo udevadm control --reload-rules
-sudo udevadm trigger
+#sudo udevadm control --reload-rules
+#sudo udevadm trigger
 
 # USB Reload
 sudo /etc/init.d/udev reload
-
-
-# Setting Sound configure
-pacmd load-module module-native-protocol-unix socket=/tmp/pulseaudio.socket
-touch /tmp/pulseaudio.client.conf
-echo "default-server = unix:/tmp/pulseaudio.socket \n 
-      # Prevent a server running in the container \n 
-      autospawn = no \n 
-      daemon-binary = /bin/true \n
-      # Prevent the use of shared memory \n
-      enable-shm = false" >> /tmp/pulseaudio.client.conf

@@ -58,8 +58,9 @@ WORKDIR /home/sobits/
 #################################
 # Clone sobits-setup repository #
 #################################
+ARG OAUTH
 RUN cd /home/sobits/ && \
-	git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits-setup.git
+	git clone https://oauth2:${OAUTH}@gitlab.com/TeamSOBITS/sobits-setup.git
 
 ##################################
 # Install ros & create catkin_ws #

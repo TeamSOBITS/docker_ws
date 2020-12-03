@@ -4,7 +4,6 @@ cd ~/docker_ws/container/ros_kinetic_basic_ws/
 xhost +local:$USER
 
 docker run -it \
-	--gpus all \
 	--device /dev/:/dev/ \
 	--mount type=bind,src=$(pwd)/src/,dst=/home/sobits/catkin_ws/src/,bind-propagation=shared \
 	-e LOCAL_UID=$(id -u $USER) \

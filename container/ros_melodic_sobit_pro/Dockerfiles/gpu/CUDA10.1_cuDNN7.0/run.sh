@@ -11,8 +11,7 @@ docker run -it \
     --mount type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix,bind-propagation=shared \
     --mount type=bind,src=/tmp/pulseaudio.socket,dst=/tmp/pulseaudio.socket,bind-propagation=shared \
     --mount type=bind,src=/tmp/pulseaudio.client.conf,dst=/tmp/pulseaudio.client.conf,bind-propagation=shared \
-    --mount type=bind,src=/dev/wheel,dst=/dev/wheel,bind-propagation=shared \
-    --mount type=bind,src=/dev/arm_pantilt,dst=/dev/arm_pantilt,bind-propagation=shared \
+    --mount type=bind,src=/dev/input/,dst=/dev/input/,bind-propagation=shared \
     --mount type=bind,src=$(pwd)/src/,dst=/home/sobits/catkin_ws/src/,bind-propagation=shared \
     --env LOCAL_UID=$(id -u $USER) \
     --env LOCAL_GID=$(id -g $USER) \
@@ -22,6 +21,7 @@ docker run -it \
     --env QT_X11_NO_MITSHM=1 \
     --env CONTAINER_NAME="ros_melodic_sobit_pro_gpu" \
     --shm-size=512m \
+    --net host \
     --name ros_melodic_sobit_pro_gpu_cuda10.1_cudnn7.0 \
     --privileged \
     --user sobits \

@@ -88,27 +88,6 @@ RUN cd /home/sobits/ &&\
     echo "alias gpa='python /home/sobits/git_pull_all/git_pull_all.py'" >> /home/sobits/.bashrc
 
 
-###################
-# Graphic setting #
-###################
-RUN apt-get update &&\
-	apt-get install -y \
-        pkg-config \
-        libxau-dev \
-        libxdmcp-dev \
-        libxcb1-dev \
-        libxext-dev \
-        freeglut3-dev \
-        libglew-dev \
-        mesa-utils \
-        x11-apps \
-        libx11-dev && \
-    	rm -rf /var/lib/apt/lists/*
-
-# nvidia-container-runtime
-ENV NVIDIA_VISIBLE_DEVICES ${NVIDIA_VISIBLE_DEVICES:-all}
-ENV NVIDIA_DRIVER_CAPABILITIES ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
-
 #########################
 # Install Google Chrome #
 #########################
@@ -176,7 +155,6 @@ RUN apt-get update &&\
 ##########################
 ENV CONTAINER_NAME=${CNAME:-container}
 RUN echo "export PS1='\[\e[1;33;40m\]\$CONTAINER_NAME\[\e[0m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '">> /home/sobits/.bashrc
-
 
 
 ##################

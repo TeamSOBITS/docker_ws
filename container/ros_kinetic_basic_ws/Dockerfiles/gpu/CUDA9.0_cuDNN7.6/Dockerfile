@@ -73,15 +73,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-mark hold libcudnn7 && \
     rm -rf /var/lib/apt/lists/*
 
-    
-#########################
-# Nvidia device setting #
-#########################
+###################
+# Graphic setting #
+###################
+RUN apt-get update &&\
+  	apt-get install -y \
+    pkg-config \
+    libxau-dev \
+    libxdmcp-dev \
+    libxcb1-dev \
+    libxext-dev \
+    freeglut3-dev \
+    libglew-dev \
+    mesa-utils \
+    x11-apps \
+    libx11-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES ${NVIDIA_VISIBLE_DEVICES:-all}
 ENV NVIDIA_DRIVER_CAPABILITIES ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
+
 # clean cache
 RUN apt-get autoremove &&\
-	apt-get clean &&\
-	rm -rf /var/lib/apt/lists/
-
+  apt-get clean &&\
+  rm -rf /var/lib/apt/lists/

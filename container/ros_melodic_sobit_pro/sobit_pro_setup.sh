@@ -20,21 +20,24 @@ for ((i = 0; i < ${#ros_packages[@]}; i++)) {
 cd 
 
 # Setting Sound configure
-pacmd load-module module-native-protocol-unix socket=/tmp/pulseaudio.socket
+echo "pacmd load-module module-native-protocol-unix socket=/tmp/pulseaudio.socket &> /dev/null" >> ~/.bashrc
+echo "#!bin/bash
 touch /tmp/pulseaudio.client.conf
-echo "default-server = unix:/tmp/pulseaudio.socket \n 
+echo \"default-server = unix:/tmp/pulseaudio.socket \n 
       # Prevent a server running in the container \n 
       autospawn = no \n 
       daemon-binary = /bin/true \n
       # Prevent the use of shared memory \n
-      enable-shm = false" >> /tmp/pulseaudio.client.conf
+      enable-shm = false\" >> /tmp/pulseaudio.client.conf" | sudo tee /etc/profile.d/sound_setup.sh
+sudo bash /etc/profile.d/sound_setup.sh
+
 
 # Seting wheel USB
-echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6014\", ATTRS{serial}==\"E148\", SYMLINK+=\"input\\wheel\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/wheel.rules
+echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6014\", ATTRS{serial}==\"E148\", SYMLINK+=\"input/wheel\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/wheel.rules
 #sudo /etc/init.d/udev reload
 
 # Seting arm_pantilt USB
-echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6015\", ATTRS{serial}==\"E143\", SYMLINK+=\"input\\arm_pantilt\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/arm_pantilt.rules
+echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6015\", ATTRS{serial}==\"E143\", SYMLINK+=\"input/arm_pantilt\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/arm_pantilt.rules
 #sudo /etc/init.d/udev reload
 
 # Seting ps4_joy_control USB

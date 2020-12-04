@@ -2,9 +2,6 @@ FROM ubuntu:16.04 as intermediate
 
 LABEL maintainer Kouta Ohishi
 
-ENV USER_ID=${LOCAL_UID:-1000}
-ENV GROUP_ID=${LOCAL_GID:-1000}
-
 ######################
 # Install basic apps #
 ######################
@@ -44,6 +41,8 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py &&\
 # Add a user #
 ##############
 # add sudo user
+ENV USER_ID=${LOCAL_UID:-1000}
+ENV GROUP_ID=${LOCAL_GID:-1000}
 RUN apt-get update && \
 	apt-get install -y sudo && \
 	useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group --groups adm,sudo -u ${USER_ID} sobits && \
@@ -52,8 +51,6 @@ RUN apt-get update && \
    	echo "Defaults visiblepw" >> /etc/sudoers && \
     	echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-ENV USER sobits
-WORKDIR /home/sobits/ 
 
 #################################
 # Clone sobits-setup repository #
@@ -152,16 +149,17 @@ RUN apt-get update &&\
 	rm -rf /var/lib/apt/lists/*
 
 
-##########################
-# Terminal style setting #
-##########################
-ENV CONTAINER_NAME=${CNAME:-container}
-RUN echo "export PS1='\[\e[1;33;40m\]\$CONTAINER_NAME\[\e[0m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '">> /home/sobits/.bashrc
+#####################
+# Multi stage build #
+#####################
+FROM ubuntu:16.04
+COPY --from=intermediate / /
 
 
 ##################
 # Other settings #
 ##################
+
 # set time zone
 ENV TZ Asia/Tokyo
 
@@ -171,13 +169,17 @@ ENV LANG ja_JP.UTF-8
 ENV LANGUAGE ja_JP:ja
 ENV LC_ALL ja_JP.UTF-8
 
+# User setting:
+ENV USER sobits
+WORKDIR /home/sobits/ 
+
+# Terminal setting
+ENV CONTAINER_NAME=${CNAME:-container}
+RUN echo "export PS1='\[\e[1;33;40m\]\$CONTAINER_NAME\[\e[0m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '">> /home/sobits/.bashrc
+
 # clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/
 
-#####################
-# Multi stage build #
-#####################
-FROM ubuntu:16.04
-COPY --from=intermediate / /
+

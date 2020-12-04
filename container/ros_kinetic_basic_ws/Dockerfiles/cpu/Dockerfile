@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:16.04 as intermediate
 
 LABEL maintainer Kouta Ohishi
 
@@ -60,7 +60,7 @@ WORKDIR /home/sobits/
 #################################
 ARG OAUTH
 RUN cd /home/sobits/ && \
-	git clone https://oauth2:${OAUTH}@gitlab.com/TeamSOBITS/sobits-setup.git
+	git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits-setup.git
 
 ##################################
 # Install ros & create catkin_ws #
@@ -176,3 +176,8 @@ RUN apt-get clean &&\
 	apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/
 
+#####################
+# Multi stage build #
+#####################
+FROM ubuntu:16.04
+COPY --from=intermediate / /

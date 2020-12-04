@@ -46,7 +46,7 @@ RUN sudo apt update &&\
 RUN sudo apt update &&\
     sudo apt install ros-melodic-map-server -y &&\
     sudo apt install ros-melodic-move-base-* -y &&\
-    sudo apt-get install ros-melodic-dwa-local-planner -y &&\
+    sudo apt-get install ros-melodic-dwa-local-planner -y
 
 # clean cache
 RUN apt-get clean && \

@@ -1,4 +1,4 @@
-FROM sobits/ros_melodic_basic_ws_gpu_cuda10.1_cudnn7.0:latest
+FROM sobits/ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0:latest
 
 MAINTAINER Yuki Ikeda
 
@@ -46,8 +46,7 @@ RUN sudo apt update &&\
 RUN sudo apt update &&\
     sudo apt install ros-melodic-map-server -y &&\
     sudo apt install ros-melodic-move-base-* -y &&\
-    sudo apt-get install ros-melodic-dwa-local-planner -y &&\
-
+    sudo apt-get install ros-melodic-dwa-local-planner -y
 # clean cache
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/

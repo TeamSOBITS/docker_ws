@@ -14,6 +14,8 @@ docker run -it \
 	--env LOCAL_GID=$(id -g $USER) \
 	--env DISPLAY=$DISPLAY \
 	--env QT_X11_NO_MITSHM=1 \
+	--env PULSE_SERVER=unix:/tmp/pulseaudio.socket \
+	--env PULSE_COOKIE=/tmp/pulseaudio.cookie \
 	--env CONTAINER_NAME="ros_melodic_gpu" \
 	--shm-size=512m \
 	--name ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0 \

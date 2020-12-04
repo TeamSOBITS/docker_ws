@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as intermediate
 
 LABEL maintainer Tsurue Takumi
 
@@ -9,7 +9,6 @@ LABEL maintainer Tsurue Takumi
 ###################################
 ENV USER_ID=${LOCAL_UID:-1000}
 ENV GROUP_ID=${LOCAL_GID:-1000}
-ENV CONTAINER_NAME=${CNAME:-container}
 
 
 ######################
@@ -94,9 +93,10 @@ RUN apt-get update &&\
     gosu sobits bash /home/sobits/sobits-setup/install_sh/ubuntu18.04/install_catkin_ws_melodic.sh && \
 	echo "export ROS_PACKAGE_PATH=\${ROS_PACKAGE_PATH}:/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
 	echo "export ROS_WORKSPACE=/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
-    echo "export ROS_IP=\`ifconfig eth0 | grep inet | cut -d: -f2 | awk '{ print \$2}'\`" >> /home/sobits/.bashrc && \
+    echo "export IFACE=\`ifconfig | head -n 1 | awk '{ print \$1}' | rev | cut -b 2- | rev\`" >> /home/sobits/.bashrc && \
+    echo "export ROS_IP=\`ifconfig \${IFACE} | grep inet | cut -d: -f2 | awk '{ print \$2}'\`" >> /home/sobits/.bashrc && \
     echo "export ROS_MASTER_URI=http://\$ROS_IP:11311" >> /home/sobits/.bashrc && \
-    echo "export export NO_AT_BRIDGE=1" >> /home/sobits/.bashrc
+    echo "export NO_AT_BRIDGE=1" >> /home/sobits/.bashrc
 
 #################
 # Alias setting #
@@ -113,43 +113,6 @@ RUN cd /home/sobits/ &&\
     git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/git_pull_all.git &&\
     chmod 755 /home/sobits/git_pull_all/git_pull_all.py &&\
     echo "alias gpa='python /home/sobits/git_pull_all/git_pull_all.py'" >> /home/sobits/.bashrc
-
-
-###################
-# Graphic setting #
-###################
-RUN apt-get update && \
-    apt-get install -y \
-        pkg-config \
-        libxau-dev \
-        libxdmcp-dev \
-        libxcb1-dev \
-        libxext-dev \
-        freeglut3-dev \
-        libglew-dev \
-        mesa-utils \
-        x11-apps \
-        libx11-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY --from=nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04 \
-  /usr/local/lib/x86_64-linux-gnu \
-  /usr/local/lib/x86_64-linux-gnu
-
-COPY --from=nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04 \
-  /usr/local/share/glvnd/egl_vendor.d/10_nvidia.json \
-  /usr/local/share/glvnd/egl_vendor.d/10_nvidia.json
-
-RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf && \
-    ldconfig && \
-    echo '/usr/local/$LIB/libGL.so.1' >> /etc/ld.so.preload && \
-    echo '/usr/local/$LIB/libEGL.so.1' >> /etc/ld.so.preload
-
-# nvidia-container-runtime
-ENV NVIDIA_VISIBLE_DEVICES \
-    ${NVIDIA_VISIBLE_DEVICES:-all}
-ENV NVIDIA_DRIVER_CAPABILITIES \
-    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
 
 ########################
@@ -209,6 +172,11 @@ RUN gosu sobits bash /home/sobits/sobits-setup/install_sh/install_google_chrome.
     sed -i "1s/^/# /g" /etc/apt/sources.list.d/google.list
 
 
+# マルチステージビルド(image layer の内容を隠す処理)
+FROM ubuntu:18.04
+COPY --from=intermediate / /
+
+
 ##################
 # Other settings #
 ##################
@@ -225,3 +193,8 @@ ENV LC_ALL ja_JP.UTF-8
 RUN apt-get clean &&\
 	apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/
+
+# set user
+ENV USER sobits
+# set initial position
+WORKDIR /home/sobits/

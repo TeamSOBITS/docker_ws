@@ -4,7 +4,6 @@ cd ~/docker_ws/container/ros_melodic_basic_ws/
 xhost +local:$USER
 
 docker run -it \
-	--gpus all \
 	--device /dev/:/dev/ \
     --mount type=bind,src=/var/run/dbus/system_bus_socket,dst=/var/run/dbus/system_bus_socket,bind-propagation=shared \
     --mount type=bind,src=/etc/localtime,dst=/etc/localtime,bind-propagation=shared \

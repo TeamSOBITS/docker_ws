@@ -21,9 +21,10 @@ class ContainerExecuter():
 
         self.tk.title("ContainerExecuter")
 
+        #GUI windowの大きさを定義
         geometry_x = str(700)
         geometry_y = str(30*len(self.containers_info))
-        self.tk.geometry(("%sx%s")%(geometry_x, geometry_y))
+        self.tk.geometry(("%sx%s+0+0")%(geometry_x, geometry_y)) # "window width x window height + position right + position down"
         
         for i, container_info in enumerate(self.containers_info):
             container_id = container_info[0]

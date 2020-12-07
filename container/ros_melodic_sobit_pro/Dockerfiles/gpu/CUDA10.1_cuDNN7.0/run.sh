@@ -12,6 +12,7 @@ docker run -it \
     --mount type=bind,src=/tmp/pulseaudio.socket,dst=/tmp/pulseaudio.socket,bind-propagation=shared \
     --mount type=bind,src=/tmp/pulseaudio.client.conf,dst=/tmp/pulseaudio.client.conf,bind-propagation=shared \
     --mount type=bind,src=/dev/input/,dst=/dev/input/,bind-propagation=shared \
+    --mount type=bind,src=/dev/snd/,dst=/dev/snd/,bind-propagation=shared \
     --mount type=bind,src=$(pwd)/src/,dst=/home/sobits/catkin_ws/src/,bind-propagation=shared \
     --env LOCAL_UID=$(id -u $USER) \
     --env LOCAL_GID=$(id -g $USER) \

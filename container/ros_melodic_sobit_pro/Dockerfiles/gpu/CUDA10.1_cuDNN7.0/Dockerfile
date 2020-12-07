@@ -48,6 +48,25 @@ RUN sudo apt update &&\
     sudo apt install ros-melodic-move-base-* -y &&\
     sudo apt-get install ros-melodic-dwa-local-planner -y
 
+# Install text to speech library
+RUN apt update && \
+    apt install -y \
+    mpg321 \
+    open-jtalk \
+    open-jtalk-mecab-naist-jdic \
+    hts-voice-nitech-jp-atr503-m001 \
+    libttspico-utils \
+    alsa \
+    alsa-utils \
+    python-soundfile
+
+RUN pip install \
+    gTTS==2.0.1 \
+    wave \
+    mutagwn \
+    soundfile && \
+    pip install gTTS-token --upgrade 
+
 # clean cache
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/

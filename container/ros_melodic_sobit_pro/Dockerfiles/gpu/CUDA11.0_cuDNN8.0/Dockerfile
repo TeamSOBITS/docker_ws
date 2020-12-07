@@ -63,7 +63,7 @@ RUN apt update && \
 RUN pip install \
     gTTS==2.0.1 \
     wave \
-    mutagwn \
+    mutagen \
     soundfile && \
     pip install gTTS-token --upgrade
 

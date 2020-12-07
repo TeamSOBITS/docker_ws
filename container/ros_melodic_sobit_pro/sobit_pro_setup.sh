@@ -17,6 +17,9 @@ for ((i = 0; i < ${#ros_packages[@]}; i++)) {
     git clone https://gitlab.com/TeamSOBITS/${ros_packages[i]}.git
 }
 
+# オープンソースのROSパッケージのgit clone
+git clone https://github.com/ros/executive_smach.git
+
 cd 
 
 # Setting Sound configure

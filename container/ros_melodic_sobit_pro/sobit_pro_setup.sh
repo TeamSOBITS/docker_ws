@@ -7,8 +7,11 @@ ros_packages=( \
     "sobit_pro" \
     "sobit_common" \
     "azure_kinect_ros" \
+    "pytorch_yolo" \
     "sobit_pro_navigation" \
     "sobit_slam" \
+    "text_to_speech" \
+    "web_speech_recognition"
 )
 
 for ((i = 0; i < ${#ros_packages[@]}; i++)) {
@@ -30,7 +33,6 @@ echo \"default-server = unix:/tmp/pulseaudio.socket \n
       # Prevent the use of shared memory \n
       enable-shm = false\" >> /tmp/pulseaudio.client.conf" | sudo tee /etc/profile.d/sound_setup.sh
 sudo bash /etc/profile.d/sound_setup.sh
-
 
 # Seting wheel USB
 echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6014\", ATTRS{serial}==\"E148\", SYMLINK+=\"input/wheel\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/wheel.rules

@@ -6,7 +6,8 @@ MAINTAINER Yuki Ikeda
 RUN pip3 install numpy
 
 # Install Pytorch
-RUN pip3 install torch torchvision
+RUN pip3 install torch torchvision && \
+    pip3 install tqdm
 
 # Install matplotlib
 RUN pip3 install matplotlib && \
@@ -28,25 +29,25 @@ RUN apt update &&\
     apt install ros-melodic-openni2-* -y
 
 # Install joint
-RUN sudo apt update &&\
-    sudo apt install ros-melodic-joint* -y
+RUN apt update &&\
+    apt install ros-melodic-joint* -y
 
 # Install ps4 controller
-RUN sudo apt-get install ros-melodic-joy
+RUN apt-get install ros-melodic-joy
 
 # Install Pybind
-RUN sudo apt update &&\
-    sudo apt install ros-melodic-pybind11-catkin -y
+RUN apt update &&\
+    apt install ros-melodic-pybind11-catkin -y
 
 # Install URG
-RUN sudo apt update &&\
-    sudo apt install ros-melodic-urg-node -y
+RUN apt update &&\
+    apt install ros-melodic-urg-node -y
 
 # Install SLAM 
-RUN sudo apt update &&\
-    sudo apt install ros-melodic-map-server -y &&\
-    sudo apt install ros-melodic-move-base-* -y &&\
-    sudo apt-get install ros-melodic-dwa-local-planner -y
+RUN apt update &&\
+    apt install ros-melodic-map-server -y &&\
+    apt install ros-melodic-move-base-* -y &&\
+    apt-get install ros-melodic-dwa-local-planner -y
 
 # Install text to speech library
 RUN apt update && \
@@ -58,14 +59,15 @@ RUN apt update && \
     libttspico-utils \
     alsa \
     alsa-utils \
-    python-soundfile
+    python-soundfile \
+    pulseaudio
 
-RUN pip install \
+RUN pip3 install \
     gTTS==2.0.1 \
     wave \
     mutagen \
     soundfile && \
-    pip install gTTS-token --upgrade
+    pip3 install gTTS-token --upgrade
 
 # clean cache
 RUN apt-get clean && \

@@ -11,7 +11,8 @@ ros_packages=( \
     "sobit_pro_navigation" \
     "sobit_slam" \
     "text_to_speech" \
-    "web_speech_recognition"
+    "web_speech_recognition" \
+    "placeable_position_estimator"
 )
 
 for ((i = 0; i < ${#ros_packages[@]}; i++)) {

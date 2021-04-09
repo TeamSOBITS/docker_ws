@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/docker_ws/container/ros_kinetic_basic_ws/src/
+cd ~/docker_ws/container/ros_melodic_basic_ws/src/
 
 #git cloneしたいTeamSOBITSのROSパッケージを記述
 ros_packages=( \

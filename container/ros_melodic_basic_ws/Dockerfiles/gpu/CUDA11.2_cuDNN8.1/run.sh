@@ -21,9 +21,9 @@ docker run -it \
 	--env PULSE_COOKIE=/tmp/pulseaudio.cookie \
 	--env CONTAINER_NAME="ros_melodic_gpu" \
 	--shm-size=512m \
-	--name ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0 \
+	--name ros_melodic_basic_ws_gpu_cuda11.2_cudnn8.1 \
 	--privileged \
 	--user sobits \
-	sobits/ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0 \
+	sobits/ros_melodic_basic_ws_gpu_cuda11.2_cudnn8.1 \
 	/bin/bash 
 

@@ -34,8 +34,7 @@ RUN apt-get update && \
         libglew-dev \
         mesa-utils \
         x11-apps \
-        libx11-dev && \
-    rm -rf /var/lib/apt/lists/*
+        libx11-dev
 
 COPY --from=nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04 \
   /usr/local/lib/x86_64-linux-gnu \
@@ -59,16 +58,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
-    apt-get purge --autoremove -y curl \
-    && rm -rf /var/lib/apt/lists/*
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
 # For libraries in the cuda-compat-* package: https://docs.nvidia.com/cuda/eula/index.html#attachment-a
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-cudart-11-3=11.3.58-1 \
     cuda-compat-11-3 \
-    && ln -s cuda-11.3 /usr/local/cuda && \
-    rm -rf /var/lib/apt/lists/*
+    && ln -s cuda-11.3 /usr/local/cuda
 
 # Required for nvidia-docker v1
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf \
@@ -81,8 +77,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-nvtx-11-3=11.3.58-1 \
     libcublas-11-3=11.4.2.10064-1 \
     libcusparse-11-3=11.5.0.58-1 \
-    libnccl2=$NCCL_VERSION-1+cuda11.3 \
-    && rm -rf /var/lib/apt/lists/*
+    libnccl2=$NCCL_VERSION-1+cuda11.3
 
 # apt from auto upgrading the cublas package. See https://gitlab.com/nvidia/container-images/cuda/-/issues/88
 RUN apt-mark hold libcublas-11-3 libnccl2
@@ -98,8 +93,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnpp-dev-11-3=11.3.3.44-1 \
     libnccl-dev=2.9.6-1+cuda11.3 \
     libcublas-dev-11-3=11.4.2.10064-1 \
-    libcusparse-dev-11-3=11.5.0.58-1 \
-    && rm -rf /var/lib/apt/lists/*
+    libcusparse-dev-11-3=11.5.0.58-1
 
 # apt from auto upgrading the cublas package. See https://gitlab.com/nvidia/container-images/cuda/-/issues/88
 RUN apt-mark hold libcublas-dev-11-3 libnccl-dev
@@ -110,9 +104,7 @@ LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcudnn8=$CUDNN_VERSION-1+cuda11.3 \
     libcudnn8-dev=$CUDNN_VERSION-1+cuda11.3 \
-    && apt-mark hold libcudnn8 && \
-    rm -rf /var/lib/apt/lists/*
-
+    && apt-mark hold libcudnn8
 # clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	

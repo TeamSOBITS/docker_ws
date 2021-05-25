@@ -14,7 +14,7 @@ bash install_docker.sh
 bash install_nvidia_docker.sh
 
 #container_executer.pyを使う人は以下のコマンドも実行してください。
-sudo apt-get install tk-dev
+sudo apt-get install python-tk tk-dev 
 python -m Tkinter #GUIが表示されればインストール完了
 ```
 

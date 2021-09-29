@@ -3,19 +3,19 @@
 Docker環境セットアップの方法とDockerfileをまとめたリポジトリ
 
 ## Install Docker
-```
+```bash
 cd ~/
 
 git clone https://gitlab.com/TeamSOBITS/docker_ws.git
 
 bash install_docker.sh
 
-#Dockerコンテナ内でGPUを使う人は以下のコマンドも実行してください。
+# Dockerコンテナ内でGPUを使う人は以下のコマンドも実行してください。
 bash install_nvidia_docker.sh
 
-#container_executer.pyを使う人は以下のコマンドも実行してください。
+# container_executer.pyを使う人は以下のコマンドも実行してください。
 sudo apt-get install python-tk tk-dev 
-python -m Tkinter #GUIが表示されればインストール完了
+python -m Tkinter # GUIが表示されればインストール完了
 ```
 
 ## How to use
@@ -27,14 +27,14 @@ containerディレクトリ内に様々な環境のDockerfileを用意してい�
 ![](img/container_executer.png)
 
 起動中のコンテナの一覧を表示し、入りたいコンテナをクリックすることで中に入ることができます。
-```
-#実行方法
+```bash
+# 実行方法
 python ~/docker_ws/container_executer.py
 ```
 
 aliasで設定しておくと便利だと思います。  
-```
-#.bashrcに以下を追記
+```bash
+# .bashrcに以下を追記
 alias ce="python ~/docker_ws/container_executer.py"
 ```
 
@@ -48,23 +48,23 @@ Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネット
   # daemon.jsonの確認
   cat /etc/docker/daemon.json
 
-  #何も表示されない場合は、新しく作成
+  # 何も表示されない場合は、新しく作成
   sudo touch /etc/docker/daemon.json
 
-  #daemon.jsonをエディタで開く
+  # daemon.jsonをエディタで開く
   sudo gedit /etc/docker/daemon.json
   ```
 
 
   以下の項目を記入（x.x.x.xにはホストPCが繋がっているネットワークのDNSサーバのIP or デフォルトゲートウェイを記入する）
-  ``` json daemon.json
+  ``` json
   {
     "dns":["x.x.x.x","x.x.x.y"]
   }
   ```
 
   nvidia-dockerをインストールしている場合は既に、daemon.jsonに"runtime"の設定が記述されているので、
-  ```json daemon.json
+  ```json
   {
     "runtimes": {
         "nvidia": {
@@ -76,7 +76,7 @@ Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネット
   ```
 
   こんな感じで、dnsの設定を追記する
-  ```json daemon.json
+  ```json
   {
     "dns":["x.x.x.x","x.x.x.y"],
     "runtimes": {
@@ -115,7 +115,7 @@ Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネット
 
   ```bash
   cd ~/docker_ws/
-  sh nvidia-container-runtime-script.sh
+  bash nvidia-container-runtime-script.sh
   sudo apt install nvidia-container-runtime
   systemctl restart docker.service
   ```

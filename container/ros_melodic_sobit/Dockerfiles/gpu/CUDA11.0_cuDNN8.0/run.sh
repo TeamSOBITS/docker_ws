@@ -10,6 +10,7 @@ xhost +local:${USER}
 docker run -it \
     --gpus all \
     --device /dev/:/dev/ \
+    --device=/dev/video0 \
     --mount type=bind,src=/var/run/dbus/system_bus_socket,dst=/var/run/dbus/system_bus_socket,bind-propagation=shared \
     --mount type=bind,src=/etc/localtime,dst=/etc/localtime,bind-propagation=shared \
     --mount type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix,bind-propagation=shared \

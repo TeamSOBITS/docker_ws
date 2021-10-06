@@ -1,16 +1,16 @@
 FROM sobits/ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0:latest
 
-MAINTAINER Yuki Ikeda
+LABEL maintainer Yuki Ikeda
 
 # Install Numpy
-RUN pip3 install numpy
+RUN gosu sobits pip3 install numpy
 
 # Install Pytorch
-RUN pip3 install torch torchvision && \
-    pip3 install tqdm
+RUN gosu sobits pip3 install torch torchvision && \
+    gosu sobits pip3 install tqdm
 
 # Install matplotlib
-RUN pip3 install matplotlib && \
+RUN gosu sobits pip3 install matplotlib && \
     apt-get update && \
     apt-get install python3-tk
 
@@ -21,7 +21,10 @@ RUN apt update -y && \
     apt install ros-melodic-joy -y && \
     apt install ros-melodic-roswww -y && \
     apt install ros-melodic-kobuki-* -y && \
-    apt install ros-melodic-joint-state-publisher* -y
+    apt install ros-melodic-joint-state-publisher* -y &&\
+    apt install ros-melodic-uvc-camera -y && \
+    apt install ros-melodic-image-view -y && \
+    apt install libsensors4-dev -y
 
 # Install PCL
 RUN apt update &&\
@@ -62,12 +65,12 @@ RUN apt update && \
     python-soundfile \
     pulseaudio
 
-RUN pip3 install \
+RUN gosu sobits pip3 install \
     gTTS==2.0.1 \
     wave \
     mutagen \
     soundfile && \
-    pip3 install gTTS-token --upgrade
+    gosu sobits pip3 install gTTS-token --upgrade
 
 # clean cache
 RUN apt-get clean && \

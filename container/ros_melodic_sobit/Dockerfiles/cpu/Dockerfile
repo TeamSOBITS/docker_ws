@@ -1,6 +1,65 @@
 FROM sobits/ros_melodic_basic_ws:latest
 
-MAINTAINER Yuki Ikeda
+LABEL maintainer Yuki Ikeda
+
+# Install ROS Packages
+RUN apt update -y && \
+    apt install ros-melodic-rosbridge-* -y && \
+    apt install ros-melodic-ecl-* -y && \
+    apt install ros-melodic-joy -y && \
+    apt install ros-melodic-roswww -y && \
+    apt install ros-melodic-kobuki-* -y && \
+    apt install ros-melodic-joint-state-publisher* -y &&\
+    apt install ros-melodic-uvc-camera -y && \
+    apt install ros-melodic-image-view -y && \
+    apt install libsensors4-dev -y
+
+# Install PCL
+RUN apt update &&\
+    apt install ros-melodic-pcl-* -y && \
+    apt install ros-melodic-openni2-* -y
+
+# Install joint
+RUN apt update &&\
+    apt install ros-melodic-joint* -y
+
+# Install ps4 controller
+RUN apt-get install ros-melodic-joy
+
+# Install Pybind
+RUN apt update &&\
+    apt install ros-melodic-pybind11-catkin -y
+
+# Install URG
+RUN apt update &&\
+    apt install ros-melodic-urg-node -y
+
+# Install SLAM 
+RUN apt update &&\
+    apt install ros-melodic-map-server -y &&\
+    apt install ros-melodic-move-base-* -y &&\
+    apt-get install ros-melodic-dwa-local-planner -y
+
+# Install text to speech library
+RUN apt update && \
+    apt install -y \
+    mpg321 \
+    open-jtalk \
+    open-jtalk-mecab-naist-jdic \
+    hts-voice-nitech-jp-atr503-m001 \
+    libttspico-utils \
+    alsa \
+    alsa-utils \
+    python-soundfile \
+    pulseaudio
+
+# Install sound library
+RUN gosu sobits pip3 install \
+    gTTS==2.0.1 \
+    wave \
+    mutagen \
+    soundfile && \
+    gosu sobits pip3 install gTTS-token --upgrade
 
 # clean cache
 RUN apt-get clean && \

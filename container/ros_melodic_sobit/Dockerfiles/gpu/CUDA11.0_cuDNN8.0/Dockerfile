@@ -65,6 +65,7 @@ RUN apt update && \
     python-soundfile \
     pulseaudio
 
+# Install sound library
 RUN gosu sobits pip3 install \
     gTTS==2.0.1 \
     wave \

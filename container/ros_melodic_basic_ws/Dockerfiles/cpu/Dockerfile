@@ -48,17 +48,17 @@ RUN apt-get update -q && \
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python2 get-pip.py && \
     rm get-pip.py && \
-    gosu sobits pip install -U pip
+    pip install -U pip
 
 RUN apt-get update -q && \
     apt-get upgrade -yq && \
     apt-get install -y \
         python3 \
         python3-pip && \
-    gosu sobits pip3 install -U pip
+    pip3 install -U pip
 
 # install numpy
-RUN gosu sobits pip3 install numpy
+RUN pip3 install numpy
 
 
 ##############

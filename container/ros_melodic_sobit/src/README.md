@@ -1,4 +1,0 @@
-# ros_melodic_sobit_pro/src
-
-ros_melodic_sobit_proのソースコードをまとめたディレクトリ
-コンテナ内のcatkin_ws/srcと一致

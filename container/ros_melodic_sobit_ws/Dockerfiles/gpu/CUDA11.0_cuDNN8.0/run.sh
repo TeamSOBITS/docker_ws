@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 DIR=$(pwd)
 str=`echo ${DIR} | awk -F "/" '{ print $(NF - 3) }'`

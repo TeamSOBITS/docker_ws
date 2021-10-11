@@ -1,6 +1,10 @@
 #!/bin/bash
+
+DIR=$(pwd)
+str=`echo ${DIR} | awk -F "/" '{ print $(NF - 2) }'`
+
 docker exec \
     -it \
     --user sobits \
-    ros_melodic_sobit_pro_cpu \
+    ${str} \
     /bin/bash

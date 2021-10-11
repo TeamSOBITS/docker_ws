@@ -1,7 +1,9 @@
 #!/bin/bash
-cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/cpu
+
+DIR=$(pwd)
+str=`echo ${DIR} | awk -F "/" '{ print $(NF - 2) }'`
 
 docker build \
-    --tag sobits/ros_melodic_sobit_pro_cpu \
+    --tag sobits/${str} \
     --network host \
     .

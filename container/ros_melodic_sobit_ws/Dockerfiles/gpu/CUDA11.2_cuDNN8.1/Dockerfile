@@ -1,4 +1,4 @@
-FROM sobits/ros_melodic_basic_ws_gpu_cuda11.0_cudnn8.0:latest
+FROM sobits/ros_melodic_basic_ws_gpu_cuda11.2_cudnn8.1:latest
 
 LABEL maintainer Yuki Ikeda
 

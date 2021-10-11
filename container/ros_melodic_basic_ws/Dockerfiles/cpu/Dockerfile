@@ -9,6 +9,8 @@ LABEL maintainer Tsurue Takumi
 ###################################
 ENV USER_ID=${LOCAL_UID:-1000}
 ENV GROUP_ID=${LOCAL_GID:-1000}
+ENV DEBCONF_NOWARNINGS yes
+
 
 
 ######################
@@ -42,23 +44,7 @@ RUN apt-get update -q && \
         libcanberra-gtk3-module
 
 
-###############
-# Install pip #
-###############
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python2 get-pip.py && \
-    rm get-pip.py && \
-    pip install -U pip
 
-RUN apt-get update -q && \
-    apt-get upgrade -yq && \
-    apt-get install -y \
-        python3 \
-        python3-pip && \
-    pip3 install -U pip
-
-# install numpy
-RUN pip3 install numpy
 
 
 ##############
@@ -72,9 +58,34 @@ RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group
 
 # set user
 ENV USER sobits
+
 # set initial position
 WORKDIR /home/sobits/
+RUN . /home/sobits/.bashrc
 
+###############
+# Install pip #
+###############
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py && \
+    python2 get-pip.py && \
+    rm get-pip.py && \
+    pip install -U pip
+
+RUN apt-get update -q && \
+    apt-get upgrade -yq && \
+    apt-get install -y \
+        python3 \
+        python3-pip
+
+# run as user sobits
+USER sobits
+
+# install numpy
+RUN python3 -m pip install -U pip && \
+    python3 -m pip install numpy
+
+# run as root user
+USER root
 
 #################################
 # Clone sobits-setup repository #
@@ -114,6 +125,7 @@ RUN cd /home/sobits/ &&\
     chmod 755 /home/sobits/git_pull_all/git_pull_all.py &&\
     echo "alias gpa='python /home/sobits/git_pull_all/git_pull_all.py'" >> /home/sobits/.bashrc
 
+RUN . /home/sobits/.bashrc
 
 ########################
 # Install OpenCV 3.4.2 #

@@ -2,76 +2,89 @@ FROM sobits/ros_melodic_basic_ws_gpu_cuda10.1_cudnn7.0:latest
 
 LABEL maintainer Yuki Ikeda
 
+# Run as user sobits
+USER sobits
+
 # Install Numpy
-RUN gosu sobits pip3 install numpy
+RUN python3 -m pip install numpy
 
 # Install Pytorch
-RUN gosu sobits pip3 install torch torchvision && \
-    gosu sobits pip3 install tqdm
+RUN python3 -m pip install \
+        torch \
+        torchvision \
+        tqdm
 
 # Install matplotlib
-RUN gosu sobits pip3 install matplotlib && \
-    apt-get update && \
-    apt-get install python3-tk
-
-# Install ROS Packages
-RUN apt update -y && \
-    apt install ros-melodic-rosbridge-* -y && \
-    apt install ros-melodic-ecl-* -y && \
-    apt install ros-melodic-joy -y && \
-    apt install ros-melodic-roswww -y && \
-    apt install ros-melodic-kobuki-* -y && \
-    apt install ros-melodic-joint-state-publisher* -y &&\
-    apt install ros-melodic-uvc-camera -y && \
-    apt install ros-melodic-image-view -y && \
-    apt install libsensors4-dev -y
-
-# Install PCL
-RUN apt update &&\
-    apt install ros-melodic-pcl-* -y && \
-    apt install ros-melodic-openni2-* -y
-
-# Install joint
-RUN apt update &&\
-    apt install ros-melodic-joint* -y
-
-# Install ps4 controller
-RUN apt-get install ros-melodic-joy
-
-# Install Pybind
-RUN apt update &&\
-    apt install ros-melodic-pybind11-catkin -y
-
-# Install URG
-RUN apt update &&\
-    apt install ros-melodic-urg-node -y
-
-# Install SLAM 
-RUN apt update &&\
-    apt install ros-melodic-map-server -y &&\
-    apt install ros-melodic-move-base-* -y &&\
-    apt-get install ros-melodic-dwa-local-planner -y
-
-# Install text to speech library
-RUN apt update && \
-    apt install -y \
-    mpg321 \
-    open-jtalk \
-    open-jtalk-mecab-naist-jdic \
-    hts-voice-nitech-jp-atr503-m001 \
-    libttspico-utils \
-    alsa \
-    alsa-utils \
-    python-soundfile \
-    pulseaudio
+RUN python3 -m pip install matplotlib
 
 # Install sound library
-RUN gosu sobits pip3 install \
+RUN python3 -m pip install \
     gTTS==2.0.1 \
     wave \
     mutagen \
     soundfile && \
-    gosu sobits pip3 install gTTS-token --upgrade
+    python3 -m pip install gTTS-token --upgrade
+
+# Run as root user
+USER root
+
+# Install tk
+RUN apt-get update && \
+    apt-get install -y python3-tk
+
+# Install ROS Common Packages
+RUN apt-get update -q && \
+    apt-get install -yq \
+        ros-melodic-rosbridge-* \
+        ros-melodic-ecl-* \
+        ros-melodic-joy \
+        ros-melodic-roswww \
+        ros-melodic-kobuki-* \
+        ros-melodic-joint-state-publisher* \
+        ros-melodic-uvc-camera \
+        ros-melodic-image-view \
+        libsensors4-dev 
+
+# Install PCL
+RUN apt-get update -q && \
+    apt-get install -yq \
+        ros-melodic-pcl-* \
+        ros-melodic-openni2-*
+
+# Install joint
+RUN apt update -q && \
+    apt install -yq ros-melodic-joint*
+
+# Install ps4 controller
+RUN apt-get install -yq ros-melodic-joy
+
+# Install Pybind
+RUN apt update -q && \
+    apt install -yq ros-melodic-pybind11-catkin
+
+# Install URG
+RUN apt update -q && \
+    apt install -yq ros-melodic-urg-node
+
+# Install SLAM 
+RUN apt update -q && \
+    apt install -yq \
+        ros-melodic-map-server \
+        ros-melodic-move-base-* \
+        ros-melodic-dwa-local-planner
+
+# Install text to speech library
+RUN apt update && \
+    apt install -yq \
+        mpg321 \
+        open-jtalk \
+        open-jtalk-mecab-naist-jdic \
+        hts-voice-nitech-jp-atr503-m001 \
+        libttspico-utils \
+        alsa \
+        alsa-utils \
+        python-soundfile \
+        pulseaudio
 
 # clean cache
 RUN apt-get clean && \

@@ -4,6 +4,7 @@ cd ~/docker_ws/container/ros_melodic_basic_ws/
 xhost +local:$USER
 
 docker run -it \
+	--gpus all \
 	--device /dev/:/dev/ \
 	--mount type=bind,src=/var/run/dbus/system_bus_socket,dst=/var/run/dbus/system_bus_socket,bind-propagation=shared \
 	--mount type=bind,src=/etc/localtime,dst=/etc/localtime,bind-propagation=shared \
@@ -18,10 +19,10 @@ docker run -it \
 	--env QT_X11_NO_MITSHM=1 \
 	--env PULSE_SERVER=unix:/tmp/pulseaudio.socket \
 	--env PULSE_COOKIE=/tmp/pulseaudio.cookie \
-	--env CONTAINER_NAME="ros_melodic" \
+	--env CONTAINER_NAME="ros_melodic_gpu" \
 	--shm-size=512m \
-	--name ros_melodic_basic_ws \
+	--name ros_melodic_basic_ws_gpu_cuda10.1_cudnn7.0 \
 	--privileged \
 	--user sobits \
-	sobits/ros_melodic_basic_ws \
+	sobits/ros_melodic_basic_ws_gpu_cuda10.1_cudnn7.0 \
 	/bin/bash 

@@ -1,4 +1,4 @@
-# ros_melodic_basic_ws
+# ros_melodic_sobit_pro
 ## Container Environment
 イメージからコンテナを起動すると以下の環境が構築されます（イメージサイズが22GBほどあるのでストレージ容量に注意）。
 - Ubuntu : 18.04
@@ -10,68 +10,56 @@
 ## How to run
 デフォルトではイメージとコンテナの名前は一緒にしています。  
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
-
-1. Dockerfileがある階層まで移動(例としてCUI操作のcpu版の実行手順を示します)
-    ```
-    cd ~/docker_ws/container/ros_melodic_basic_ws/Dockerfiles/base/cpu
-    ```
-
-2. Dockerfileからイメージをビルド 
-    ```
-    bash build.sh
-    ```
-
-3. イメージからコンテナを起動
-    ```
-    bash run.sh 
-    >> container sobits@:~$　←この表示がでればOK 
-    ```
-    ``` exit ``` と入力すればコンテナから抜けれる。
-
-4. 起動中のコンテナに別端末からアクセスする方法
-    ```
-    bash exec.sh
-    >> container sobits@:~$　←この表示がでればOK 
-    ```
-    ``` exit ``` と入力すればコンテナから抜けれる。
-        
-
-
-## Docker commands
 ```
-#起動中のコンテナ一覧
-docker ps
+#ホスト側のセットアップ
+cd ~/docker_ws/container/ros_melodic_sobit_pro
+bash sobit_pro_setup.sh #必要なパッケージのインストールや、SOBIT_PROのデバイス登録などの設定を行います。
 
-#コンテナ一覧（停止中も含む）
-docker ps -a
+#CPUの場合
+cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/cpu
+bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
+bash run.sh #コンテナの起動
 
-#コンテナの停止
-docker stop ros_melodic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
+#GPUの場合(バージョンは各自で合わせる)
+cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/gpu/CUDAxx_cuDNNxx/
+bash build.sh #コンテナの生成
+bash run.sh #コンテナの起動
 
-#コンテナの再起動
-docker start ros_melodic_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
+-----
+#コンテナの終了
+docker stop ros_melodic_sobit_pro  #docker stop <CONTAINER NAME or CONTAINER ID>
 
-#コンテナの削除(起動中のコンテナは削除できない)
-docker rm ros_melodic_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
+#コンテナを再起動する場合
+docker start ros_melodic_sobit_pro #docker start <CONTAINER NAME or CONTAINER ID>
 
-#イメージの削除(コンテナが残っている場合は削除できない)
-docker rmi sobits/ros_melodic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
+#コンテナの削除
+docker rm ros_melodic_sobit_pro #docker rm <CONTAINER NAME or CONTAINER ID>
+
+#イメージの削除
+docker rmi ros_melodic_sobit_pro #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
+コンテナが起動できたら、ウェブブラウザを開いて http://localhost:6080/ にアクセスしてください。  
+デフォルトのrun.shで実行すると、ホストPCのデバイスが使えます。
 
 コンテナ内の catkin_ws/src は、ros_melodic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
-ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  (CUIの場合、コンテナ側で作成したファイルに関してはホストPC側からアクセスできないので要注意)
-
+ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  
 
 
 ## ROS Packages
-`git_clone_ros_packages.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
+`sobit_pro_setup.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
+- sobit_pro
 - sobit_common
-- web_speech_recognition
-- display_text
-- text_to_speech
-- ssd_node
 
+## SOBIT_PRO USB files
+`sobit_pro_setup.sh`を実行すると、以下の場所にUSB設定ファイルが作成されます。
+これにより、デバイスを接続すると自動的にそのデバイスを検出することができます。 
+- /etc/udev/rules.d/wheel.rules
+- /etc/udev/rules.d/arm_pantilt.rules
+
+これらを使用する際は、デバイス名を以下のように指定します。
+- "/dev/wheel"
+- "/dev/arm_pantilt"
 
 ## 分散処理の方法
 - #### コンテナとホストPC間での分散処理
@@ -82,16 +70,6 @@ docker rmi sobits/ros_melodic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
     .bashrcにROSIPとROS_MASTERの設定をすれば、分散処理が可能です。  
     同一ホストPC上にあれば、複数コンテナ間でも分散処理できます。
-
-    ※現在の設定では、コンテナのIPとROS_IPを同じに設定しています。
-    　ROS_MASTER_URIもROS_IPと同じにしているので他のコンテナと通信する際は、
-    　ROS_MASTER_URIをROS_MASTERを起動したコンテナのものに統一してください。
-
-    - MASTERコンテナのROS_IP：172.17.0.2
-    - ROS_MASTER_URI：http://172.17.0.2:11311
-
-    - 他のコンテナのROS_IP：172.17.0.x
-    - ROS_MASTER_URI：http://172.17.0.2:11311　<-MASTERコンテナに揃える！
 
 - #### コンテナと外部ネットワーク上にあるROSノード間での分散処理  
     ホストPC上のコンテナと、LANケーブルでつないでいるraspberry piやJetsonなどと分散処理する場合はこちらになります。  
@@ -129,5 +107,8 @@ docker rmi sobits/ros_melodic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ## memo
 - 2020/10/01
-    - CUDA11.0 cuDNN8.0のGPU環境を構築 
+    - CUDA11.0 cuDNN8.0のGPU環境を構築
+    - ホストPCがUbuntu18.04の環境でCPU/GPUともに動作確認済み
+- 2020/10/22
+    - CUDA10.1 cuDNN7.0のGPU環境を構築
     - ホストPCがUbuntu18.04の環境でCPU/GPUともに動作確認済み

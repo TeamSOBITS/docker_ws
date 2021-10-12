@@ -1,21 +1,12 @@
 # Docker Containers
 
 ## Containers list
-- ### rc2020jp
-    - #### sim/final_ros : RoboCup2020JP Simulation League Techinial ChallengeのROS側開発環境
-        - cpu
-        - gpu
-            - CUDA10.0_cuDNN7
-            - CUDA9.0_cuDNN7
-
 
 - ### ros_kinetic_basic_ws
+    - base
     - cpu
     - gpu
-        - CUDA10.0_cuDNN7
-        - CUDA9.0_cuDNN7
-        - CUDA8.0_cuDNN6(動作未確認)
-        - CUDA8.0_cuDNN5(動作未確認)
+        - CUDA9.0_cuDNN7.6
 
 
 - ### ros_melodic_basic_ws

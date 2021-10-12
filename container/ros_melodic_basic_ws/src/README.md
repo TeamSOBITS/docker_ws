@@ -1,0 +1,4 @@
+# ros_melodic_basic_ws/src
+
+ros_melodic_basic_wsのソースコードをまとめたディレクトリ
+コンテナ内のcatkin_ws/srcと一致

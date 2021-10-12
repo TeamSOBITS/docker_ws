@@ -10,36 +10,57 @@
 ## How to run
 デフォルトではイメージとコンテナの名前は一緒にしています。  
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
+
+1. Dockerfileがある階層まで移動(例としてcpu版の実行手順を示します)
+    ```
+    cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/cpu
+    ```
+
+2. Dockerfileからイメージをビルド 
+    ```
+    bash build.sh
+    ```
+
+3. イメージからコンテナを起動
+    ```
+    bash run.sh 
+    >> container sobits@:~$　←この表示がでればOK 
+    ```
+    ``` exit ``` と入力すればコンテナから抜けれる。
+
+4. 起動中のコンテナに別端末からアクセスする方法
+    ```
+    bash exec.sh
+    >> container sobits@:~$　←この表示がでればOK 
+    ```
+    ``` exit ``` と入力すればコンテナから抜けれる。
+        
+
+
+## Docker commands
 ```
-#CPUの場合
-cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/cpu
-#bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
-bash run.sh #コンテナの起動
+#起動中のコンテナ一覧
+docker ps
 
-#GPUの場合(バージョンは各自で合わせる)
-cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/gpu/CUDAxx_cuDNNxx/
-bash build.sh #コンテナの生成
-bash run.sh #コンテナの起動
+#コンテナ一覧（停止中も含む）
+docker ps -a
 
------
-#コンテナの終了
+#コンテナの停止
 docker stop ros_kinetic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
 
-#コンテナを再起動する場合
+#コンテナの再起動
 docker start ros_kinetic_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
 
-#コンテナの削除
+#コンテナの削除(起動中のコンテナは削除できない)
 docker rm ros_kinetic_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
 
-#イメージの削除
+#イメージの削除(コンテナが残っている場合は削除できない)
 docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
-コンテナが起動できたら、ウェブブラウザを開いて http://127.0.0.1:6080/ にアクセスしてください。  
-デフォルトのrun.shで実行すると、ホストPCの /dev/video0 が使えます。
 
 コンテナ内の catkin_ws/src は、ros_kinetic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
-ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  
+ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  (CUIの場合、コンテナ側で作成したファイルに関してはホストPC側からアクセスできないので要注意)
 
 
 ## ROS Packages
@@ -95,7 +116,3 @@ docker rmi ros_kinetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ## Tips
 
-## memo
-- 2020/10/01
-    - CUDA9.0 cuDNN7のGPU環境を構築 
-    - ホストPCがUbuntu16.04の環境でCPU/GPUともに動作確認済み

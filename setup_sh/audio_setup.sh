@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Setting Sound configure
 echo "pacmd load-module module-native-protocol-unix socket=/tmp/pulseaudio.socket &> /dev/null" >> ~/.bashrc
 echo "#!bin/bash

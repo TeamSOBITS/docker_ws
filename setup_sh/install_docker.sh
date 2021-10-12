@@ -24,6 +24,8 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 sudo su - $USER
 
+bash audio_setup.sh
+
 sudo systemctl enable docker
 
 echo "=== FINISH ==="

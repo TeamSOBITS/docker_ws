@@ -8,7 +8,6 @@ cd $(pwd)/../../
 xhost +local:${USER}
 
 docker run -it \
-    --gpus all \
     --device /dev/:/dev/ \
     --device=/dev/video0 \
     --mount type=bind,src=/var/run/dbus/system_bus_socket,dst=/var/run/dbus/system_bus_socket,bind-propagation=shared \

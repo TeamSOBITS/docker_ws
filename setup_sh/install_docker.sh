@@ -1,33 +1,56 @@
 #!/bin/bash
+# Reference: https://docs.docker.com/engine/install/ubuntu/
 
-echo "=== INSTALL DOCKER ==="
+echo "╔══╣ Install: Docker Engine (STARTING) ╠══╗"
 
-#install dependencies
+# Uninstall old versions
+sudo apt-get remove -y \
+    docker \
+    docker-engine \
+    docker.io \
+    containerd \
+    runc
+
+# Install dependencies
+sudo apt-get update
 sudo apt install -y \
     apt-transport-https \
+    software-properties-common \
     ca-certificates \
     curl \
-    software-properties-common
+    gnupg \
+    lsb-release
 
-#get GPG publis key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+# Add Docker’s official GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-#set apt repository
- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+# Set up the stable repository
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-#install docker-ce
-sudo apt update
-sudo apt install -y docker-ce
+# Install the latest version of Docker Engine and containerd
+sudo apt-get update
+sudo apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io
 
-#run as a normal user
+# Manage Docker as a non-root user
+# Reference: https://docs.docker.com/engine/install/linux-postinstall/
+sudo groupdel docker
 sudo groupadd docker
 sudo usermod -aG docker $USER
 sudo su - $USER
 
+# Set up the audio communication
 bash audio_setup.sh
 
-sudo systemctl enable docker
+# Configure Docker to start on boot
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
 
-echo "=== FINISH ==="
 
-echo "Please, reboot OS"
+echo "╚══╣ Install: Docker Engine (FINISHED) ╠══╝"
+echo "Please, reboot your OS"
+echo "You can type: 'reboot now'"

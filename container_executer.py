@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #coding:utf-8
-#python2.7 or python3.5
+#python2 or python3
 import sys, os
 import subprocess
-try: #for python2.7
+try: #for python2
     import Tkinter
-except ImportError: #for python3.5
+except ImportError: #for python3
     import tkinter as Tkinter
 
 class ContainerExecuter():
@@ -111,7 +111,11 @@ class ContainerExecuter():
           "docker ps", stdout=subprocess.PIPE,
           shell=True).communicate()[0]
 
-        running_containers_info = res.split("\n")
+        try: #for python2
+            running_containers_info = res.split("\n")
+        except: #for python3
+            res = res.decode()
+            running_containers_info = res.split("\n")
 
         for i, running_container_info in enumerate(running_containers_info):
             if i == 0 or i == len(running_containers_info)-1:
@@ -129,7 +133,11 @@ class ContainerExecuter():
           "docker ps -a", stdout=subprocess.PIPE,
           shell=True).communicate()[0]
 
-        containers_info = res.split("\n")
+        try: #for python2
+            containers_info = res.split("\n")
+        except: #for python3
+            res = res.decode()
+            containers_info = res.split("\n")
 
         for i, container_info in enumerate(containers_info):
             if i == 0 or i == len(containers_info)-1:
@@ -153,5 +161,3 @@ if __name__ == "__main__":
     #ce.get_not_running_containers_info()
 
     #print ce.not_running_containers_info
-    
-

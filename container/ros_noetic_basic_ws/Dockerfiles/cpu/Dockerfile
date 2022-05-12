@@ -94,8 +94,8 @@ RUN cd /home/sobits/ && \
 # Install ros & create catkin_ws #
 ##################################
 RUN apt-get update &&\
-    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_ros_noetic.sh && \
-    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_catkin_ws_noetic.sh && \
+    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_ros1.sh --noetic && \
+    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_catkin_ws.sh --noetic && \
 	echo "export ROS_PACKAGE_PATH=\${ROS_PACKAGE_PATH}:/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
 	echo "export ROS_WORKSPACE=/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
     echo "export IFACE=\`ifconfig | head -n 1 | awk '{ print \$1}' | rev | cut -b 2- | rev\`" >> /home/sobits/.bashrc && \
@@ -119,7 +119,7 @@ RUN . /home/sobits/.bashrc
 
 
 ###############################
-# Install OpenCV 3.4.16 (CPU) #
+# Install OpenCV 4.5.5 (CPU) #
 ###############################
 # Build tools:
 RUN apt-get update && \
@@ -167,8 +167,9 @@ RUN apt-get install -y \
     libtbb-dev \
     libeigen3-dev
 
+
 RUN apt-get update && \
-    gosu sobits bash /home/sobits/sobits_manual/install_sh/ubuntu18.04/install_opencv_3.4.2.sh
+    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_opencv.sh --4.5.5 --CPU
 
 # install google_chrome
 RUN gosu sobits bash /home/sobits/sobits_manual/install_sh/install_google_chrome.sh && \
@@ -176,7 +177,7 @@ RUN gosu sobits bash /home/sobits/sobits_manual/install_sh/install_google_chrome
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 COPY --from=mid_layer / /
 
 

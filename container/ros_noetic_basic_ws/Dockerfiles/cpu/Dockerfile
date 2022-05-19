@@ -58,8 +58,9 @@ RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group
 ENV USER sobits
 
 # set initial position
-WORKDIR /home/sobits
-RUN . $HOME/.bashrc
+ENV WORKPATH /home/sobits
+WORKDIR $WORKPATH
+RUN . $WORKPATH/.bashrc
 
 
 ###############
@@ -86,7 +87,7 @@ USER root
 ##################################
 # Clone sobits_manual repository #
 ##################################
-RUN cd $home && \
+RUN cd $WORKPATH && \
     git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
     cd sobits_manual && \
     git fetch origin feature/ubuntu20.04 && \
@@ -98,32 +99,32 @@ RUN cd $home && \
 # Install OpenCV 4.5.5 (CPU) #
 ###############################
 # RUN apt-get update && \
-#     gosu sobits bash $HOME/sobits_manual/install_sh/install_opencv.sh --4.5.5 --CPU
+#     gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_opencv.sh --4.5.5 --CPU
 
 
 ##################################
 # Install ros & create catkin_ws #
 ##################################
 RUN apt-get update &&\
-    gosu sobits bash $HOME/sobits_manual/install_sh/install_ros1.sh --noetic && \
-    gosu sobits bash $HOME/sobits_manual/install_sh/install_ros1_catkin_ws.sh --noetic && \
-	gosu sobits bash $HOME/sobits_manual/install_sh/setup_ros1.sh
+    gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1.sh --noetic && \
+    gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1_catkin_ws.sh --noetic && \
+	gosu sobits bash $WORKPATH/sobits_manual/install_sh/setup_ros1.sh --${WORKPATH}
 
 
 #################
 # Alias setting #
 #################
-RUN chmod 755 $HOME/sobits_manual/install_sh/chmod_all.py
-RUN gosu sobits bash $HOME/sobits_manual/install_sh/setup_alias.sh
+RUN chmod 755 $WORKPATH/sobits_manual/install_sh/chmod_all.py
+RUN gosu sobits bash $WORKPATH/sobits_manual/install_sh/setup_alias.sh
 
-RUN . $HOME/.bashrc
+RUN . $WORKPATH/.bashrc
 
 
 ###########################
 # Install useful programs #
 ###########################
 # # install google_chrome
-# RUN gosu sobits bash $HOME/sobits_manual/install_sh/install_google_chrome.sh && \
+# RUN gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_google_chrome.sh && \
 #     sed -i "1s/^/# /g" /etc/apt/sources.list.d/google.list
 
 

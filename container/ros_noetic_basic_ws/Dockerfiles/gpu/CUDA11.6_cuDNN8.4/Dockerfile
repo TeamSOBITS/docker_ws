@@ -1,111 +1,160 @@
-FROM sobits/ros_noetic_basic_ws:latest
+FROM nvcr.io/nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04 as mid_layer
 
 LABEL maintainer Valentin Keith
 
 # Do NOT rewrite manually
 
-# reference https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist/11.2.0/ubuntu18.04-x86_64
+# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
+# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
 
 ###################################
 # Environment_variable_preference #
 ###################################
-ENV CUDA_VERSION 11.3.0
-ENV NCCL_VERSION 2.9.6
-ENV CUDNN_VERSION 8.2.0.53
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics
-ENV NVIDIA_REQUIRE_CUDA "cuda>=11.3 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441 driver>=450"
-ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
-ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
-ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs
+ENV USER_ID=${LOCAL_UID:-1000}
+ENV GROUP_ID=${LOCAL_GID:-1000}
+ENV DEBCONF_NOWARNINGS yes
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 
-###################
-# Graphic setting #
-###################
-RUN apt-get update && \
-    apt-get install -y \
-        pkg-config \
-        libxau-dev \
-        libxdmcp-dev \
-        libxcb1-dev \
-        libxext-dev \
-        freeglut3-dev \
-        libglew-dev \
-        mesa-utils \
-        x11-apps \
-        libx11-dev
+######################
+# Install basic apps #
+######################
+# avoid time-zone setting
+RUN apt-get update -q && \
+    apt-get install -yq \
+        tzdata
 
-COPY --from=nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04 \
-  /usr/local/lib/x86_64-linux-gnu \
-  /usr/local/lib/x86_64-linux-gnu
-
-COPY --from=nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04 \
-  /usr/local/share/glvnd/egl_vendor.d/10_nvidia.json \
-  /usr/local/share/glvnd/egl_vendor.d/10_nvidia.json
-
-RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf && \
-    ldconfig && \
-    echo '/usr/local/$LIB/libGL.so.1' >> /etc/ld.so.preload && \
-    echo '/usr/local/$LIB/libEGL.so.1' >> /etc/ld.so.preload
-
-
-#########################
-# nvidia driver setting #
-#########################
-## base ##
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 curl ca-certificates && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
-
-# For libraries in the cuda-compat-* package: https://docs.nvidia.com/cuda/eula/index.html#attachment-a
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    cuda-cudart-11-3=11.3.58-1 \
-    cuda-compat-11-3 \
-    && ln -s cuda-11.3 /usr/local/cuda
-
-# Required for nvidia-docker v1
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf \
-    && echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-
-## runtime ##
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    cuda-libraries-11-3=11.3.0-1 \
-    libnpp-11-3=11.3.3.44-1 \
-    cuda-nvtx-11-3=11.3.58-1 \
-    libcublas-11-3=11.4.2.10064-1 \
-    libcusparse-11-3=11.5.0.58-1 \
-    libnccl2=$NCCL_VERSION-1+cuda11.3
-
-# apt from auto upgrading the cublas package. See https://gitlab.com/nvidia/container-images/cuda/-/issues/88
-RUN apt-mark hold libcublas-11-3 libnccl2
+RUN apt-get update -q && \
+    apt-get install -yq \
+        wget \
+        curl \
+        git-all \
+        build-essential \
+        vim \
+        nano \
+        gedit \
+        sudo \
+        lsb-release \
+        locales \
+        bash-completion \
+        gosu \
+        net-tools \
+        usbutils \
+        iputils-ping \
+        alsa-utils \
+        fonts-takao-* \
+        libcanberra-gtk-module \
+        libcanberra-gtk3-module
 
 
-## devel ##
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    cuda-cudart-dev-11-3=11.3.58-1 \
-    cuda-command-line-tools-11-3=11.3.0-1 \
-    cuda-minimal-build-11-3=11.3.0-1 \
-    cuda-libraries-dev-11-3=11.3.0-1 \
-    cuda-nvml-dev-11-3=11.3.58-1 \
-    libnpp-dev-11-3=11.3.3.44-1 \
-    libnccl-dev=2.9.6-1+cuda11.3 \
-    libcublas-dev-11-3=11.4.2.10064-1 \
-    libcusparse-dev-11-3=11.5.0.58-1
+##############
+# Add a user #
+##############
+# add sudo user
+RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group --groups adm,sudo -u ${USER_ID} sobits && \
+    groupmod -g ${GROUP_ID} -o sobits && \
+    echo sobits:robotgroup | chpasswd && \
+    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# apt from auto upgrading the cublas package. See https://gitlab.com/nvidia/container-images/cuda/-/issues/88
-RUN apt-mark hold libcublas-dev-11-3 libnccl-dev
+# set user
+ENV USER sobits
 
-## devel/cudnn8 ##
-LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
+# set initial position
+ENV WORKPATH /home/sobits
+WORKDIR $WORKPATH
+RUN . $WORKPATH/.bashrc
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libcudnn8=$CUDNN_VERSION-1+cuda11.3 \
-    libcudnn8-dev=$CUDNN_VERSION-1+cuda11.3 \
-    && apt-mark hold libcudnn8
+
+###############
+# Install pip #
+###############
+RUN apt-get update -q && \
+    apt-get install -yq \
+        python3 \
+        python3-pip \
+        python3-dev
+
+# run as user sobits
+USER sobits
+
+# install pip
+RUN python3 -m pip install -U \
+        pip \
+        wheel
+
+# run as root user
+USER root
+
+
+##################################
+# Clone sobits_manual repository #
+##################################
+RUN cd $WORKPATH && \
+    git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
+    cd sobits_manual && \
+    git fetch origin feature/ubuntu20.04 && \
+    git checkout feature/ubuntu20.04 && \
+    git pull && \
+    cd install_sh
+
+###############################
+# Install OpenCV 4.5.5 (CPU) #
+###############################
+# RUN apt-get update && \
+#     gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_opencv.sh --4.5.5 --CPU
+
+
+##################################
+# Install ros & create catkin_ws #
+##################################
+RUN apt-get update &&\
+    gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1.sh --noetic && \
+    gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1_catkin_ws.sh --noetic && \
+	gosu sobits bash $WORKPATH/sobits_manual/install_sh/setup_ros1.sh --${WORKPATH}
+
+
+#################
+# Alias setting #
+#################
+RUN chmod 755 $WORKPATH/sobits_manual/install_sh/chmod_all.py
+RUN gosu sobits bash $WORKPATH/sobits_manual/install_sh/setup_alias.sh
+
+RUN . $WORKPATH/.bashrc
+
+
+###########################
+# Install useful programs #
+###########################
+# # install google_chrome
+# RUN gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_google_chrome.sh && \
+#     sed -i "1s/^/# /g" /etc/apt/sources.list.d/google.list
+
+
+# マルチステージビルド(image layer の内容を隠す処理)
+FROM ubuntu:20.04
+COPY --from=mid_layer / /
+
+
+##################
+# Other settings #
+##################
+# set time zone
+ENV TZ Asia/Tokyo
+
+# set Language
+RUN locale-gen ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP:ja
+ENV LC_ALL ja_JP.UTF-8
+
 # clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
-    rm -rf /var/lib/apt/lists/
+    rm -rf /var/lib/apt/lists/ && \
+    rm /etc/apt/apt.conf.d/docker-clean
+
+# set user
+ENV USER sobits
+# set initial position
+WORKDIR /home/sobits/

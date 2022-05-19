@@ -58,8 +58,8 @@ RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group
 ENV USER sobits
 
 # set initial position
-WORKDIR /home/sobits/
-RUN . /home/sobits/.bashrc
+WORKDIR /home/sobits
+RUN . $HOME/.bashrc
 
 
 ###############
@@ -74,9 +74,10 @@ RUN apt-get update -q && \
 # run as user sobits
 USER sobits
 
-# install numpy
+# install pip
 RUN python3 -m pip install -U \
-        pip
+        pip \
+        wheel
 
 # run as root user
 USER root
@@ -85,95 +86,45 @@ USER root
 ##################################
 # Clone sobits_manual repository #
 ##################################
-RUN cd /home/sobits/ && \
+RUN cd $home && \
     git clone https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
+    cd sobits_manual && \
+    git fetch origin feature/ubuntu20.04 && \
+    git checkout feature/ubuntu20.04 && \
+    git pull && \
     cd install_sh
+
+###############################
+# Install OpenCV 4.5.5 (CPU) #
+###############################
+# RUN apt-get update && \
+#     gosu sobits bash $HOME/sobits_manual/install_sh/install_opencv.sh --4.5.5 --CPU
 
 
 ##################################
 # Install ros & create catkin_ws #
 ##################################
 RUN apt-get update &&\
-    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_ros1.sh --noetic && \
-    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_catkin_ws.sh --noetic && \
-	echo "export ROS_PACKAGE_PATH=\${ROS_PACKAGE_PATH}:/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
-	echo "export ROS_WORKSPACE=/home/sobits/catkin_ws" >> /home/sobits/.bashrc && \
-    echo "export IFACE=\`ifconfig | head -n 1 | awk '{ print \$1}' | rev | cut -b 2- | rev\`" >> /home/sobits/.bashrc && \
-    echo "export ROS_IP=\`ifconfig \${IFACE} | grep inet | cut -d: -f2 | awk '{ print \$2}'\`" >> /home/sobits/.bashrc && \
-    echo "export ROS_MASTER_URI=http://\$ROS_IP:11311" >> /home/sobits/.bashrc && \
-    echo "export NO_AT_BRIDGE=1" >> /home/sobits/.bashrc
+    gosu sobits bash $HOME/sobits_manual/install_sh/install_ros1.sh --noetic && \
+    gosu sobits bash $HOME/sobits_manual/install_sh/install_ros1_catkin_ws.sh --noetic && \
+	gosu sobits bash $HOME/sobits_manual/install_sh/setup_ros1.sh
 
 
 #################
 # Alias setting #
 #################
-RUN chmod 755 /home/sobits/sobits_manual/chmod_all.py && \
-    echo "alias cmd='python3 /home/sobits/sobits_manual/chmod_all.py'" >> /home/sobits/.bashrc &&\
-    echo "alias cmk='CULLENT_DIR=`pwd` && cd /home/sobits/catkin_ws/ && catkin_make && cd $CULLENT_DIR'" >> /home/sobits/.bashrc &&\
-    echo "alias cm='cmk && cmd'" >> /home/sobits/.bashrc &&\
-    echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/sobits/.bashrc &&\
-    echo "sudo chmod 777 /dev/video0" >> /home/sobits/.bashrc && \
-    echo "export PS1='\[\e[1;33;40m\]\$CONTAINER_NAME\[\e[0m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '">> /home/sobits/.bashrc
+RUN chmod 755 $HOME/sobits_manual/install_sh/chmod_all.py
+RUN gosu sobits bash $HOME/sobits_manual/install_sh/setup_alias.sh
 
-RUN . /home/sobits/.bashrc
+RUN . $HOME/.bashrc
 
 
-###############################
-# Install OpenCV 4.5.5 (CPU) #
-###############################
-# Build tools:
-RUN apt-get update && \
-    apt-get install -y \
-    sudo \
-    tzdata \
-    git \
-    cmake \
-    wget \
-    unzip \
-    build-essential
-
-# Media I/O:
-RUN apt-get install -y \
-    zlib1g-dev \
-    libjpeg-dev \
-    libwebp-dev \
-    libpng-dev \
-    libtiff5-dev \
-    libopenexr-dev \
-    libgdal-dev \
-    libgtk2.0-dev
-
-# Video I/O:
-RUN apt-get install -y \
-    libdc1394-22-dev \
-    libavcodec-dev \
-    libavformat-dev \
-    libswscale-dev \
-    libtheora-dev \
-    libvorbis-dev \
-    libxvidcore-dev \
-    libx264-dev \
-    yasm \
-    libopencore-amrnb-dev \
-    libopencore-amrwb-dev \
-    libv4l-dev \
-    libxine2-dev \
-    libgstreamer1.0-dev \
-    libgstreamer-plugins-base1.0-dev \
-    ffmpeg
-
-# Parallelism and linear algebra libraries:
-RUN apt-get install -y \
-    libtbb-dev \
-    libeigen3-dev
-
-
-RUN apt-get update && \
-    gosu sobits bash /home/sobits/sobits_manual/install_sh/install_opencv.sh --4.5.5 --CPU
-
-# install google_chrome
-RUN gosu sobits bash /home/sobits/sobits_manual/install_sh/install_google_chrome.sh && \
-    sed -i "1s/^/# /g" /etc/apt/sources.list.d/google.list
+###########################
+# Install useful programs #
+###########################
+# # install google_chrome
+# RUN gosu sobits bash $HOME/sobits_manual/install_sh/install_google_chrome.sh && \
+#     sed -i "1s/^/# /g" /etc/apt/sources.list.d/google.list
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
@@ -196,7 +147,8 @@ ENV LC_ALL ja_JP.UTF-8
 # clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
-    rm -rf /var/lib/apt/lists/
+    rm -rf /var/lib/apt/lists/ && \
+    rm /etc/apt/apt.conf.d/docker-clean
 
 # set user
 ENV USER sobits

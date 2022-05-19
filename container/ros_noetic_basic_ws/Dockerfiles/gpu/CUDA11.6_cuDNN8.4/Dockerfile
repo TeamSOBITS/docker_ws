@@ -1,10 +1,10 @@
-FROM sobits/ros_melodic_basic_ws:latest
+FROM sobits/ros_noetic_basic_ws:latest
 
-LABEL maintainer Murakami Daiki
+LABEL maintainer Valentin Keith
 
 # Do NOT rewrite manually
 
-# refference https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist/11.2.0/ubuntu18.04-x86_64
+# reference https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist/11.2.0/ubuntu18.04-x86_64
 
 ###################################
 # Environment_variable_preference #

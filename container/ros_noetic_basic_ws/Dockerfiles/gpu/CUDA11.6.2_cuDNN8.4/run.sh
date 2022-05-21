@@ -11,7 +11,7 @@ docker run -it \
     --gpus all \
     --device /dev/:/dev/ \
     --device=/dev/video0 \
-	-v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
+    -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
     -v /etc/localtime:/etc/localtime \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
@@ -33,6 +33,7 @@ docker run -it \
     --user sobits \
     sobits/${str} \
     /bin/bash 
+
 
     # --mount type=bind,src=/var/run/dbus/system_bus_socket,dst=/var/run/dbus/system_bus_socket,bind-propagation=shared \
     # --mount type=bind,src=/etc/localtime,dst=/etc/localtime,bind-propagation=shared \

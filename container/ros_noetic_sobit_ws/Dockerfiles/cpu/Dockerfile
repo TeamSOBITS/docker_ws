@@ -8,6 +8,7 @@ ENV WORKPATH /home/sobits
 # Install ROS SOBITS Common Packages
 RUN gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1.sh
 
+
 # Run as root user
 USER root
 

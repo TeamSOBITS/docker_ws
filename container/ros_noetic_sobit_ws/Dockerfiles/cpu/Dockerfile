@@ -2,71 +2,11 @@ FROM sobits/ros_noetic_basic_ws:latest
 
 LABEL maintainer Valentin Keith
 
-# Install ROS Common Packages
-RUN apt-get update -q && \
-    apt-get install -yq \
-        ros-melodic-rosbridge-* \
-        ros-melodic-ecl-* \
-        ros-melodic-joy \
-        ros-melodic-roswww \
-        ros-melodic-kobuki-* \
-        ros-melodic-joint-state-publisher* \
-        ros-melodic-uvc-camera \
-        ros-melodic-image-view \
-        libsensors4-dev 
+ENV WORKPATH /home/sobits
 
-# Install PCL
-RUN apt-get update -q && \
-    apt-get install -yq \
-        ros-melodic-pcl-* \
-        ros-melodic-openni2-*
 
-# Install joint
-RUN apt update -q && \
-    apt install -yq ros-melodic-joint*
-
-# Install ps4 controller
-RUN apt-get install -yq ros-melodic-joy
-
-# Install Pybind
-RUN apt update -q && \
-    apt install -yq ros-melodic-pybind11-catkin
-
-# Install URG
-RUN apt update -q && \
-    apt install -yq ros-melodic-urg-node
-
-# Install SLAM 
-RUN apt update -q && \
-    apt install -yq \
-        ros-melodic-map-server \
-        ros-melodic-move-base-* \
-        ros-melodic-dwa-local-planner
-
-# Install text to speech library
-RUN apt update && \
-    apt install -yq \
-        mpg321 \
-        open-jtalk \
-        open-jtalk-mecab-naist-jdic \
-        hts-voice-nitech-jp-atr503-m001 \
-        libttspico-utils \
-        alsa \
-        alsa-utils \
-        python-soundfile \
-        pulseaudio
-
-# Run as user sobits
-USER sobits
-
-# Install sound library
-RUN python3 -m pip install \
-        gTTS==2.0.1 \
-        wave \
-        mutagen \
-        soundfile && \
-    python3 -m pip install -U \
-        gTTS-token
+# Install ROS SOBITS Common Packages
+RUN gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1.sh
 
 # Run as root user
 USER root

@@ -108,7 +108,7 @@ RUN cd $WORKPATH && \
 RUN apt-get update &&\
     gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1.sh --noetic && \
     gosu sobits bash $WORKPATH/sobits_manual/install_sh/install_ros1_catkin_ws.sh --noetic && \
-	gosu sobits bash $WORKPATH/sobits_manual/install_sh/setup_ros1.sh --${WORKPATH}
+	gosu sobits bash $WORKPATH/sobits_manual/install_sh/setup_ros1.sh
 
 
 #################

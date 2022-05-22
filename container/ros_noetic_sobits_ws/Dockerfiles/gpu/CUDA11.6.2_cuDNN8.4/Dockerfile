@@ -1,4 +1,4 @@
-FROM sobits/ros_noetic_basic_ws_gpu_cuda11.3_cudnn8.2:latest
+FROM sobits/ros_noetic_basic_ws:gpu_cuda11.6.2_cudnn8.4
 LABEL maintainer Valentin Keith
 
 

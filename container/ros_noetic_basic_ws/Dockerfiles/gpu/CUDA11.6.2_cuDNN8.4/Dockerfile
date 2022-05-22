@@ -1,4 +1,4 @@
-FROM sobits/ros_noetic_basic_ws:latest
+FROM sobits/ros_noetic_basic_ws:cpu
 LABEL maintainer Valentin Keith
 
 
@@ -125,7 +125,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM sobits/ros_melodic_basic_ws:latest
+FROM sobits/ros_noetic_basic_ws:cpu
 COPY --from=mid_layer / /
 
 

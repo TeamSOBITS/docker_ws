@@ -1,4 +1,4 @@
-FROM sobits/ros_noetic_basic_ws:latest
+FROM sobits/ros_noetic_basic_ws:cpu
 LABEL maintainer Valentin Keith
 
 

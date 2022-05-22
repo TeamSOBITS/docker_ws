@@ -1,10 +1,10 @@
-# ros_melodic_sobit_pro
+# ros_noetic_sobit_pro
 ## Container Environment
 イメージからコンテナを起動すると以下の環境が構築されます（イメージサイズが22GBほどあるのでストレージ容量に注意）。
-- Ubuntu : 18.04
-- ROS : Melodic
-- OpenCV : 3.4.2 (3.3.1も入っているのでcatkin_makeの際は注意)
-- Python : 2.7-3.6 (デフォルト:2.7)
+- Ubuntu : 20.04
+- ROS : Noetic Ninjemys
+- OpenCV : 4.5.5 (2021-12-30)
+- Python : 3.8.10（デフォルト）
 - UserName : sobits
 
 ## How to run
@@ -12,37 +12,37 @@
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
 ```
 #ホスト側のセットアップ
-cd ~/docker_ws/container/ros_melodic_sobit_pro
+cd ~/docker_ws/container/ros_noetic_sobit_pro
 bash sobit_pro_setup.sh #必要なパッケージのインストールや、SOBIT_PROのデバイス登録などの設定を行います。
 
 #CPUの場合
-cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/cpu
+cd ~/docker_ws/container/ros_noetic_sobit_pro/Dockerfiles/cpu
 bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
 bash run.sh #コンテナの起動
 
 #GPUの場合(バージョンは各自で合わせる)
-cd ~/docker_ws/container/ros_melodic_sobit_pro/Dockerfiles/gpu/CUDAxx_cuDNNxx/
+cd ~/docker_ws/container/ros_noetic_sobit_pro/Dockerfiles/gpu/CUDAxx_cuDNNxx/
 bash build.sh #コンテナの生成
 bash run.sh #コンテナの起動
 
 -----
 #コンテナの終了
-docker stop ros_melodic_sobit_pro  #docker stop <CONTAINER NAME or CONTAINER ID>
+docker stop ros_noetic_sobit_pro  #docker stop <CONTAINER NAME or CONTAINER ID>
 
 #コンテナを再起動する場合
-docker start ros_melodic_sobit_pro #docker start <CONTAINER NAME or CONTAINER ID>
+docker start ros_noetic_sobit_pro #docker start <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの削除
-docker rm ros_melodic_sobit_pro #docker rm <CONTAINER NAME or CONTAINER ID>
+docker rm ros_noetic_sobit_pro #docker rm <CONTAINER NAME or CONTAINER ID>
 
 #イメージの削除
-docker rmi ros_melodic_sobit_pro #docker rmi <IMAGE NAME or IMAGE ID>
+docker rmi ros_noetic_sobit_pro #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
 コンテナが起動できたら、ウェブブラウザを開いて http://localhost:6080/ にアクセスしてください。  
 デフォルトのrun.shで実行すると、ホストPCのデバイスが使えます。
 
-コンテナ内の catkin_ws/src は、ros_melodic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
+コンテナ内の catkin_ws/src は、ros_noetic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
 ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  
 
 

@@ -2,9 +2,9 @@
 ## Container Environment
 イメージからコンテナを起動すると以下の環境が構築されます（イメージサイズが22GBほどあるのでストレージ容量に注意）。
 - Ubuntu : 20.04
-- ROS : Noetic
-- OpenCV : 3.4.2 (3.3.1も入っているのでcatkin_makeの際は注意)
-- Python : 2.7-3.6 (デフォルト:2.7)
+- ROS : Noetic Ninjemys
+- OpenCV : 4.5.5 (2021-12-30)
+- Python : 3.8.10（デフォルト）
 - UserName : sobits
 
 ## How to run

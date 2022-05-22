@@ -1,8 +1,6 @@
 FROM sobits/ros_noetic_basic_ws:latest
-
 LABEL maintainer Valentin Keith
 
-# Do NOT rewrite manually
 
 # 参考① https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/base/Dockerfile
 ENV NVARCH x86_64
@@ -125,6 +123,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 
+
 # マルチステージビルド(image layer の内容を隠す処理)
 FROM sobits/ros_melodic_basic_ws:latest
 COPY --from=mid_layer / /
@@ -133,22 +132,23 @@ COPY --from=mid_layer / /
 ##################
 # Other settings #
 ##################
-# set time zone
+# Set time zone (Tokyo)
 ENV TZ Asia/Tokyo
 
-# set Language
+# Set Language
 RUN locale-gen ja_JP.UTF-8
 ENV LANG ja_JP.UTF-8
 ENV LANGUAGE ja_JP:ja
 ENV LC_ALL ja_JP.UTF-8
 
-# clean cache
+# Clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/ && \
     rm /etc/apt/apt.conf.d/docker-clean
 
-# set user
+# Set user
 ENV USER sobits
-# set initial position
+
+# Set initial position
 WORKDIR /home/sobits/

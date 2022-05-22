@@ -55,9 +55,9 @@ RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group
 ENV USER sobits
 
 # Set HOME position
-ENV WORKPATH /home/sobits
-WORKDIR ${HOMEPATH}
-RUN . ${HOMEPATH}/.bashrc
+ENV HOMEPATH /home/sobits
+WORKDIR $HOMEPATH
+RUN . $HOMEPATH/.bashrc
 
 
 ###############
@@ -85,18 +85,20 @@ RUN python3 -m pip install -U \
 ####################################################
 # Clone sobits_manual repository (only install_sh) #
 ####################################################
+# 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
+
 # Run as user sobits
 USER sobits
 
 # Clone only installation_sh from SOBITS Manual
-RUN cd ${HOMEPATH} && \
-    mkdir sobits_manual_mini \
-    cd sobits_manual_mini \
-    git init \
-    git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git \
-    git sparse-checkout init \
-    git sparse-checkout set "install_sh" \
-    git pull origin feature/ubuntu20.04 \
+RUN cd $HOMEPATH && \
+    mkdir sobits_manual_mini && \
+    cd sobits_manual_mini && \
+    git init && \
+    git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
+    git sparse-checkout init && \
+    git sparse-checkout set "install_sh" && \
+    git pull origin feature/ubuntu20.04 && \
     cd install_sh
 
 
@@ -107,18 +109,18 @@ RUN cd ${HOMEPATH} && \
 USER sobits
 
 # RUN apt-get update && \
-#     gosu sobits bash ${HOMEPATH}/sobits_manual_mini/install_sh/install_opencv.sh --4.5.5 --CPU
+#     gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.5.5 --CPU
 
 
 ###################################
 # Install ROS1 & create catkin_ws #
 ###################################
-# Run as user sobits
-USER sobits
+# Run as root
+USER root
 
-RUN gosu sobits bash ${HOMEPATH}/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
-    gosu sobits bash ${HOMEPATH}/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --noetic && \
-	gosu sobits bash ${HOMEPATH}/sobits_manual_mini/install_sh/setup_ros1.sh
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
+    gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --noetic && \
+	gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh
 
 
 #################
@@ -127,25 +129,25 @@ RUN gosu sobits bash ${HOMEPATH}/sobits_manual_mini/install_sh/install_ros1.sh -
 # Run as root user
 USER root
 
-RUN chmod 755 ${HOMEPATH}/sobits_manual_mini/install_sh/chmod_all.py
+RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
 
 
 # Run as user sobits
-USER sobits
+USER root
 
-RUN gosu sobits bash ${HOMEPATH}/sobits_manual_mini/install_sh/setup_alias.sh
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh
 
-RUN . ${HOMEPATH}/.bashrc
+RUN . $HOMEPATH/.bashrc
 
 
 ###########################
 # Install useful programs #
 ###########################
 # Run as user sobits
-USER sobits
+USER root
 
 # install google_chrome
-RUN gosu sobits bash ${HOMEPATH}/sobits_manual_mini/install_sh/install_google_chrome.sh
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chrome.sh
 
 
 

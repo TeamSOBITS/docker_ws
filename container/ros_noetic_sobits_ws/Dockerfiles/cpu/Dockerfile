@@ -4,11 +4,11 @@ LABEL maintainer Valentin Keith
 
 ENV WORKPATH /home/sobits
 
-# Install ROS SOBITS Common Packages
-RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --noetic
-
 # Run as root user
 USER root
+
+# Install ROS SOBITS Common Packages
+RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --noetic
 
 # clean cache
 RUN apt-get clean && \

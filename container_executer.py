@@ -23,7 +23,10 @@ class ContainerExecuter():
 
         #GUI windowの大きさを定義
         geometry_x = str(700)
-        geometry_y = str(30*len(self.containers_info))
+        if len(self.containers_info)<2: #コンテナがない場合にもGUIが表示されるようにする
+            geometry_y = str(30*2)
+        else: 
+            geometry_y = str(30*len(self.containers_info))
         self.tk.geometry(("%sx%s+0+0")%(geometry_x, geometry_y)) # "window width x window height + position right + position down"
         
         for i, container_info in enumerate(self.containers_info):

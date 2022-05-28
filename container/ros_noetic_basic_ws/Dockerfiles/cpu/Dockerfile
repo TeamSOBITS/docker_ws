@@ -39,7 +39,8 @@ RUN apt-get update -q && \
         alsa-utils \
         fonts-takao-* \
         libcanberra-gtk-module \
-        libcanberra-gtk3-module
+        libcanberra-gtk3-module \
+        software-properties-common
 
 
 ###################
@@ -105,17 +106,16 @@ RUN cd $HOMEPATH && \
 ###############################
 # Install OpenCV 4.5.5 (CPU) #
 ###############################
-# Run as user sobits
-USER sobits
+# Run as root user
+# USER root
 
-# RUN apt-get update && \
-#     gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.5.5 --CPU
+# RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.5.5 --CPU
 
 
 ###################################
 # Install ROS1 & create catkin_ws #
 ###################################
-# Run as root
+# Run as root user
 USER root
 
 RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
@@ -143,7 +143,7 @@ RUN . $HOMEPATH/.bashrc
 ###########################
 # Install useful programs #
 ###########################
-# Run as user sobits
+# Run as root user
 USER root
 
 # install google_chrome

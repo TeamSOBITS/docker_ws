@@ -1,6 +1,74 @@
-FROM sobits/ros_noetic_basic_ws:cpu
+FROM ubuntu:20.04 as mid_layer
 LABEL maintainer Valentin Keith
 
+
+# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
+# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
+
+###################################
+# Environment_variable_preference #
+###################################
+ENV USER_ID=${LOCAL_UID:-1000}
+ENV GROUP_ID=${LOCAL_GID:-1000}
+ENV DEBCONF_NOWARNINGS yes
+ENV DEBIAN_FRONTEND=noninteractive
+
+
+######################
+# Install basic apps #
+######################
+# avoid time-zone setting
+RUN apt-get update -q && \
+    apt-get install -yq \
+        tzdata
+
+RUN apt-get update -q && \
+    apt-get install -yq \
+        wget \
+        curl \
+        git-all \
+        build-essential \
+        vim \
+        nano \
+        gedit \
+        sudo \
+        lsb-release \
+        locales \
+        bash-completion \
+        gosu \
+        net-tools \
+        usbutils \
+        iputils-ping \
+        alsa-utils \
+        fonts-takao-* \
+        libcanberra-gtk-module \
+        libcanberra-gtk3-module \
+        software-properties-common
+
+
+###################
+# Add SOBITS user #
+###################
+# add sudo user
+RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group --groups adm,sudo -u ${USER_ID} sobits && \
+    groupmod -g ${GROUP_ID} -o sobits && \
+    echo sobits:robotgroup | chpasswd && \
+    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Set user
+ENV USER sobits
+
+# Set HOME position
+ENV HOMEPATH /home/sobits
+WORKDIR $HOMEPATH
+RUN . $HOMEPATH/.bashrc
+
+
+###################################
+# Install CUDA-11.6.2 & CUDNN-8.4 #
+###################################
+# Run as root user
+USER root
 
 # 参考① https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/base/Dockerfile
 ENV NVARCH x86_64
@@ -38,6 +106,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
 
 # 参考②：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/devel/Dockerfile
+ENV NV_CUDA_LIB_VERSION "11.6.2-1"
 ENV NV_NVTX_VERSION 11.6.124-1
 ENV NV_LIBNPP_VERSION 11.6.3.124-1
 ENV NV_LIBNPP_PACKAGE libnpp-11-6=${NV_LIBNPP_VERSION}
@@ -113,8 +182,6 @@ ENV NV_CUDNN_PACKAGE_DEV "libcudnn8-dev=$NV_CUDNN_VERSION-1+cuda11.6"
 ENV NV_CUDNN_PACKAGE_NAME "libcudnn8"
 
 
-LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
-LABEL com.nvidia.cudnn.version="${NV_CUDNN_VERSION}"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ${NV_CUDNN_PACKAGE} \
@@ -123,9 +190,98 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 
+###############
+# Install pip #
+###############
+# Run as root user
+USER root
+
+RUN apt-get update -q && \
+    apt-get install -yq \
+        python3 \
+        python3-pip \
+        python3-dev
+
+
+# Run as user sobits
+USER sobits
+
+# install pip
+RUN python3 -m pip install -U \
+        pip \
+        wheel
+
+
+####################################################
+# Clone sobits_manual repository (only install_sh) #
+####################################################
+# 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
+
+# Run as user sobits
+USER sobits
+
+# Clone only installation_sh from SOBITS Manual
+RUN cd $HOMEPATH && \
+    mkdir sobits_manual_mini && \
+    cd sobits_manual_mini && \
+    git init && \
+    git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
+    git sparse-checkout init && \
+    git sparse-checkout set "install_sh" && \
+    git pull origin feature/ubuntu20.04 && \
+    cd install_sh
+
+
+###############################
+# Install OpenCV 4.5.5 (CPU) #
+###############################
+# Run as root user
+# USER root
+
+# RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.5.5 --GPU
+
+
+###################################
+# Install ROS1 & create catkin_ws #
+###################################
+# Run as root user
+USER root
+
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
+    gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --noetic && \
+	gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh
+
+
+#################
+# Alias Setting #
+#################
+# Run as root user
+USER root
+
+RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
+
+
+# Run as user sobits
+USER root
+
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh
+
+RUN . $HOMEPATH/.bashrc
+
+
+###########################
+# Install useful programs #
+###########################
+# Run as root user
+USER root
+
+# install google_chrome
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chrome.sh
+
+
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM sobits/ros_noetic_basic_ws:cpu
+FROM ubuntu:20.04
 COPY --from=mid_layer / /
 
 
@@ -150,5 +306,5 @@ RUN apt-get clean &&\
 # Set user
 ENV USER sobits
 
-# Set initial position
+# Set HOME position
 WORKDIR /home/sobits/

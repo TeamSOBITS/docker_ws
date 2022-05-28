@@ -70,19 +70,19 @@ class ContainerExecuter():
 
             else:
                 if operation == "exec":
-                    print("[%s] is executed."%container_id)
+                    print("[%s] was executed."%container_id)
                     cmd = "gnome-terminal -- bash -c 'docker exec -it --user sobits %s /bin/bash; bash'"%(container_id)
                 
                 elif operation == "start":
-                    print("[%s] is started."%container_id)
+                    print("[%s] was started."%container_id)
                     cmd = "docker start %s "%(container_id)
 
                 elif operation == "restart":
-                    print("[%s] is restarted."%container_id)
+                    print("[%s] was restarted."%container_id)
                     cmd = "docker restart %s "%(container_id)
                 
                 elif operation == "stop":
-                    print("[%s] is stopped."%container_id)
+                    print("[%s] was stopped."%container_id)
                     cmd = "docker stop %s "%(container_id)
 
                 os.system(cmd) #回避策としてos.systemを使用
@@ -92,13 +92,13 @@ class ContainerExecuter():
     
     def quit_gui(self):
         # "close"ボタンを押すと、GUIを終了させる
-        print("[close] button is clicked.")
+        print("[close] button was clicked.")
         self.tk.quit()
         self.tk.destroy()
     
     def refresh_gui(self):
         # "refresh"ボタンを押すと、GUIを再起動する
-        print("[refresh] button is clicked.")
+        print("[refresh] button was clicked.")
         self.running_containers_info = []
         self.containers_info = []
         self.tk.destroy()

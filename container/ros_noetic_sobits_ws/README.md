@@ -106,9 +106,6 @@ docker rmi ros_noetic_sobits_ws #docker rmi <IMAGE NAME or IMAGE ID>
 ## Tips
 
 ## memo
-- 2020/10/01
-    - CUDA11.0 cuDNN8.0のGPU環境を構築
-    - ホストPCがUbuntu18.04の環境でCPU/GPUともに動作確認済み
-- 2020/10/22
-    - CUDA10.1 cuDNN7.0のGPU環境を構築
-    - ホストPCがUbuntu18.04の環境でCPU/GPUともに動作確認済み
+- 2022/05/28
+    - CUDA11.6.2 cuDNN8.4のGPU環境を構築
+    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認済み

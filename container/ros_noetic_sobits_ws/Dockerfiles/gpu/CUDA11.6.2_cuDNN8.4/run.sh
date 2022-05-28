@@ -13,6 +13,7 @@ docker run -it \
     --device=/dev/video0 \
     -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
     -v /etc/localtime:/etc/localtime \
+    -v /etc/udev/rules.d/:/etc/udev/rules.d/ \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
     -v /tmp/pulseaudio.client.conf:/tmp/pulseaudio.client.conf \

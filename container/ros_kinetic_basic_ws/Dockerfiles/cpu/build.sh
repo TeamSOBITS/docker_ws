@@ -1,7 +1,9 @@
 #!/bin/bash
-cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/cpu
+
+DIR=$(pwd)
+str=`echo ${DIR} | awk -F "/" '{ print $(NF - 2) }'`
 
 docker build \
-    --tag sobits/ros_kinetic_basic_ws \
+    --tag sobits/${str} \
     --network host \
     .

@@ -1,7 +1,9 @@
 #!/bin/bash
-cd ~/docker_ws/container/ros_kinetic_basic_ws/Dockerfiles/gpu/CUDA9.0_cuDNN7.6/
+
+DIR=$(pwd)
+str=`echo ${DIR} | awk -F "/" '{ print $(NF - 3) }'`
 
 docker build \
-    --tag sobits/ros_kinetic_cuda9.0_cudnn7.6 \
+    --tag sobits/${str} \
     --network host \
     .

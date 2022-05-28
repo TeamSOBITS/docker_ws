@@ -1,6 +1,10 @@
 #!/bin/bash
+
+DIR=$(pwd)
+str=`echo ${DIR} | awk -F "/" '{ print $(NF - 3) }'`
+
 docker exec \
     -it \
-    ros_kinetic_cuda9.0_cudnn7.6 \
     --user sobits \
+    ${str} \
     /bin/bash

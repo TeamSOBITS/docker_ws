@@ -1,7 +1,9 @@
 #!/bin/bash
-cd ~/docker_ws/container/ros_melodic_basic_ws/Dockerfiles/gpu/CUDA10.1_cuDNN7.0
+
+DIR=$(pwd)
+str=`echo ${DIR} | awk -F "/" '{ print $(NF - 3) }'`
 
 docker build \
-    --tag sobits/ros_melodic_basic_ws_gpu_cuda10.1_cudnn7.0 \
+    --tag sobits/${str} \
     --network host \
     .

@@ -228,7 +228,6 @@ RUN cd $HOMEPATH && \
     git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
     git sparse-checkout init && \
     git sparse-checkout set "install_sh" && \
-    git pull origin feature/ubuntu20.04 && \
     cd install_sh
 
 

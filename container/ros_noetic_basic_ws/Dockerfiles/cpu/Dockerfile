@@ -107,9 +107,9 @@ RUN cd $HOMEPATH && \
 # Install OpenCV 4.5.5 (CPU) #
 ###############################
 # Run as root user
-# USER root
+USER root
 
-# RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.5.5 --CPU
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.6.0 --CPU
 
 
 ###################################

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #coding:utf-8
-#python2.7 or python3.5
+#python2 or python3
 import sys, os
 import subprocess
-try: #for python2.7
+try: #for python2
     import Tkinter
-except ImportError: #for python3.5
+except ImportError: #for python3
     import tkinter as Tkinter
 
 class ContainerExecuter():
@@ -23,7 +23,10 @@ class ContainerExecuter():
 
         #GUI windowの大きさを定義
         geometry_x = str(700)
-        geometry_y = str(30*len(self.containers_info))
+        if len(self.containers_info)<2: #コンテナがない場合にもGUIが表示されるようにする
+            geometry_y = str(30*2)
+        else: 
+            geometry_y = str(30*len(self.containers_info))
         self.tk.geometry(("%sx%s+0+0")%(geometry_x, geometry_y)) # "window width x window height + position right + position down"
         
         for i, container_info in enumerate(self.containers_info):
@@ -70,19 +73,19 @@ class ContainerExecuter():
 
             else:
                 if operation == "exec":
-                    print("[%s] is executed."%container_id)
+                    print("[%s] was executed."%container_id)
                     cmd = "gnome-terminal -- bash -c 'docker exec -it --user sobits %s /bin/bash; bash'"%(container_id)
                 
                 elif operation == "start":
-                    print("[%s] is started."%container_id)
+                    print("[%s] was started."%container_id)
                     cmd = "docker start %s "%(container_id)
 
                 elif operation == "restart":
-                    print("[%s] is restarted."%container_id)
+                    print("[%s] was restarted."%container_id)
                     cmd = "docker restart %s "%(container_id)
                 
                 elif operation == "stop":
-                    print("[%s] is stopped."%container_id)
+                    print("[%s] was stopped."%container_id)
                     cmd = "docker stop %s "%(container_id)
 
                 os.system(cmd) #回避策としてos.systemを使用
@@ -92,13 +95,13 @@ class ContainerExecuter():
     
     def quit_gui(self):
         # "close"ボタンを押すと、GUIを終了させる
-        print("[close] button is clicked.")
+        print("[close] button was clicked.")
         self.tk.quit()
         self.tk.destroy()
     
     def refresh_gui(self):
         # "refresh"ボタンを押すと、GUIを再起動する
-        print("[refresh] button is clicked.")
+        print("[refresh] button was clicked.")
         self.running_containers_info = []
         self.containers_info = []
         self.tk.destroy()
@@ -111,7 +114,11 @@ class ContainerExecuter():
           "docker ps", stdout=subprocess.PIPE,
           shell=True).communicate()[0]
 
-        running_containers_info = res.split("\n")
+        try: #for python2
+            running_containers_info = res.split("\n")
+        except: #for python3
+            res = res.decode()
+            running_containers_info = res.split("\n")
 
         for i, running_container_info in enumerate(running_containers_info):
             if i == 0 or i == len(running_containers_info)-1:
@@ -129,7 +136,11 @@ class ContainerExecuter():
           "docker ps -a", stdout=subprocess.PIPE,
           shell=True).communicate()[0]
 
-        containers_info = res.split("\n")
+        try: #for python2
+            containers_info = res.split("\n")
+        except: #for python3
+            res = res.decode()
+            containers_info = res.split("\n")
 
         for i, container_info in enumerate(containers_info):
             if i == 0 or i == len(containers_info)-1:
@@ -153,5 +164,3 @@ if __name__ == "__main__":
     #ce.get_not_running_containers_info()
 
     #print ce.not_running_containers_info
-    
-

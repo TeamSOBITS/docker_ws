@@ -1,0 +1,180 @@
+FROM ubuntu:20.04 as mid_layer
+LABEL maintainer Valentin Keith
+
+
+###################################
+# Environment_variable_preference #
+###################################
+ENV USER_ID=${LOCAL_UID:-1000}
+ENV GROUP_ID=${LOCAL_GID:-1000}
+ENV DEBCONF_NOWARNINGS yes
+ENV DEBIAN_FRONTEND=noninteractive
+
+
+######################
+# Install basic apps #
+######################
+# avoid time-zone setting
+RUN apt-get update -q && \
+    apt-get install -yq \
+        tzdata
+
+RUN apt-get update -q && \
+    apt-get install -yq \
+        wget \
+        curl \
+        git-all \
+        build-essential \
+        vim \
+        nano \
+        gedit \
+        sudo \
+        lsb-release \
+        locales \
+        bash-completion \
+        gosu \
+        net-tools \
+        usbutils \
+        iputils-ping \
+        alsa-utils \
+        fonts-takao-* \
+        libcanberra-gtk-module \
+        libcanberra-gtk3-module \
+        software-properties-common
+
+
+###################
+# Add SOBITS user #
+###################
+# add sudo user
+RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group --groups adm,sudo -u ${USER_ID} sobits && \
+    groupmod -g ${GROUP_ID} -o sobits && \
+    echo sobits:robotgroup | chpasswd && \
+    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Set user
+ENV USER sobits
+
+# Set HOME position
+ENV HOMEPATH /home/sobits
+WORKDIR $HOMEPATH
+RUN . $HOMEPATH/.bashrc
+
+
+###############
+# Install pip #
+###############
+# Run as root user
+USER root
+
+RUN apt-get update -q && \
+    apt-get install -yq \
+        python3 \
+        python3-pip \
+        python3-dev
+
+
+# Run as user sobits
+USER sobits
+
+# install pip
+RUN python3 -m pip install -U \
+        pip \
+        wheel
+
+
+####################################################
+# Clone sobits_manual repository (only install_sh) #
+####################################################
+# 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
+
+# Run as user sobits
+USER sobits
+
+# Clone only installation_sh from SOBITS Manual
+RUN cd $HOMEPATH && \
+    mkdir sobits_manual_mini && \
+    cd sobits_manual_mini && \
+    git init && \
+    git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
+    git sparse-checkout init && \
+    git sparse-checkout set "install_sh" && \
+    cd install_sh
+
+
+###############################
+# Install OpenCV 4.5.5 (CPU) #
+###############################
+# Run as root user
+USER root
+
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.6.0 --CPU
+
+
+###################################
+# Install ROS1 & create catkin_ws #
+###################################
+# Run as root user
+USER root
+
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
+    gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --noetic && \
+	gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh
+
+
+#################
+# Alias Setting #
+#################
+# Run as root user
+USER root
+
+RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
+
+
+# Run as user sobits
+USER root
+
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh
+
+RUN . $HOMEPATH/.bashrc
+
+
+###########################
+# Install useful programs #
+###########################
+# Run as root user
+USER root
+
+# install google_chrome
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chrome.sh
+
+
+
+# マルチステージビルド(image layer の内容を隠す処理)
+FROM ubuntu:20.04
+COPY --from=mid_layer / /
+
+
+##################
+# Other settings #
+##################
+# Set time zone (Tokyo)
+ENV TZ Asia/Tokyo
+
+# Set Language
+RUN locale-gen ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP:ja
+ENV LC_ALL ja_JP.UTF-8
+
+# Clean cache
+RUN apt-get clean &&\
+	apt-get autoremove && \	
+    rm -rf /var/lib/apt/lists/ && \
+    rm /etc/apt/apt.conf.d/docker-clean
+
+# Set user
+ENV USER sobits
+
+# Set HOME position
+WORKDIR /home/sobits/

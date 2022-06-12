@@ -14,8 +14,8 @@ bash install_docker.sh
 bash install_nvidia_docker.sh
 
 # container_executer.pyを使う人は以下のコマンドも実行してください。
-sudo apt-get install python-tk tk-dev 
-python -m Tkinter # GUIが表示されればインストール完了
+sudo apt-get install python3-tk tk-dev 
+python3 -m Tkinter # GUIが表示されればインストール完了
 ```
 
 ## How to use
@@ -29,13 +29,14 @@ containerディレクトリ内に様々な環境のDockerfileを用意してい�
 起動中のコンテナの一覧を表示し、入りたいコンテナをクリックすることで中に入ることができます。
 ```bash
 # 実行方法
-python ~/docker_ws/container_executer.py
+python3 ~/docker_ws/container_executer.py
 ```
 
 aliasで設定しておくと便利だと思います。  
 ```bash
-# .bashrcに以下を追記
-alias ce="python ~/docker_ws/container_executer.py"
+# ターミナルに記入してください。
+echo 'alias ce="python3 ~/docker_ws/container_executer.py"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 

@@ -97,8 +97,9 @@ RUN cd $HOMEPATH && \
     cd sobits_manual_mini && \
     git init && \
     git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
-    git sparse-checkout init && \
-    git sparse-checkout set "install_sh" && \
+    git config core.sparseCheckout true && \
+    echo "install_sh" >> .git/info/sparse-checkout && \
+    git pull origin main && \
     cd install_sh
 
 

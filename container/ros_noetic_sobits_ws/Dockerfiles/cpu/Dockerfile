@@ -1,6 +1,8 @@
 FROM sobits/ros_noetic_basic_ws:cpu
 LABEL maintainer Valentin Keith
 
+RUN echo "╔══╣ Install: ros_noetic_sobits_ws CPU (STARTING) ╠══╗"
+
 
 ENV WORKPATH /home/sobits
 
@@ -10,8 +12,10 @@ USER root
 # Install ROS SOBITS Common Packages
 RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --noetic
 
-# clean cache
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/
+# Clean cache
+RUN apt-get clean &&\
+    apt-get autoremove && \	
+    rm -rf /var/lib/apt/lists/ && \
+    rm /etc/apt/apt.conf.d/docker-clean
 
-RUN echo "Install Finished"
+RUN echo "╚══╣ Install: ros_noetic_sobits_ws CPU (FINISHED) ╠══╝"

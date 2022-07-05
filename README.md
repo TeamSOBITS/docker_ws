@@ -15,7 +15,7 @@ bash install_nvidia_docker.sh
 
 # container_executer.pyを使う人は以下のコマンドも実行してください。
 sudo apt-get install python3-tk tk-dev 
-python3 -m Tkinter # GUIが表示されればインストール完了
+python3 -m tkinter # GUIが表示されればインストール完了
 ```
 
 ## How to use

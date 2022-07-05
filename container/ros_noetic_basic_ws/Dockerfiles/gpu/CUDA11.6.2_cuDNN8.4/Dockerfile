@@ -1,9 +1,13 @@
+# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
+# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
+
+
 FROM ubuntu:20.04 as mid_layer
 LABEL maintainer Valentin Keith
 
 
-# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
-# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
+RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
+
 
 ###################################
 # Environment_variable_preference #
@@ -226,8 +230,9 @@ RUN cd $HOMEPATH && \
     cd sobits_manual_mini && \
     git init && \
     git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
-    git sparse-checkout init && \
-    git sparse-checkout set "install_sh" && \
+    git config core.sparseCheckout true && \
+    echo "install_sh" >> .git/info/sparse-checkout && \
+    git pull origin main && \
     cd install_sh
 
 
@@ -252,7 +257,7 @@ RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --n
 
 
 #################
-# Alias Setting #
+# chmod Setting #
 #################
 # Run as root user
 USER root
@@ -260,6 +265,9 @@ USER root
 RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
 
 
+#################
+# Alias Setting #
+#################
 # Run as user sobits
 USER root
 
@@ -307,3 +315,6 @@ ENV USER sobits
 
 # Set HOME position
 WORKDIR /home/sobits/
+
+
+RUN echo "╚══╣ Install: ros_noetic_basic_ws:gpu_cuda11.6.2_cudnn8.4 (FINISHED) ╠══╝"

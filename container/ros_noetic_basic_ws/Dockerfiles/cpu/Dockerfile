@@ -2,6 +2,9 @@ FROM ubuntu:20.04 as mid_layer
 LABEL maintainer Valentin Keith
 
 
+RUN echo "╔══╣ Install: ros_noetic_basic_ws:cpu (STARTING) ╠══╗"
+
+
 ###################################
 # Environment_variable_preference #
 ###################################
@@ -104,7 +107,7 @@ RUN cd $HOMEPATH && \
 
 
 ###############################
-# Install OpenCV 4.5.5 (CPU) #
+# Install OpenCV 4.6.0 (CPU) #
 ###############################
 # Run as root user
 USER root
@@ -124,7 +127,7 @@ RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --n
 
 
 #################
-# Alias Setting #
+# chmod Setting #
 #################
 # Run as root user
 USER root
@@ -132,6 +135,9 @@ USER root
 RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
 
 
+#################
+# Alias Setting #
+#################
 # Run as user sobits
 USER root
 
@@ -179,3 +185,6 @@ ENV USER sobits
 
 # Set HOME position
 WORKDIR /home/sobits/
+
+
+RUN echo "╚══╣ Install: ros_noetic_basic_ws:cpu (FINISHED) ╠══╝"

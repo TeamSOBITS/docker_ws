@@ -1,7 +1,7 @@
 FROM sobits/ros_melodic_basic_ws:gpu_cuda10.2_cudnn8.2.1_l4t
 LABEL maintainer Valentin Keith
 
-RUN echo "╔══╣ Install:ros_melodic_basic_ws:gpu_cuda10.2_cudnn8.2.1_l4t (STARTING) ╠══╗"
+RUN echo "╔══╣ Install:ros_melodic_sobits_ws:gpu_cuda10.2_cudnn8.2.1_l4t (STARTING) ╠══╗"
 
 
 ENV WORKPATH /home/sobits
@@ -21,4 +21,4 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/
 
 
-RUN echo "╚══╣ Install: ros_melodic_basic_ws:gpu_cuda10.2_cudnn8.2.1_l4t (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_melodic_sobits_ws:gpu_cuda10.2_cudnn8.2.1_l4t (FINISHED) ╠══╝"

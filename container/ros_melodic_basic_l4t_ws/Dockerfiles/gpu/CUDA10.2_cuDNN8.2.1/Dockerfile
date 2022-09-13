@@ -2,7 +2,7 @@
 # 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
 
 
-FROM sobits/base_ws:gpu_ubuntu_1804_l4t as mid_layer
+FROM sobits/base_ws:gpu_cuda10.2_cudnn8.2.1_ubuntu1804_l4t as mid_layer
 LABEL maintainer Valentin Keith
 
 
@@ -73,7 +73,7 @@ RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chro
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM sobits/base_ws:gpu_ubuntu_1804_l4t
+FROM sobits/base_ws:gpu_cuda10.2_cudnn8.2.1_ubuntu1804_l4t
 COPY --from=mid_layer / /
 
 

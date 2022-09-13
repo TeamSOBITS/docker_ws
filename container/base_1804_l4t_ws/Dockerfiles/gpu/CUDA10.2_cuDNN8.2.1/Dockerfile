@@ -2,7 +2,7 @@ FROM nvcr.io/nvidia/l4t-pytorch:r32.7.1-pth1.10-py3 as mid_layer
 LABEL maintainer Valentin Keith and Okuma Yuki
 
 
-RUN echo "╔══╣ Install: base1804_l4t_ws:cpu (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: base_ws:gpu_cuda10.2_cudnn8.2.1_ubuntu1804_l4t (STARTING) ╠══╗"
 
 
 ###################################
@@ -168,4 +168,4 @@ ENV USER sobits
 WORKDIR /home/sobits/
 
 
-RUN echo "╚══╣ Install: base2004_l4t_ws:cpu (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: base_ws:gpu_cuda10.2_cudnn8.2.1_ubuntu1804_l4t  (FINISHED) ╠══╝"

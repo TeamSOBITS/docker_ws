@@ -1,4 +1,4 @@
-FROM sobits/base_ws:ubuntu_2004 as mid_layer
+FROM sobits/base_ws:cpu_ubuntu_2004 as mid_layer
 LABEL maintainer Valentin Keith
 
 
@@ -70,7 +70,7 @@ RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chro
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM sobits/base_ws:ubuntu_2004
+FROM sobits/base_ws:cpu_ubuntu_2004
 COPY --from=mid_layer / /
 
 

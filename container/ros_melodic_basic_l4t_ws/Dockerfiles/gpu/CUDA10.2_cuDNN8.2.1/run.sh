@@ -8,7 +8,7 @@ cd $(pwd)/../../../
 xhost +local:${USER}
 
 docker run -it \
-    --gpus all \
+    --gruntime=nvidia \
     --device /dev/:/dev/ \
     --device=/dev/video0 \
     -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \

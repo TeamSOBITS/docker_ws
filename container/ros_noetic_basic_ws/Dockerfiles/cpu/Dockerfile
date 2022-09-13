@@ -1,90 +1,11 @@
-FROM ubuntu:20.04 as mid_layer
+FROM sobits/base_ws:ubuntu_2004 as mid_layer
 LABEL maintainer Valentin Keith
 
 
 RUN echo "╔══╣ Install: ros_noetic_basic_ws:cpu (STARTING) ╠══╗"
 
 
-###################################
-# Environment_variable_preference #
-###################################
-ENV USER_ID=${LOCAL_UID:-1000}
-ENV GROUP_ID=${LOCAL_GID:-1000}
-ENV DEBCONF_NOWARNINGS yes
-ENV DEBIAN_FRONTEND=noninteractive
-
-
-######################
-# Install basic apps #
-######################
-# avoid time-zone setting
-RUN apt-get update -q && \
-    apt-get install -yq \
-        tzdata
-
-RUN apt-get update -q && \
-    apt-get install -yq \
-        wget \
-        curl \
-        git-all \
-        build-essential \
-        vim \
-        nano \
-        gedit \
-        sudo \
-        lsb-release \
-        locales \
-        bash-completion \
-        gosu \
-        net-tools \
-        usbutils \
-        iputils-ping \
-        alsa-utils \
-        fonts-takao-* \
-        libcanberra-gtk-module \
-        libcanberra-gtk3-module \
-        software-properties-common
-
-
-###################
-# Add SOBITS user #
-###################
-# add sudo user
-RUN useradd --create-home --home-dir /home/sobits --shell /bin/bash --user-group --groups adm,sudo -u ${USER_ID} sobits && \
-    groupmod -g ${GROUP_ID} -o sobits && \
-    echo sobits:robotgroup | chpasswd && \
-    echo "sobits ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# Set user
-ENV USER sobits
-
-# Set HOME position
 ENV HOMEPATH /home/sobits
-WORKDIR $HOMEPATH
-RUN . $HOMEPATH/.bashrc
-
-
-###############
-# Install pip #
-###############
-# Run as root user
-USER root
-
-RUN apt-get update -q && \
-    apt-get install -yq \
-        python3 \
-        python3-pip \
-        python3-dev
-
-
-# Run as user sobits
-USER sobits
-
-# install pip
-RUN python3 -m pip install -U \
-        pip \
-        wheel
-
 
 ####################################################
 # Clone sobits_manual repository (only install_sh) #
@@ -99,20 +20,11 @@ RUN cd $HOMEPATH && \
     mkdir sobits_manual_mini && \
     cd sobits_manual_mini && \
     git init && \
-    git remote add -f origin https://oauth2:CVbC1YVoCUN6x-uAQK61@gitlab.com/TeamSOBITS/sobits_manual.git && \
+    git remote add -f origin https://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@github.com/TeamSOBITS/sobits_manual && \
     git config core.sparseCheckout true && \
     echo "install_sh" >> .git/info/sparse-checkout && \
     git pull origin main && \
     cd install_sh
-
-
-###############################
-# Install OpenCV 4.6.0 (CPU) #
-###############################
-# Run as root user
-USER root
-
-RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.6.0 --CPU
 
 
 ###################################
@@ -158,7 +70,7 @@ RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chro
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM ubuntu:20.04
+FROM sobits/base_ws:ubuntu_2004
 COPY --from=mid_layer / /
 
 
@@ -177,8 +89,7 @@ ENV LC_ALL ja_JP.UTF-8
 # Clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
-    rm -rf /var/lib/apt/lists/ && \
-    rm /etc/apt/apt.conf.d/docker-clean
+    rm -rf /var/lib/apt/lists/
 
 # Set user
 ENV USER sobits

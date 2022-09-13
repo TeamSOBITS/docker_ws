@@ -114,8 +114,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH}/3bf863cc.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH} /" > /etc/apt/sources.list.d/cuda.list && \
-    apt-get purge --autoremove -y curl \
-    && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 ENV CUDA_VERSION 11.6.2
 
@@ -264,7 +263,7 @@ RUN cd $HOMEPATH && \
 # Run as root user
 USER root
 
-RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_opencv.sh --4.6.0 --GPU
+RUN gosu sobits bash $HOMEPATH/install_opencv.sh --4.6.0 --GPU
 
 RUN rm $HOMEPATH/install_opencv.sh
 

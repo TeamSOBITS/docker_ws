@@ -137,8 +137,9 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
 
-# 参考②：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/devel/Dockerfile
+# 参考②：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/runtime/Dockerfile
 ENV NV_CUDA_LIB_VERSION "11.6.2-1"
+
 ENV NV_NVTX_VERSION 11.6.124-1
 ENV NV_LIBNPP_VERSION 11.6.3.124-1
 ENV NV_LIBNPP_PACKAGE libnpp-11-6=${NV_LIBNPP_VERSION}
@@ -212,7 +213,6 @@ ENV NV_CUDNN_VERSION 8.4.0.27
 ENV NV_CUDNN_PACKAGE "libcudnn8=$NV_CUDNN_VERSION-1+cuda11.6"
 ENV NV_CUDNN_PACKAGE_DEV "libcudnn8-dev=$NV_CUDNN_VERSION-1+cuda11.6"
 ENV NV_CUDNN_PACKAGE_NAME "libcudnn8"
-
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \

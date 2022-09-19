@@ -1,8 +1,12 @@
-FROM sobits/base_ws:cpu_ubuntu1804 as mid_layer
+# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
+# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
+
+
+FROM sobits/base_ws:gpu_cuda11.6.2_cudnn8.4_ubuntu1804 as mid_layer
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: ros_melodic_basic_ws:cpu (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_melodic_basic_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
 
 
 ENV HOMEPATH /home/sobits
@@ -25,6 +29,7 @@ RUN cd $HOMEPATH && \
     echo "install_sh" >> .git/info/sparse-checkout && \
     git pull origin main && \
     cd install_sh
+
 
 
 ###################################
@@ -70,7 +75,7 @@ RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chro
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM sobits/base_ws:cpu_ubuntu1804
+FROM sobits/base_ws:gpu_cuda11.6.2_cudnn8.4_ubuntu1804
 COPY --from=mid_layer / /
 
 
@@ -98,4 +103,4 @@ ENV USER sobits
 WORKDIR /home/sobits/
 
 
-RUN echo "╚══╣ Install: ros_melodic_basic_ws:cpu (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_melodic_basic_ws:gpu_cuda11.6.2_cudnn8.4 (FINISHED) ╠══╝"

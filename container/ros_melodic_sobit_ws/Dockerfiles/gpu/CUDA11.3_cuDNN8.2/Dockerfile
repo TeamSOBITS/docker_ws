@@ -28,6 +28,9 @@ RUN python3 -m pip install \
 # Run as root user
 USER root
 
+# Update Google Key
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
+
 # Install tk
 RUN apt-get update && \
     apt-get install -y python3-tk

@@ -101,6 +101,12 @@ USER root
 
 RUN apt-get update -q && \
     apt-get install -yq \
+        python \
+        python-pip \
+        python-dev
+
+RUN apt-get update -q && \
+    apt-get install -yq \
         python3 \
         python3-pip \
         python3-dev
@@ -109,6 +115,10 @@ RUN apt-get update -q && \
 USER sobits
 
 # install pip
+RUN python -m pip install -U \
+        pip \
+        wheel
+
 RUN python3 -m pip install -U \
         pip \
         wheel

@@ -1,7 +1,7 @@
-FROM sobits/ros_noetic_basic_ws:cpu
+FROM sobits/ros_melodic_basic_ws:cpu
 LABEL maintainer Valentin Keith
 
-RUN echo "╔══╣ Install: ros_noetic_sobits_ws CPU (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_melodic_sobits_ws:cpu (STARTING) ╠══╗"
 
 
 ENV WORKPATH /home/sobits
@@ -10,11 +10,11 @@ ENV WORKPATH /home/sobits
 USER root
 
 # Install ROS SOBITS Common Packages
-RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --noetic
+RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --melodic
 
 # Clean cache
 RUN apt-get clean &&\
     apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/
 
-RUN echo "╚══╣ Install: ros_noetic_sobits_ws CPU (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_melodic_sobits_ws:cpu (FINISHED) ╠══╝"

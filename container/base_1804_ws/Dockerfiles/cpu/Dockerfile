@@ -1,8 +1,8 @@
-FROM ubuntu:20.04 as mid_layer
+FROM ubuntu:18.04 as mid_layer
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: base2004_ws:cpu (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: base1804_ws:cpu (STARTING) ╠══╗"
 
 
 ###################################
@@ -101,6 +101,12 @@ USER root
 
 RUN apt-get update -q && \
     apt-get install -yq \
+        python \
+        python-pip \
+        python-dev
+
+RUN apt-get update -q && \
+    apt-get install -yq \
         python3 \
         python3-pip \
         python3-dev
@@ -109,6 +115,10 @@ RUN apt-get update -q && \
 USER sobits
 
 # install pip
+RUN python -m pip install -U \
+        pip \
+        wheel
+
 RUN python3 -m pip install -U \
         pip \
         wheel
@@ -117,7 +127,6 @@ RUN python3 -m pip install -U \
 ####################################################
 # Clone sobits_manual repository (only install_sh) #
 ####################################################
-# 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
 
 # Run as user sobits
 USER sobits
@@ -139,7 +148,7 @@ RUN rm $HOMEPATH/install_opencv.sh
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 COPY --from=mid_layer / /
 
 
@@ -168,4 +177,4 @@ ENV USER sobits
 WORKDIR /home/sobits/
 
 
-RUN echo "╚══╣ Install: base2004_ws:cpu (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: base1804_ws:cpu (FINISHED) ╠══╝"

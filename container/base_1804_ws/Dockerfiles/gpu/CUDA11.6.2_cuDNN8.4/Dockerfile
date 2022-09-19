@@ -2,11 +2,11 @@
 # 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
 
 
-FROM ubuntu:20.04 as mid_layer
+FROM ubuntu:18.04 as mid_layer
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: base1804_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
 
 
 ###################################
@@ -103,7 +103,7 @@ RUN . $HOMEPATH/.bashrc
 # Run as root user
 USER root
 
-# 参考① https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/base/Dockerfile
+# 参考① https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu1804/base/Dockerfile
 ENV NVARCH x86_64
 
 ENV NVIDIA_REQUIRE_CUDA "cuda>=11.6 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=450,driver<451 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471"
@@ -112,9 +112,9 @@ ENV NV_CUDA_COMPAT_PACKAGE cuda-compat-11-6
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH}/3bf863cc.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH} /" > /etc/apt/sources.list.d/cuda.list && \
-    rm -rf /var/lib/apt/lists/*
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/${NVARCH}/3bf863cc.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/${NVARCH} /" > /etc/apt/sources.list.d/cuda.list && \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV CUDA_VERSION 11.6.2
 
@@ -137,8 +137,9 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
 
-# 参考②：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/devel/Dockerfile
-ENV NV_CUDA_LIB_VERSION "11.6.2-1"
+# 参考②：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu1804/runtime/Dockerfile
+ENV NV_CUDA_LIB_VERSION 11.6.2-1
+
 ENV NV_NVTX_VERSION 11.6.124-1
 ENV NV_LIBNPP_VERSION 11.6.3.124-1
 ENV NV_LIBNPP_PACKAGE libnpp-11-6=${NV_LIBNPP_VERSION}
@@ -163,8 +164,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ${NV_LIBNCCL_PACKAGE} \
     && rm -rf /var/lib/apt/lists/*
 
+# Keep apt from auto upgrading the cublas and nccl packages. See https://gitlab.com/nvidia/container-images/cuda/-/issues/88
+RUN apt-mark hold ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME}
 
-# 参考③：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/devel/Dockerfile
+
+# 参考③：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu1804/devel/Dockerfile
 ENV NV_CUDA_LIB_VERSION "11.6.2-1"
 
 ENV NV_CUDA_CUDART_DEV_VERSION 11.6.55-1
@@ -206,20 +210,19 @@ RUN apt-mark hold ${NV_LIBCUBLAS_DEV_PACKAGE_NAME} ${NV_LIBNCCL_DEV_PACKAGE_NAME
 ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs
 
 
-# 参考④：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu2004/devel/cudnn8/Dockerfile
+# 参考④：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.6.2/ubuntu1804/devel/cudnn8/Dockerfile
 ENV NV_CUDNN_VERSION 8.4.0.27
 
+ENV NV_CUDNN_PACKAGE_NAME "libcudnn8"
 ENV NV_CUDNN_PACKAGE "libcudnn8=$NV_CUDNN_VERSION-1+cuda11.6"
 ENV NV_CUDNN_PACKAGE_DEV "libcudnn8-dev=$NV_CUDNN_VERSION-1+cuda11.6"
-ENV NV_CUDNN_PACKAGE_NAME "libcudnn8"
-
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ${NV_CUDNN_PACKAGE} \
     ${NV_CUDNN_PACKAGE_DEV} \
-    && apt-mark hold ${NV_CUDNN_PACKAGE_NAME} && \
-    rm -rf /var/lib/apt/lists/*
+    && apt-mark hold ${NV_CUDNN_PACKAGE_NAME} \
+    && rm -rf /var/lib/apt/lists/*
 
 
 ###############
@@ -227,6 +230,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ###############
 # Run as root user
 USER root
+
+RUN apt-get update -q && \
+    apt-get install -yq \
+        python \
+        python-pip \
+        python-dev
 
 RUN apt-get update -q && \
     apt-get install -yq \
@@ -239,6 +248,10 @@ RUN apt-get update -q && \
 USER sobits
 
 # install pip
+RUN python -m pip install -U \
+        pip \
+        wheel
+
 RUN python3 -m pip install -U \
         pip \
         wheel
@@ -269,7 +282,7 @@ RUN rm $HOMEPATH/install_opencv.sh
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 COPY --from=mid_layer / /
 
 

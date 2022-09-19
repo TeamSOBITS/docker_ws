@@ -1,7 +1,7 @@
 FROM sobits/ros_noetic_basic_ws:cpu
 LABEL maintainer Valentin Keith
 
-RUN echo "╔══╣ Install: ros_noetic_sobits_ws CPU (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_noetic_sobits_ws:cpu (STARTING) ╠══╗"
 
 
 ENV WORKPATH /home/sobits
@@ -17,4 +17,4 @@ RUN apt-get clean &&\
     apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/
 
-RUN echo "╚══╣ Install: ros_noetic_sobits_ws CPU (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_noetic_sobits_ws:cpu (FINISHED) ╠══╝"

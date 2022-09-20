@@ -114,7 +114,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/${NVARCH}/3bf863cc.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/${NVARCH} /" > /etc/apt/sources.list.d/cuda.list && \
-    && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 ENV CUDA_VERSION 11.6.2
 
@@ -224,6 +224,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-mark hold ${NV_CUDNN_PACKAGE_NAME} \
     && rm -rf /var/lib/apt/lists/*
 
+
+RUN echo 'export PATH=/usr/local/cuda-11.6/bin${PATH:+:${PATH}}' >> $HOMEPATH/.bashrc && \
+    echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.6/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}' >> $HOMEPATH/.bashrc
 
 ###############
 # Install pip #

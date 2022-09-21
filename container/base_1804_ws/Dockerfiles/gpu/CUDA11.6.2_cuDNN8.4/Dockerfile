@@ -28,6 +28,11 @@ RUN apt-get update -q && \
 
 RUN apt-get update -q && \
     apt-get install -yq \
+        software-properties-common
+
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    apt-get update -q && \
+    apt-get install -yq \
         wget \
         curl \
         git-all \
@@ -47,7 +52,6 @@ RUN apt-get update -q && \
         fonts-takao-* \
         libcanberra-gtk-module \
         libcanberra-gtk3-module \
-        software-properties-common \
         file \
         dpkg-dev \
         qemu \
@@ -58,8 +62,8 @@ RUN apt-get update -q && \
         doxygen \
         clang \
         python3 \
-        gcc \
-        g++ \
+        gcc-7 gcc-8 gcc-9 \
+        g++-7 g++-8 g++-9 \
         git \
         git-lfs \
         nasm \
@@ -278,6 +282,7 @@ RUN cd $HOMEPATH && \
 ###############################
 # Run as root user
 USER root
+
 
 RUN gosu sobits bash $HOMEPATH/install_opencv.sh --4.6.0 --GPU
 

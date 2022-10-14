@@ -224,6 +224,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-mark hold ${NV_CUDNN_PACKAGE_NAME} && \
     rm -rf /var/lib/apt/lists/*
 
+RUN echo 'export PATH=/usr/local/cuda-11.6/bin${PATH:+:${PATH}}' >> $HOMEPATH/.bashrc && \
+    echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.6/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}' >> $HOMEPATH/.bashrc
+
 
 ###############
 # Install pip #

@@ -26,7 +26,8 @@ RUN apt-get update -q && \
     apt-get install -yq \
         software-properties-common
 
-RUN apt-get update -q && \
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test && \
+    apt-get update -q && \
     apt-get install -yq \
         wget \
         curl \

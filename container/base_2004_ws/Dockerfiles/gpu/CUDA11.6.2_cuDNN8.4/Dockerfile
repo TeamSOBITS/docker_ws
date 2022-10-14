@@ -6,7 +6,7 @@ FROM ubuntu:20.04 as mid_layer
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: base2004_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
 
 
 ###################################
@@ -61,8 +61,8 @@ RUN apt-get update -q && \
         doxygen \
         clang \
         python3 \
-        gcc-7 gcc-8 gcc-9 \
-        g++-7 g++-8 g++-9 \
+        gcc-9 \
+        g++-9 \
         git \
         git-lfs \
         nasm \
@@ -304,4 +304,4 @@ ENV USER sobits
 WORKDIR /home/sobits/
 
 
-RUN echo "╚══╣ Install: ros_noetic_basic_ws:gpu_cuda11.6.2_cudnn8.4 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: base2004_ws:gpu_cuda11.6.2_cudnn8.4 (FINISHED) ╠══╝"

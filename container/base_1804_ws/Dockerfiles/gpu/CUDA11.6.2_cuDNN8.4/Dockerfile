@@ -62,8 +62,8 @@ RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
         doxygen \
         clang \
         python3 \
-        gcc-7 gcc-8 gcc-9 \
-        g++-7 g++-8 g++-9 \
+        gcc-9 \
+        g++-9 \
         git \
         git-lfs \
         nasm \

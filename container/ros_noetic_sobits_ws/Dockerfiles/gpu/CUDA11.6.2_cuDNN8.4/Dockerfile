@@ -9,6 +9,10 @@ ENV WORKPATH /home/sobits
 # Run as root user
 USER root
 
+# Update sobit_manual
+RUN cd $WORKPATH/sobits_manual_mini \
+    git pull origin main
+
 # Install ROS SOBITS Common Packages
 RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --noetic
 

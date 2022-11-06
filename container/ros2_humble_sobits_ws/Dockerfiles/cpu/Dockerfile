@@ -1,0 +1,26 @@
+FROM sobits/ros2_humble_basic_ws:cpu
+LABEL maintainer Valentin Keith
+
+RUN echo "╔══╣ Install: ros_noetic_sobits_ws:cpu (STARTING) ╠══╗"
+
+
+ENV WORKPATH /home/sobits
+
+# Run as root user
+USER root
+
+# Update sobit_manual
+RUN cd $WORKPATH/sobits_manual_mini && \
+    git config --global --add safe.directory /home/sobits/sobits_manual_mini && \
+    git pull origin main
+
+# Install ROS SOBITS Common Packages
+# RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros2_sobits.sh --humble
+
+
+# Clean cache
+RUN apt-get clean &&\
+    apt-get autoremove && \	
+    rm -rf /var/lib/apt/lists/
+
+RUN echo "╚══╣ Install: ros_noetic_sobits_ws:cpu (FINISHED) ╠══╝"

@@ -1,10 +1,10 @@
-# ros2_galactic_basic_ws
+# ros2_humble_basic_ws
 ## Container Environment
 イメージからコンテナを起動すると以下の環境が構築されます（イメージサイズが22GBほどあるのでストレージ容量に注意）。
-- Ubuntu : 20.04
-- ROS2 : Galactic
-- OpenCV : 4.5.5 (2021-12-30)
-- Python : 3.8.10（デフォルト）
+- Ubuntu : 22.04.1 LTS (Jammy Jellyfish)
+- ROS : Humble Hawksbill
+- OpenCV : 4.6.0 (2022-11-06)
+- Python : 3.10.6（デフォルト）
 - UserName : sobits
 
 ## How to run
@@ -13,7 +13,7 @@
 
 1. Dockerfileがある階層まで移動(例としてCUI操作のcpu版の実行手順を示します)
     ```
-    cd ~/docker_ws/container/ros2_galactic_basic_ws/Dockerfiles/cpu
+    cd ~/docker_ws/container/ros2_humble_basic_ws/Dockerfiles/cpu
     ```
 
 2. Dockerfileからイメージをビルド 
@@ -46,20 +46,20 @@ docker ps
 docker ps -a
 
 #コンテナの停止
-docker stop ros2_galactic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
+docker stop ros2_humble_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの再起動
-docker start ros2_galactic_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
+docker start ros2_humble_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの削除(起動中のコンテナは削除できない)
-docker rm ros2_galactic_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
+docker rm ros2_humble_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
 
 #イメージの削除(コンテナが残っている場合は削除できない)
-docker rmi sobits/ros2_galactic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
+docker rmi sobits/ros2_humble_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
 
-コンテナ内の catkin_ws/src は、ros2_galactic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
+コンテナ内の catkin_ws/src は、ros2_humble_basic_ws/src とリンクするように設定しています（run.shを参照）。  
 ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  (CUIの場合、コンテナ側で作成したファイルに関してはホストPC側からアクセスできないので要注意)
 
 
@@ -128,5 +128,4 @@ docker rmi sobits/ros2_galactic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 ## Tips
 
 ## memo
-- 2022/05/28
-    - 未完成
+

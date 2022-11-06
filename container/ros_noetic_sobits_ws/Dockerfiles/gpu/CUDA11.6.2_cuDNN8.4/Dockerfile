@@ -10,7 +10,8 @@ ENV WORKPATH /home/sobits
 USER root
 
 # Update sobit_manual
-RUN cd $WORKPATH/sobits_manual_mini \
+RUN cd $WORKPATH/sobits_manual_mini && \
+    git config --global --add safe.directory /home/sobits/sobits_manual_mini && \
     git pull origin main
 
 # Install ROS SOBITS Common Packages

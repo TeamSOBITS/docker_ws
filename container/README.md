@@ -20,6 +20,12 @@
         - CUDA11.6.2_cuDNN8.4
 
 
+- ### base_2204_ws
+    - cpu
+    - gpu
+        - CUDA11.7.1_cuDNN8.5.0.96
+
+
 - ### ros_kinetic_basic_ws
     - cpu
     - gpu
@@ -61,15 +67,15 @@
     - gpu
         - CUDA11.6.2_cuDNN8.4
 
-- ### ros2_galactic_basic_ws (未完成)
+- ### ros2_humble_basic_ws
     - cpu
     - gpu
-        - CUDA11.X.X_cuDNN8.X
+        - CUDA11.7.1_cuDNN8.5.0.96
 
-- ### ros2_galactic_sobits_ws（未完成）
+- ### ros2_humble_sobits_ws（未完成）
     - cpu
     - gpu
-        - CUDA11.X.X_cuDNN8.X
+        - CUDA11.7.1_cuDNN8.5.0.96
 
 ## Notes
 - 

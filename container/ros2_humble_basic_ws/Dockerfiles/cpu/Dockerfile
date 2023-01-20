@@ -1,8 +1,8 @@
-FROM sobits/base_ws:cpu_ubuntu1804 as mid_layer
+FROM sobits/base_ws:cpu_ubuntu2204 as mid_layer
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: ros_melodic_basic_ws:cpu (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros2_humble_basic_ws:cpu (STARTING) ╠══╗"
 
 
 ENV HOMEPATH /home/sobits
@@ -28,14 +28,14 @@ RUN cd $HOMEPATH && \
 
 
 ###################################
-# Install ROS1 & create catkin_ws #
+# Install ROS2 & create catkin_ws #
 ###################################
 # Run as root user
 USER root
 
-RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --melodic && \
-    gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --melodic && \
-	gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh
+RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros2.sh --humble && \
+    gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros2_colcon_ws.sh --humble && \
+    gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros2.sh --humble
 
 
 #################
@@ -70,7 +70,7 @@ RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chro
 
 
 # マルチステージビルド(image layer の内容を隠す処理)
-FROM sobits/base_ws:cpu_ubuntu1804
+FROM sobits/base_ws:cpu_ubuntu2204
 COPY --from=mid_layer / /
 
 
@@ -98,4 +98,4 @@ ENV USER sobits
 WORKDIR /home/sobits/
 
 
-RUN echo "╚══╣ Install: ros_melodic_basic_ws:cpu (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros2_humble_basic_ws:cpu (FINISHED) ╠══╝"

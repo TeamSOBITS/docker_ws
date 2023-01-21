@@ -19,7 +19,7 @@
 
 1. コンテナのフォルダをコピします。
     ```
-    $ cp ~/docker_ws/container/base_2004_ws/ ~/
+    $ cp -r ~/docker_ws/container/base_2004_ws/ ~/
     ```
 > **Warning**
 > コピされたフォルダの名前を変えてください。

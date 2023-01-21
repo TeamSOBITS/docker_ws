@@ -1,7 +1,7 @@
-FROM sobits/ros_noetic_basic_ws:gpu_cuda11.6.2_cudnn8.4
+FROM sobits/ros_noetic_basic_ws:gpu_cuda11.8.0_cudnn8.7
 LABEL maintainer Valentin Keith
 
-RUN echo "╔══╣ Install: ros_noetic_sobits_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_noetic_sobits_ws:gpu_cuda11.8.0_cudnn8.7 (STARTING) ╠══╗"
 
 
 ENV WORKPATH /home/sobits
@@ -17,8 +17,8 @@ RUN cd $WORKPATH/sobits_manual_mini && \
 # Install ROS SOBITS Common Packages
 RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --noetic
 
-# Install Pytorch 1.12.0
-RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_pytorch.sh --1.12.0
+# Install Pytorch 1.13.1
+RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_pytorch.sh --1.13.1
 
 # Clean cache
 RUN apt-get clean &&\
@@ -26,4 +26,4 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/
 
 
-RUN echo "╚══╣ Install: ros_noetic_sobits_ws:gpu_cuda11.6.2_cudnn8.4 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_noetic_sobits_ws:gpu_cuda11.8.0_cudnn8.7 (FINISHED) ╠══╝"

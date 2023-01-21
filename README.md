@@ -4,24 +4,24 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 
 ## Install Docker
 ```bash
-cd ~/
+$ cd ~/
 
-git clone https://gitlab.com/TeamSOBITS/docker_ws.git
+$ git clone https://gitlab.com/TeamSOBITS/docker_ws.git
 
-bash install_docker.sh
+$ bash install_docker.sh
 
 # Dockerコンテナ内でGPUを使う人は以下のコマンドも実行してください。
-bash install_nvidia_docker.sh
+$ bash install_nvidia_docker.sh
 
-# container_executer.pyを使う人は以下のコマンドも実行してください。
-sudo apt-get install python3-tk tk-dev 
-python3 -m tkinter # GUIが表示されればインストール完了
+# コンテナの実行を可視化するため、以下のコマンドも実行してください。
+$ sudo apt-get install python3-tk tk-dev 
+$ python3 -m tkinter # GUIが表示されればインストール完了
 ```
 
 ## How to use
 containerディレクトリ内に様々な環境のDockerfileを用意しています。
 コンテナの環境情報や起動方法等は、各ディレクトリの中にあるREADMEを参照してください。
-ホストPCがUbuntu16の場合、DNSサーバの設定をする必要があるので、[DNS server setting](#dns-server-setting)を参照してください。
+<!-- ホストPCがUbuntu16の場合、DNSサーバの設定をする必要があるので、[DNS server setting](#dns-server-setting)を参照してください。 -->
 
 ## Container Executer
 ![](img/container_executer.png)
@@ -40,7 +40,7 @@ source ~/.bashrc
 ```
 
 
-## DNS server setting
+<!-- ## DNS server setting
 Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネットワークに繋がらない場合は、以下の設定をしてください。
 
 
@@ -106,7 +106,7 @@ Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネット
   ```bash
   cat /etc/resolv.conf
   >>> nameserver x.x.x.x
-  ```
+  ``` -->
 
 
 ## Tips

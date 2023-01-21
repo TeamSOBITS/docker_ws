@@ -18,6 +18,7 @@
     - cpu
     - gpu
         - CUDA11.6.2_cuDNN8.4
+        - CUDA11.8.0_cuDNN8.7
 
 
 - ### base_2204_ws

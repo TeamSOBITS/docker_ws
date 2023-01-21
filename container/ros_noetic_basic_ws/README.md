@@ -1,40 +1,58 @@
 # ros_noetic_basic_ws
 ## Container Environment
-イメージからコンテナを起動すると以下の環境が構築されます（イメージサイズが22GBほどあるのでストレージ容量に注意）。
+イメージからコンテナを起動すると以下の環境が構築されます。
+
+> **Warning**
+> このイメージサイズをビルドするには、22GBほどのでストレージ容量を確保する必要があります。
+
+特長：
 - Ubuntu : 20.04
 - ROS : Noetic Ninjemys
-- OpenCV : 4.5.5 (2021-12-30)
+- OpenCV : 4.6.0 (2022-1-21)
 - Python : 3.8.10（デフォルト）
 - UserName : sobits
 
 ## How to run
-デフォルトではイメージとコンテナの名前は一緒にしています。  
+デフォルトではイメージとコンテナの名前は一緒にしています。 
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
 
-1. Dockerfileがある階層まで移動(例としてCUI操作のcpu版の実行手順を示します)
-    ```
-    cd ~/docker_ws/container/ros_noetic_basic_ws/Dockerfiles/cpu
-    ```
 
-2. Dockerfileからイメージをビルド 
+1. コンテナのフォルダをコピします。
     ```
-    bash build.sh
+    $ cp -r ~/docker_ws/container/ros_noetic_basic_ws/ ~/
+    ```
+> **Warning**
+> コピされたフォルダの名前を変えてください。
+> 例：コンテナ名 =「rcjp22_noetic」
+
+> **Warning**
+> これから、{コンテナ名}を書く時、変えたフォルダ名のことを表しています。そのまま、{コンテナ名}を入力しないでください。
+
+2. Dockerfileからイメージをビルドします。
+    ```
+    #CPUのみの場合：
+    $ cd ~/{コンテナ名}/Dockerfiles/cpu
+    $ bash build.sh
+
+    #GPU付きの場合：
+    $ cd ~/{コンテナ名}/Dockerfiles/gpu/CUDA11.8.0_cuDNN8.7
+    $ bash build.sh
     ```
 
 3. イメージからコンテナを起動
     ```
-    bash run.sh 
-    >> container sobits@:~$　←この表示がでればOK 
+    $ bash run.sh 
+    # >> container sobits@:~$　←この表示がでればOK 
     ```
-    ``` exit ``` と入力すればコンテナから抜けれる。
 
 4. 起動中のコンテナに別端末からアクセスする方法
     ```
-    bash exec.sh
-    >> container sobits@:~$　←この表示がでればOK 
+    $ bash exec.sh
+    # >> container sobits@:~$　←この表示がでればOK 
     ```
-    ``` exit ``` と入力すればコンテナから抜けれる。
-        
+      
+> **Note**
+> 「Ctrl」+「d」を押すと、同様にコンテナから抜けられます。  
 
 
 ## Docker commands
@@ -46,31 +64,21 @@ docker ps
 docker ps -a
 
 #コンテナの停止
-docker stop ros_noetic_basic_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
+docker stop {コンテナ名}  #docker stop <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの再起動
-docker start ros_noetic_basic_ws #docker start <CONTAINER NAME or CONTAINER ID>
+docker start {コンテナ名} #docker start <CONTAINER NAME or CONTAINER ID>
 
 #コンテナの削除(起動中のコンテナは削除できない)
-docker rm ros_noetic_basic_ws #docker rm <CONTAINER NAME or CONTAINER ID>
+docker rm {コンテナ名} #docker rm <CONTAINER NAME or CONTAINER ID>
 
 #イメージの削除(コンテナが残っている場合は削除できない)
-docker rmi sobits/ros_noetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
+docker rmi sobits/{コンテナ名} #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
 
-コンテナ内の catkin_ws/src は、ros_noetic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
+コンテナ内の catkin_ws/src は、{コンテナ名}/src とリンクするように設定しています（run.shを参照）。  
 ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  (CUIの場合、コンテナ側で作成したファイルに関してはホストPC側からアクセスできないので要注意)
-
-
-
-## ROS Packages
-`git_clone_ros_packages.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
-- sobit_common
-- web_speech_recognition
-- display_text
-- text_to_speech
-- ssd_node
 
 
 ## 分散処理の方法
@@ -128,6 +136,10 @@ docker rmi sobits/ros_noetic_basic_ws #docker rmi <IMAGE NAME or IMAGE ID>
 ## Tips
 
 ## memo
+- 2023/01/21 (RCJP22向け)
+    - CUDA11.8.0 cuDNN8.7の環境構築
+    - ホストPCがUbuntu22.04の環境でCPU/GPUともに動作確認（済）
+    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（未）
 - 2022/05/28
-    - CUDA11.6.2 cuDNN8.4のGPU環境を構築
-    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認済み
+    - CUDA11.6.2 cuDNN8.4の環境構築
+    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（済）

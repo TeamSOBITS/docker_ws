@@ -1,65 +1,85 @@
 # ros_noetic_sobits_ws
 ## Container Environment
-イメージからコンテナを起動すると以下の環境が構築されます（イメージサイズが22GBほどあるのでストレージ容量に注意）。
+イメージからコンテナを起動すると以下の環境が構築されます。
+
+> **Warning**
+> このイメージサイズをビルドするには、22GBほどのでストレージ容量を確保する必要があります。
+
+特長：
 - Ubuntu : 20.04
 - ROS : Noetic Ninjemys
-- OpenCV : 4.5.5 (2021-12-30)
+- OpenCV : 4.6.0 (2022-1-21)
 - Python : 3.8.10（デフォルト）
 - UserName : sobits
 
 ## How to run
-デフォルトではイメージとコンテナの名前は一緒にしています。  
+デフォルトではイメージとコンテナの名前は一緒にしています。 
 同じイメージから複数のコンテナを立ち上げる場合はコンテナ同士の名前が被らないようにしてください。
+
+
+1. コンテナのフォルダをコピします。
+    ```
+    $ cp -r ~/docker_ws/container/ros_noetic_sobits_ws/ ~/
+    ```
+> **Warning**
+> コピされたフォルダの名前を変えてください。
+> 例：コンテナ名 =「rcjp22_noetic」
+
+> **Warning**
+> これから、{コンテナ名}を書く時、変えたフォルダ名のことを表しています。そのまま、{コンテナ名}を入力しないでください。
+
+2. Dockerfileからイメージをビルドします。
+    ```
+    #CPUのみの場合：
+    $ cd ~/{コンテナ名}/Dockerfiles/cpu
+    $ bash build.sh
+
+    #GPU付きの場合：
+    $ cd ~/{コンテナ名}/Dockerfiles/gpu/CUDA11.8.0_cuDNN8.7
+    $ bash build.sh
+    ```
+
+3. イメージからコンテナを起動
+    ```
+    $ bash run.sh 
+    # >> container sobits@:~$　←この表示がでればOK 
+    ```
+
+4. 起動中のコンテナに別端末からアクセスする方法
+    ```
+    $ bash exec.sh
+    # >> container sobits@:~$　←この表示がでればOK 
+    ```
+      
+> **Note**
+> 「Ctrl」+「d」を押すと、同様にコンテナから抜けられます。  
+
+
+## Docker commands
 ```
-#ホスト側のセットアップ
-cd ~/docker_ws/container/ros_noetic_sobits_ws
-bash sobit_pro_setup.sh #必要なパッケージのインストールや、SOBIT_PROのデバイス登録などの設定を行います。
+#起動中のコンテナ一覧
+docker ps
 
-#CPUの場合
-cd ~/docker_ws/container/ros_noetic_sobits_ws/Dockerfiles/cpu
-bash build.sh #docker hubにビルド済みのイメージを登録しているので、ローカルでビルドする必要はない。Dockerfileを書き換えた場合はビルドしてください。 
-bash run.sh #コンテナの起動
+#コンテナ一覧（停止中も含む）
+docker ps -a
 
-#GPUの場合(バージョンは各自で合わせる)
-cd ~/docker_ws/container/ros_noetic_sobits_ws/Dockerfiles/gpu/CUDAxx_cuDNNxx/
-bash build.sh #コンテナの生成
-bash run.sh #コンテナの起動
+#コンテナの停止
+docker stop {コンテナ名}  #docker stop <CONTAINER NAME or CONTAINER ID>
 
------
-#コンテナの終了
-docker stop ros_noetic_sobits_ws  #docker stop <CONTAINER NAME or CONTAINER ID>
+#コンテナの再起動
+docker start {コンテナ名} #docker start <CONTAINER NAME or CONTAINER ID>
 
-#コンテナを再起動する場合
-docker start ros_noetic_sobits_ws #docker start <CONTAINER NAME or CONTAINER ID>
+#コンテナの削除(起動中のコンテナは削除できない)
+docker rm {コンテナ名} #docker rm <CONTAINER NAME or CONTAINER ID>
 
-#コンテナの削除
-docker rm ros_noetic_sobits_ws #docker rm <CONTAINER NAME or CONTAINER ID>
-
-#イメージの削除
-docker rmi ros_noetic_sobits_ws #docker rmi <IMAGE NAME or IMAGE ID>
+#イメージの削除(コンテナが残っている場合は削除できない)
+docker rmi sobits/{コンテナ名} #docker rmi <IMAGE NAME or IMAGE ID>
 
 ```
-コンテナが起動できたら、ウェブブラウザを開いて http://localhost:6080/ にアクセスしてください。  
-デフォルトのrun.shで実行すると、ホストPCのデバイスが使えます。
 
-コンテナ内の catkin_ws/src は、ros_noetic_basic_ws/src とリンクするように設定しています（run.shを参照）。  
-ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  
+コンテナ内の catkin_ws/src は、{コンテナ名}/src とリンクするように設定しています（run.shを参照）。  
+ホストPC上でコーディングしながら、それをコンテナ内で実行することも可能です。  (CUIの場合、コンテナ側で作成したファイルに関してはホストPC側からアクセスできないので要注意)
 
-
-## ROS Packages
-`sobit_pro_setup.sh`を実行すると、以下のTeamSOBITSオリジナルROSパッケージがsrcフォルダの中にcloneされます。 
-- sobit_pro
-- sobit_common
-
-## SOBIT_PRO USB files
-`sobit_pro_setup.sh`を実行すると、以下の場所にUSB設定ファイルが作成されます。
-これにより、デバイスを接続すると自動的にそのデバイスを検出することができます。 
-- /etc/udev/rules.d/wheel.rules
-- /etc/udev/rules.d/arm_pantilt.rules
-
-これらを使用する際は、デバイス名を以下のように指定します。
-- "/dev/wheel"
-- "/dev/arm_pantilt"
 
 ## 分散処理の方法
 - #### コンテナとホストPC間での分散処理
@@ -70,6 +90,16 @@ docker rmi ros_noetic_sobits_ws #docker rmi <IMAGE NAME or IMAGE ID>
 
     .bashrcにROSIPとROS_MASTERの設定をすれば、分散処理が可能です。  
     同一ホストPC上にあれば、複数コンテナ間でも分散処理できます。
+
+    ※現在の設定では、コンテナのIPとROS_IPを同じに設定しています。
+    　ROS_MASTER_URIもROS_IPと同じにしているので他のコンテナと通信する際は、
+    　ROS_MASTER_URIをROS_MASTERを起動したコンテナのものに統一してください。
+
+    - MASTERコンテナのROS_IP：172.17.0.2
+    - ROS_MASTER_URI：http://172.17.0.2:11311
+
+    - 他のコンテナのROS_IP：172.17.0.x
+    - ROS_MASTER_URI：http://172.17.0.2:11311　<-MASTERコンテナに揃える！
 
 - #### コンテナと外部ネットワーク上にあるROSノード間での分散処理  
     ホストPC上のコンテナと、LANケーブルでつないでいるraspberry piやJetsonなどと分散処理する場合はこちらになります。  
@@ -106,6 +136,10 @@ docker rmi ros_noetic_sobits_ws #docker rmi <IMAGE NAME or IMAGE ID>
 ## Tips
 
 ## memo
+- 2023/01/21 (RCJP22向け)
+    - CUDA11.8.0 cuDNN8.7の環境構築
+    - ホストPCがUbuntu22.04の環境でCPU/GPUともに動作確認（済）
+    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（未）
 - 2022/05/28
-    - CUDA11.6.2 cuDNN8.4のGPU環境を構築
-    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認済み
+    - CUDA11.6.2 cuDNN8.4の環境構築
+    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（済）

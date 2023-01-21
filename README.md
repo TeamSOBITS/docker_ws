@@ -107,16 +107,3 @@ Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネット
   cat /etc/resolv.conf
   >>> nameserver x.x.x.x
   ``` -->
-
-
-## Tips
-- ### コンテナ起動時に "docker: Error response from daemon: linux runtime spec devices: could not select device driver "" with capabilities: [[gpu]]. "と出た場合。
-
-  ホストPCの端末に以下のコマンドを入力すると、治る場合が有ります。
-
-  ```bash
-  cd ~/docker_ws/
-  bash nvidia-container-runtime-script.sh
-  sudo apt install nvidia-container-runtime
-  systemctl restart docker.service
-  ```

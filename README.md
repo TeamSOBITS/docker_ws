@@ -29,6 +29,10 @@ $ sudo apt-get install -y python3-tk tk-dev
 $ python3 -m tkinter
 ```
 
+> **Warning**
+> `GPU版`のDockerをインストールする前に，必ずCUDAとCuDNNのセットアップを済ませてください．
+
+
 ## How to use
 
 パッケージ内に様々なDocker環境が用意されていますので．

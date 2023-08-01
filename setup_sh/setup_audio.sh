@@ -12,10 +12,9 @@ echo "default-server = unix:/tmp/pulseaudio.socket
       autospawn = no 
       daemon-binary = /bin/true 
       # Prevent the use of shared memory 
-      enable-shm = false" >> /tmp/pulseaudio.client.conf' | sudo tee /etc/profile.d/sound_setup.sh
+      enable-shm = false" >> /tmp/pulseaudio.client.conf' | sudo tee /etc/profile.d/setup_sound.sh
 
-sudo bash /etc/profile.d/sound_setup.sh
+sudo bash /etc/profile.d/setup_sound.sh
 
 echo "╚══╣ Set-Up: Sound Configuration (FINISHED) ╠══╝"
-echo "source ~/.bashrc をして下さい"
 source ~/.bashrc

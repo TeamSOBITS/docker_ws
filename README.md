@@ -1,109 +1,78 @@
 # docker_ws
 
-Docker環境セットアップの方法とDockerfileをまとめたリポジトリ
+Docker環境セットアップの方法とDockerfileをまとめたリポジトリです．
+
 
 ## Install Docker
-```bash
-$ cd ~/
 
+```bash
+# docker_wsパッケージをダウンロードする．
 $ git clone https://gitlab.com/TeamSOBITS/docker_ws.git
 
+# インストールのフォルダへ移動する．
+$ cd docker_ws/setup_sh
+
+# 必要なリソースをインストールする．
 $ bash install_docker.sh
 
-# Dockerコンテナ内でGPUを使う人は以下のコマンドも実行してください。
+# Dockerコンテナ内でGPUを使う場合．以下のコマンドも実行する．
 $ bash install_nvidia_docker.sh
 
-# コンテナの実行を可視化するため、以下のコマンドも実行してください。
-$ sudo apt-get install python3-tk tk-dev 
-$ python3 -m tkinter # GUIが表示されればインストール完了
+# オーディオをセットアップする．
+$ bash setup_audio.sh
+
+# コンテナを可視化するため，以下のコマンドも実行してください．
+$ sudo apt-get update
+$ sudo apt-get install -y python3-tk tk-dev 
+
+# GUIを表示されたら，インストール完了．
+$ python3 -m tkinter
 ```
+
+> **Warning**
+> `GPU版`のDockerをインストールする前に，必ずCUDAとCuDNNのセットアップを済ませてください．
+
 
 ## How to use
-containerディレクトリ内に様々な環境のDockerfileを用意しています。
-コンテナの環境情報や起動方法等は、各ディレクトリの中にあるREADMEを参照してください。
-<!-- ホストPCがUbuntu16の場合、DNSサーバの設定をする必要があるので、[DNS server setting](#dns-server-setting)を参照してください。 -->
+
+パッケージ内に様々なDocker環境が用意されていますので．
+そのコンテナの環境情報や起動方法等については，各ディレクトリの中にあるREADMEを参照してください．
+
 
 ## Container Executer
-![](img/container_executer.png)
 
-起動中のコンテナの一覧を表示し、入りたいコンテナをクリックすることで中に入ることができます。
+![Container Executer](img/container_executer.png)
+
+ビルドされたコンテナの一覧を表示し，起動・再起動・停止・ターミナルの操作ができます．
+
 ```bash
 # 実行方法
-python3 ~/docker_ws/container_executer.py
+$ python3 ~/{docker_ws_path}/container_executer.py
 ```
 
-aliasで設定しておくと便利だと思います。  
+> **Note**
+> `{docker_ws_path}`はDockerパッケージのPATHを意味とする．
+
+また，`alias`として設定しておくと，`Container Executer`を速やかに実行できる．
+
 ```bash
-# ターミナルに記入してください。
-echo 'alias ce="python3 ~/docker_ws/container_executer.py"' >> ~/.bashrc
-source ~/.bashrc
+$ echo 'alias ce="python3 ~/{docker_ws_path}/container_executer.py"' >> ~/.bashrc
+$ source ~/.bashrc
 ```
 
+### 実行方法
+設定したaliasの実行方法については以下のうようになります．
 
-<!-- ## DNS server setting
-Ubuntu16上でDockerコンテナを起動する際、コンテナ内でネットワークに繋がらない場合は、以下の設定をしてください。
+```bash
+$ ce
+```
 
+> **Note**
+> `ce`だけで実行できます．また，PATHに依存していないため，どこでも実行可能です．
 
-- ### ホストPC上で打ち込むコマンド
-  ```bash
-  # daemon.jsonの確認
-  cat /etc/docker/daemon.json
+## Reference
 
-  # 何も表示されない場合は、新しく作成
-  sudo touch /etc/docker/daemon.json
+Docker上の環境構築や使い方についてより詳しく知りたい場合は，以下のサイトにドキュメントを読んでみてください．
 
-  # daemon.jsonをエディタで開く
-  sudo gedit /etc/docker/daemon.json
-  ```
-
-
-  以下の項目を記入（x.x.x.xにはホストPCが繋がっているネットワークのDNSサーバのIP or デフォルトゲートウェイを記入する）
-  ``` json
-  {
-    "dns":["x.x.x.x","x.x.x.y"]
-  }
-  ```
-
-  nvidia-dockerをインストールしている場合は既に、daemon.jsonに"runtime"の設定が記述されているので、
-  ```json
-  {
-    "runtimes": {
-        "nvidia": {
-          "path": "/usr/bin/nvidia-container-runtime",
-          "runtimeArgs": []
-      }
-    }
-  }
-  ```
-
-  こんな感じで、dnsの設定を追記する
-  ```json
-  {
-    "dns":["x.x.x.x","x.x.x.y"],
-    "runtimes": {
-        "nvidia": {
-          "path": "/usr/bin/nvidia-container-runtime",
-          "runtimeArgs": []
-      }
-    }
-  }
-  ```
-
-  Dockerを再起動
-  ```bash
-  sudo systemctl daemon-reload
-  sudo systemctl restart docker
-  ```
-
-  これでホストPC側の設定は終了。
-
-
-- ### コンテナ内で実行するコマンド
-
-  基本的には何もしなくてもOK。
-  以下のコマンドで設定したDNSが確認できる。
-
-  ```bash
-  cat /etc/resolv.conf
-  >>> nameserver x.x.x.x
-  ``` -->
+- SOBITS Manual: [Docker Workspaceの使用方法](https://github.com/TeamSOBITS/sobits_manual/blob/main/docs/using_docker_ws.md)
+- 公式サイト: [Docker Docs](https://docs.docker.com/)

@@ -21,7 +21,7 @@
 
 1. コンテナのフォルダをコピします。
 ```bash
-$ cp -r ~/docker_ws/container/base_2004_ws/ ~/
+$ cp -r {docker_wsのPATH}/container/base_2004_ws/ {NEWコンテナPATH}
 ```
 > **Warning**
 > コピされたフォルダの名前を変えてください。
@@ -32,12 +32,14 @@ $ cp -r ~/docker_ws/container/base_2004_ws/ ~/
 
 2. Dockerfileからイメージをビルドします。
 ```bash
+$ export GIT_PSW={PERSONAL_GIT_TOKEN_HERE}
+
 #CPUのみの場合：
-$ cd ~/{コンテナ名}/Dockerfiles/cpu
+$ cd {コンテナPATH}/Dockerfiles/cpu
 $ bash build.sh
 
 #GPU付きの場合：
-$ cd ~/{コンテナ名}/Dockerfiles/gpu/CUDAXX.X.X_cuDNNX.X
+$ cd {コンテナPATH}/Dockerfiles/gpu/CUDAXX.X.X_cuDNNX.X
 $ bash build.sh
 ```
 

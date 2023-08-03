@@ -2,13 +2,17 @@
 # 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
 
 
-FROM sobits/base_ws:gpu_cuda11.8.0_cudnn8.7_ubuntu2004 as mid_layer
+FROM sobits/base_ws:gpu_cuda12.1.1_cudnn8.9_ubuntu2004
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda11.8.0_cudnn8.7 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda12.1.1_cudnn8.9 (STARTING) ╠══╗"
 
 
+########################
+# Environment variable #
+########################
+ARG GIT_PSW
 ENV HOMEPATH /home/sobits
 
 ####################################################
@@ -16,7 +20,7 @@ ENV HOMEPATH /home/sobits
 ####################################################
 # 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
 
-# Run as user sobits
+# Run as sobits user
 USER sobits
 
 # Clone only installation_sh from SOBITS Manual
@@ -24,23 +28,22 @@ RUN cd $HOMEPATH && \
     mkdir sobits_manual_mini && \
     cd sobits_manual_mini && \
     git init && \
-    git remote add -f origin https://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@github.com/TeamSOBITS/sobits_manual && \
+    git remote add -f origin https://${GIT_PSW}@github.com/TeamSOBITS/sobits_manual && \
     git config core.sparseCheckout true && \
     echo "install_sh" >> .git/info/sparse-checkout && \
     git pull origin main && \
     cd install_sh
 
 
-
 ###################################
 # Install ROS1 & create catkin_ws #
 ###################################
-# Run as root user
-USER root
+# Run as sobits user
+USER sobits
 
-RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
-    gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --noetic && \
-	gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh
+RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
+    bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --noetic && \
+	bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh
 
 
 #################
@@ -55,10 +58,10 @@ RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
 #################
 # Alias Setting #
 #################
-# Run as user sobits
-USER root
+# Run as sobits user
+USER sobits
 
-RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh
+RUN bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh
 
 RUN . $HOMEPATH/.bashrc
 
@@ -66,22 +69,19 @@ RUN . $HOMEPATH/.bashrc
 ###########################
 # Install useful programs #
 ###########################
-# Run as root user
-USER root
+# Run as sobits user
+USER sobits
 
 # install google_chrome
-RUN gosu sobits bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chrome.sh
-
-
-
-# マルチステージビルド(image layer の内容を隠す処理)
-FROM sobits/base_ws:gpu_cuda11.8.0_cudnn8.7_ubuntu2004
-COPY --from=mid_layer / /
+RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chrome.sh
 
 
 ##################
 # Other settings #
 ##################
+# Run as root user
+USER root
+
 # Set time zone (Tokyo)
 ENV TZ Asia/Tokyo
 
@@ -100,7 +100,7 @@ RUN apt-get clean &&\
 ENV USER sobits
 
 # Set HOME position
-WORKDIR /home/sobits/
+WORKDIR $HOMEPATH
 
 
-RUN echo "╚══╣ Install: ros_noetic_basic_ws:gpu_cuda11.8.0_cudnn8.7 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_noetic_basic_ws:gpu_cuda12.1.1_cudnn8.9 (FINISHED) ╠══╝"

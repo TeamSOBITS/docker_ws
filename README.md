@@ -30,49 +30,142 @@ $ python3 -m tkinter
 ```
 
 > **Warning**
-> `GPU版`のDockerをインストールする前に，必ずCUDAとCuDNNのセットアップを済ませてください．
+> `GPU版`のDockerをインストールする前に，必ず[CUDAとCuDNNのセットアップ](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)を済ませてください．
 
 
 ## How to use
 
-パッケージ内に様々なDocker環境が用意されていますので．
-そのコンテナの環境情報や起動方法等については，各ディレクトリの中にあるREADMEを参照してください．
+コンテナの環境情報や起動方法等については，それぞれのコンテナのフォルダの中にあるREADMEを参照してください．
 
 
 ## Container Executer
 
 ![Container Executer](img/container_executer.png)
 
-ビルドされたコンテナの一覧を表示し，起動・再起動・停止・ターミナルの操作ができます．
+ビルドされたコンテナの一覧を表示し，それらを起動・再起動・停止・ターミナルの操作ができます．
 
 ```bash
-# 実行方法
-$ python3 ~/{docker_ws_path}/container_executer.py
+$ python3 ~/{docker_wsのPATH}/container_executer.py
+# 例: python3 ~/docker_ws/container_executer.py
 ```
 
 > **Note**
-> `{docker_ws_path}`はDockerパッケージのPATHを意味とする．
+> `{docker_wsのPATH}`はDockerパッケージのPATHを意味とする．
 
-また，`alias`として設定しておくと，`Container Executer`を速やかに実行できる．
+また，そのコマンドを`alias`として設定しておくと，`Container Executer`を速やかに実行できます．
 
 ```bash
-$ echo 'alias ce="python3 ~/{docker_ws_path}/container_executer.py"' >> ~/.bashrc
+# 1回のみで実行する
+$ echo 'alias ce="python3 ~/{docker_wsのPATH}/container_executer.py"' >> ~/.bashrc
 $ source ~/.bashrc
 ```
 
-### 実行方法
-設定したaliasの実行方法については以下のうようになります．
+設定した`alias`を実行するために，以下のコマンドを入力します．
 
 ```bash
 $ ce
 ```
 
 > **Note**
-> `ce`だけで実行できます．また，PATHに依存していないため，どこでも実行可能です．
+> このコマンドは自分がいるPATHに依存していないため，どこでも実行可能です．
+
+
+## Docker Containers 
+
+用意されているコンテナ一覧です．
+
+
+<details><summary>Containers List</summary>
+<p>
+
+- base_1804_l4t_ws
+    - cpu
+    - gpu
+        - CUDA10.2_cuDNN8.2.1
+- base_1804_ws
+    - cpu
+    - gpu
+        - CUDA11.6.2_cuDNN8.4
+- base_2004_ws
+    - cpu
+    - gpu
+        - CUDA11.6.2_cuDNN8.4
+        - CUDA11.8.0_cuDNN8.7
+        - CUDA12.1.1_cuDNN8.9
+- base_2204_ws
+    - cpu
+    - gpu
+        - CUDA11.7.1_cuDNN8.5.0.96
+        - CUDA12.1.1_cuDNN8.9
+- ros_kinetic_basic_ws (archived)
+    - cpu
+    - gpu
+        - CUDA9.0_cuDNN7.6
+- ros_melodic_basic_l4t_ws
+    - gpu
+        - CUDA10.2_cuDNN8.2.1
+- ros_melodic_basic_ws
+    - cpu
+    - gpu
+        - CUDA10.1_cuDNN7.0 (archived)
+        - CUDA11.0_cuDNN8.0 (archived)
+        - CUDA11.2_cuDNN8.1 (archived)
+        - CUDA11.3_cuDNN8.2 (archived)
+        - CUDA11.6.2_cuDNN8.4
+- ros_melodic_sobits_l4t_ws
+    - gpu
+        - CUDA10.2_cuDNN8.2.1
+- ros_melodic_sobits_ws
+    - cpu
+    - gpu
+        - CUDA11.6.2_cuDNN8.4
+- ros_noetic_basic_ws
+    - cpu
+    - gpu
+        - CUDA11.6.2_cuDNN8.4
+        - CUDA12.1.1_cuDNN8.9
+- ros_noetic_sobits_ws
+    - cpu
+    - gpu
+        - CUDA11.6.2_cuDNN8.4
+        - CUDA12.1.1_cuDNN8.9
+- ros2_humble_basic_ws
+    - cpu
+    - gpu
+        - CUDA11.7.1_cuDNN8.5.0.96
+        - CUDA12.1.1_cuDNN8.9
+- ros2_humble_sobits_ws
+    - cpu
+    - gpu
+        - CUDA11.7.1_cuDNN8.5.0.96
+        - CUDA12.1.1_cuDNN8.9
+
+</p>
+</details>
+
+
+## Change-Log
+
+- 2023/08/02~05
+    - CUDA12.1.1 cuDNN8.9に対応
+        - base_2004_ws, base_2204_ws
+        - ros_noetic_basic_ws, ros2_humble_basic_ws
+        - ros_noetic_sobits_ws, ros2_humble_sobits_ws
+    - トークンの削除し，要求する
+    - レイヤのコピを省略し，容量の縮小
+    - 必要なパッケージの縮小
+- 2023/01/21 (RCJP22向け)
+    - CUDA11.8.0 cuDNN8.7の環境構築
+    - ホストPCがUbuntu22.04の環境でCPU/GPUともに動作確認（済）
+    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（未）
+- 2022/05/28
+    - CUDA11.6.2 cuDNN8.4の環境構築
+    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（済）
+
 
 ## Reference
 
-Docker上の環境構築や使い方についてより詳しく知りたい場合は，以下のサイトにドキュメントを読んでみてください．
+Docker上の環境構築や使い方についてより詳しく知りたい場合は，以下のサイトのドキュメントを読んでみてください．
 
 - SOBITS Manual: [Docker Workspaceの使用方法](https://github.com/TeamSOBITS/sobits_manual/blob/main/docs/using_docker_ws.md)
 - 公式サイト: [Docker Docs](https://docs.docker.com/)

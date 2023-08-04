@@ -1,7 +1,3 @@
-# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
-# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
-
-
 FROM sobits/base_ws:gpu_cuda12.1.1_cudnn8.9_ubuntu2004
 LABEL maintainer Valentin Keith
 
@@ -15,10 +11,11 @@ RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda12.1.1_cudnn8.9 (STA
 ARG GIT_PSW
 ENV HOMEPATH /home/sobits
 
+
 ####################################################
 # Clone sobits_manual repository (only install_sh) #
 ####################################################
-# 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
+# Reference: https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
 
 # Run as sobits user
 USER sobits

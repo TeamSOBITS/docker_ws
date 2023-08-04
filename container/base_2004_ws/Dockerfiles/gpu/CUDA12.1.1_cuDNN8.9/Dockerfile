@@ -1,12 +1,8 @@
-# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
-# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
-
-
 FROM ubuntu:20.04 as mid_layer
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: base2004_ws:gpu_cuda12.1.1_cudnn8.9_ubuntu2004 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: base_ws:gpu_cuda12.1.1_cudnn8.9_ubuntu2004 (STARTING) ╠══╗"
 
 
 ###################################
@@ -44,7 +40,6 @@ RUN apt-get update && \
         # alsa-utils \
         uuid-dev \
         locales \
-        # gosu \
         fonts-takao-* \
         sudo \
         git-all \
@@ -78,7 +73,7 @@ RUN . $HOMEPATH/.bashrc
 # Run as root user
 USER root
 
-# 参考①：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/base/Dockerfile
+# Reference 1: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/base/Dockerfile
 ENV NVARCH x86_64
 
 ENV NVIDIA_REQUIRE_CUDA "cuda>=12.1 brand=tesla,driver>=450,driver<451 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526"
@@ -111,7 +106,7 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
 
-# 参考②：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/runtime/Dockerfile
+# Reference 2: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/runtime/Dockerfile
 ENV NV_CUDA_LIB_VERSION 12.1.1-1
 
 ENV NV_NVTX_VERSION 12.1.105-1
@@ -141,7 +136,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt-mark hold ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME}
 
 
-# 参考③：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/devel/Dockerfile
+# Reference 3: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/devel/Dockerfile
 ENV NV_CUDA_LIB_VERSION "12.1.1-1"
 
 ENV NV_CUDA_CUDART_DEV_VERSION 12.1.105-1
@@ -185,7 +180,7 @@ RUN apt-mark hold ${NV_LIBCUBLAS_DEV_PACKAGE_NAME} ${NV_LIBNCCL_DEV_PACKAGE_NAME
 ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs
 
 
-# 参考④：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/devel/cudnn8/Dockerfile
+# Reference 4: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.1.1/ubuntu2004/devel/cudnn8/Dockerfile
 ENV NV_CUDNN_VERSION 8.9.0.131
 ENV NV_CUDNN_PACKAGE_NAME "libcudnn8"
 
@@ -267,4 +262,4 @@ ENV USER sobits
 WORKDIR /home/sobits/
 
 
-RUN echo "╚══╣ Install: base2004_ws:gpu_CUDA12.1.1_cuDNN8.9 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: base_ws:gpu_CUDA12.1.1_cuDNN8.9 (FINISHED) ╠══╝"

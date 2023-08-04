@@ -19,7 +19,7 @@ docker run -it \
     -v /tmp/pulseaudio.client.conf:/tmp/pulseaudio.client.conf \
     -v /dev/input/:/dev/input/ \
     -v /dev/snd/:/dev/snd/ \
-    -v $(pwd)/src/:/home/sobits/catkin_ws/src/ \
+    -v $(pwd)/src/:/home/sobits/colcon_ws/src/ \
     --env LOCAL_UID=$(id -u ${USER}) \
     --env LOCAL_GID=$(id -g ${USER}) \
     --env PULSE_SERVER=unix:/tmp/pulseaudio.socket \

@@ -1,24 +1,43 @@
 FROM sobits/ros2_humble_basic_ws:gpu_cuda11.7.1_cudnn8.5.0.96
 LABEL maintainer Valentin Keith
 
-RUN echo "╔══╣ Install: ros_noetic_sobits_ws:gpu_cuda11.7.1_cudnn8.5.0.96 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros2_humble_sobits_ws:gpu_cuda11.7.1_cudnn8.5.0.96 (STARTING) ╠══╗"
 
 
-ENV WORKPATH /home/sobits
-
-# Run as root user
-USER root
+###########################
+# Install SOBITS programs #
+###########################
+# Run as sobits user
+USER sobits
 
 # Update sobit_manual
-RUN cd $WORKPATH/sobits_manual_mini && \
-    git config --global --add safe.directory /home/sobits/sobits_manual_mini && \
+RUN cd $HOMEPATH/sobits_manual_mini && \
+    git remote set-url origin https://${GIT_PSW}@github.com/TeamSOBITS/sobits_manual && \
     git pull origin main
 
 # Install ROS SOBITS Common Packages
-# RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_ros2_sobits.sh --humble
+# RUN bash $WORKPATH/sobits_manual_mini/install_sh/install_ros2_sobits.sh --humble
 
-# Install Pytorch 1.13.0
-RUN gosu sobits bash $WORKPATH/sobits_manual_mini/install_sh/install_pytorch.sh --1.13.0
+# Install Pytorch 2.0.1
+RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_pytorch.sh --2.0.1
+
+
+##################
+# Other settings #
+##################
+# Run as root user
+USER root
+
+# Clean cache
+RUN apt-get clean &&\
+    apt-get autoremove && \	
+    rm -rf /var/lib/apt/lists/
+
+# Set user
+ENV USER sobits
+
+# Set HOME position
+WORKDIR $HOMEPATH
 
 # Clean cache
 RUN apt-get clean &&\
@@ -26,4 +45,4 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/
 
 
-RUN echo "╚══╣ Install: ros_noetic_sobits_ws:gpu_cuda11.7.1_cudnn8.5.0.96 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros2_humble_sobits_ws:gpu_cuda11.7.1_cudnn8.5.0.96 (FINISHED) ╠══╝"

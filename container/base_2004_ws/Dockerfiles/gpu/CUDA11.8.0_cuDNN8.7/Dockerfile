@@ -1,12 +1,8 @@
-# 参考① https://gitlab.com/nvidia/container-images/cuda/-/tree/master/dist
-# 参考② https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda/tags
-
-
-FROM ubuntu:20.04 as mid_layer
+FROM ubuntu:20.04
 LABEL maintainer Valentin Keith
 
 
-RUN echo "╔══╣ Install: base2004_ws:gpu_cuda11.8.0_cudnn8.7 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: base_ws:gpu_cuda11.8.0_cudnn8.7_ubuntu2004 (STARTING) ╠══╗"
 
 
 ###################################
@@ -16,70 +12,41 @@ ENV USER_ID=${LOCAL_UID:-1000}
 ENV GROUP_ID=${LOCAL_GID:-1000}
 ENV DEBCONF_NOWARNINGS yes
 ENV DEBIAN_FRONTEND=noninteractive
+ARG GIT_PSW
 
 
 ######################
 # Install basic apps #
 ######################
 # avoid time-zone setting
-RUN apt-get update -q && \
-    apt-get install -yq \
-        tzdata
+RUN echo 'Asia/Tokyo' > /etc/timezone && \
+    ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
+    apt-get update && \
+    apt-get install -yq --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update -q && \
+RUN apt-get update && \
     apt-get install -yq \
-        software-properties-common
-
-RUN apt-get update -q && \
-    apt-get install -yq \
-        wget \
-        curl \
-        git-all \
-        build-essential \
-        vim \
-        nano \
-        gedit \
-        sudo \
-        lsb-release \
-        locales \
+        software-properties-common \
         bash-completion \
-        gosu \
+        lsb-release \
+        dpkg-dev \
+        pkg-config \
         net-tools \
         usbutils \
+        libusb-1.0-0-dev \
+        libudev-dev \
         iputils-ping \
-        alsa-utils \
+        # alsa-utils \
+        uuid-dev \
+        locales \
         fonts-takao-* \
-        libcanberra-gtk-module \
-        libcanberra-gtk3-module \
-        file \
-        dpkg-dev \
-        qemu \
-        binfmt-support \
-        qemu-user-static \
-        pkg-config \
-        ninja-build \
-        doxygen \
-        clang \
-        python3 \
-        gcc-9 \
-        g++-9 \
-        git \
-        git-lfs \
-        nasm \
-        cmake \
-        libgl1-mesa-dev:amd64 \
-        libsoundio-dev:amd64 \
-        libjpeg-dev:amd64 \
-        libvulkan-dev:amd64 \
-        libx11-dev:amd64 \
-        libxcursor-dev:amd64 \
-        libxinerama-dev:amd64 \
-        libxrandr-dev:amd64 \
-        libusb-1.0-0-dev:amd64 \
-        libssl-dev:amd64 \
-        libudev-dev:amd64 \
-        mesa-common-dev:amd64 \
-        uuid-dev:amd64
+        sudo \
+        git-all \
+        wget \
+        curl \
+        nano \
+        gedit
 
 
 ###################
@@ -106,7 +73,7 @@ RUN . $HOMEPATH/.bashrc
 # Run as root user
 USER root
 
-# 参考① https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/base/Dockerfile
+# Reference 1: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/base/Dockerfile
 ENV NVARCH x86_64
 
 ENV NVIDIA_REQUIRE_CUDA "cuda>=11.8 brand=tesla,driver>=450,driver<451 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=510,driver<511 brand=unknown,driver>=510,driver<511 brand=nvidia,driver>=510,driver<511 brand=nvidiartx,driver>=510,driver<511 brand=geforce,driver>=510,driver<511 brand=geforcertx,driver>=510,driver<511 brand=quadro,driver>=510,driver<511 brand=quadrortx,driver>=510,driver<511 brand=titan,driver>=510,driver<511 brand=titanrtx,driver>=510,driver<511 brand=tesla,driver>=515,driver<516 brand=unknown,driver>=515,driver<516 brand=nvidia,driver>=515,driver<516 brand=nvidiartx,driver>=515,driver<516 brand=geforce,driver>=515,driver<516 brand=geforcertx,driver>=515,driver<516 brand=quadro,driver>=515,driver<516 brand=quadrortx,driver>=515,driver<516 brand=titan,driver>=515,driver<516 brand=titanrtx,driver>=515,driver<516"
@@ -139,7 +106,7 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
 
-# 参考②：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/runtime/Dockerfile
+# Reference 2: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/runtime/Dockerfile
 ENV NV_CUDA_LIB_VERSION 11.8.0-1
 
 ENV NV_NVTX_VERSION 11.8.86-1
@@ -167,7 +134,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 
-# 参考③：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/devel/Dockerfile
+# Reference 3: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/devel/Dockerfile
 ENV NV_CUDA_LIB_VERSION "11.8.0-1"
 
 ENV NV_CUDA_CUDART_DEV_VERSION 11.8.89-1
@@ -208,7 +175,7 @@ RUN apt-mark hold ${NV_LIBCUBLAS_DEV_PACKAGE_NAME} ${NV_LIBNCCL_DEV_PACKAGE_NAME
 ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs
 
 
-# 参考④：https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/devel/cudnn8/Dockerfile
+# Reference 4: https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2004/devel/cudnn8/Dockerfile
 ENV NV_CUDNN_VERSION 8.7.0.84
 ENV NV_CUDNN_PACKAGE_NAME "libcudnn8"
 
@@ -235,8 +202,8 @@ USER root
 RUN apt-get update -q && \
     apt-get install -yq \
         python3 \
-        python3-pip \
-        python3-dev
+        python3-dev \
+        python3-pip
 
 
 # Run as user sobits
@@ -248,38 +215,27 @@ RUN python3 -m pip install -U \
         wheel
 
 
-####################################################
-# Clone sobits_manual repository (only install_sh) #
-####################################################
-# 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
-
-# Run as user sobits
+##############################
+# Install OpenCV 4.6.0 (GPU) #
+##############################
+# Run as sobits user
 USER sobits
 
 # Clone only installation_sh from SOBITS Manual
 RUN cd $HOMEPATH && \
-    curl https://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@raw.githubusercontent.com/TeamSOBITS/sobits_manual/main/install_sh/install_opencv.sh -o install_opencv.sh
+    curl https://${GIT_PSW}@raw.githubusercontent.com/TeamSOBITS/sobits_manual/main/install_sh/install_opencv.sh -o install_opencv.sh
 
-
-###############################
-# Install OpenCV 4.6.0 (GPU) #
-###############################
-# Run as root user
-USER root
-
-RUN gosu sobits bash $HOMEPATH/install_opencv.sh --4.6.0 --GPU
+RUN bash $HOMEPATH/install_opencv.sh --4.6.0 --GPU
 
 RUN rm $HOMEPATH/install_opencv.sh
-
-
-# マルチステージビルド(image layer の内容を隠す処理)
-FROM ubuntu:20.04
-COPY --from=mid_layer / /
 
 
 ##################
 # Other settings #
 ##################
+# Run as root user
+USER root
+
 # Set time zone (Tokyo)
 ENV TZ Asia/Tokyo
 
@@ -302,4 +258,4 @@ ENV USER sobits
 WORKDIR /home/sobits/
 
 
-RUN echo "╚══╣ Install: base2004_ws:gpu_cuda11.8.0_cudnn8.7 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: base_ws:gpu_cuda11.8.0_cudnn8.7_ubuntu2004 (FINISHED) ╠══╝"

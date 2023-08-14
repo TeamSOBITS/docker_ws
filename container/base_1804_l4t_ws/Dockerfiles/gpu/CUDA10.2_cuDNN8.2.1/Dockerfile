@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/l4t-pytorch:r32.7.1-pth1.10-py3 as mid_layer
+FROM nvcr.io/nvidia/l4t-pytorch:r32.7.1-pth1.10-py3
 LABEL maintainer Valentin Keith and Okuma Yuki
 
 
@@ -12,67 +12,42 @@ ENV USER_ID=${LOCAL_UID:-1000}
 ENV GROUP_ID=${LOCAL_GID:-1000}
 ENV DEBCONF_NOWARNINGS yes
 ENV DEBIAN_FRONTEND=noninteractive
+ARG GIT_PSW
 
 
 ######################
 # Install basic apps #
 ######################
 # avoid time-zone setting
-RUN apt-get update -q && \
-    apt-get install -yq \
-        tzdata
+# avoid time-zone setting
+RUN echo 'Asia/Tokyo' > /etc/timezone && \
+    ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
+    apt-get update && \
+    apt-get install -yq --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update -q && \
+RUN apt-get update && \
     apt-get install -yq \
-        wget \
-        curl \
-        git-all \
-        build-essential \
-        vim \
-        nano \
-        gedit \
-        sudo \
-        lsb-release \
-        locales \
+        software-properties-common \
         bash-completion \
-        gosu \
+        lsb-release \
+        dpkg-dev \
+        pkg-config \
         net-tools \
         usbutils \
+        libusb-1.0-0-dev \
+        libudev-dev \
         iputils-ping \
-        alsa-utils \
+        # alsa-utils \
+        uuid-dev \
+        locales \
         fonts-takao-* \
-        libcanberra-gtk-module \
-        libcanberra-gtk3-module \
-        software-properties-common \
-        file \
-        dpkg-dev \
-        qemu \
-        binfmt-support \
-        qemu-user-static \
-        pkg-config \
-        ninja-build \
-        doxygen \
-        clang \
-        python3 \
-        gcc \
-        g++ \
-        git \
-        git-lfs \
-        nasm \
-        cmake \
-        libgl1-mesa-dev:arm64 \
-        libsoundio-dev:arm64 \
-        libjpeg-dev:arm64 \
-        libvulkan-dev:arm64 \
-        libx11-dev:arm64 \
-        libxcursor-dev:arm64 \
-        libxinerama-dev:arm64 \
-        libxrandr-dev:arm64 \
-        libusb-1.0-0-dev:arm64 \
-        libssl-dev:arm64 \
-        libudev-dev:arm64 \
-        mesa-common-dev:arm64 \
-        uuid-dev:arm64   
+        sudo \
+        git-all \
+        wget \
+        curl \
+        nano \
+        gedit  
 
 
 ###################
@@ -102,14 +77,14 @@ USER root
 RUN apt-get update -q && \
     apt-get install -yq \
         python \
-        python-pip \
-        python-dev
+        python-dev \
+        python-pip
 
 RUN apt-get update -q && \
     apt-get install -yq \
         python3 \
-        python3-pip \
-        python3-dev
+        python3-dev \
+        python3-pip
 
 # Run as user sobits
 USER sobits
@@ -124,38 +99,27 @@ RUN python3 -m pip install -U \
         wheel
 
 
-####################################################
-# Clone sobits_manual repository (only install_sh) #
-####################################################
-# 参考：https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository
-
-# Run as user sobits
+##############################
+# Install OpenCV 4.6.0 (GPU) #
+##############################
+# Run as sobits user
 USER sobits
 
 # Clone only installation_sh from SOBITS Manual
 RUN cd $HOMEPATH && \
-    curl https://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@raw.githubusercontent.com/TeamSOBITS/sobits_manual/main/install_sh/install_opencv.sh -o install_opencv.sh
+    curl https://${GIT_PSW}@raw.githubusercontent.com/TeamSOBITS/sobits_manual/main/install_sh/install_opencv.sh -o install_opencv.sh
 
-
-###############################
-# Install OpenCV 4.6.0 (CPU) #
-###############################
-# Run as root user
-USER root
-
-RUN gosu sobits bash $HOMEPATH/install_opencv.sh --4.6.0 --GPU
+RUN bash $HOMEPATH/install_opencv.sh --4.6.0 --GPU
 
 RUN rm $HOMEPATH/install_opencv.sh
-
-
-# マルチステージビルド(image layer の内容を隠す処理)
-FROM nvcr.io/nvidia/l4t-pytorch:r32.7.1-pth1.10-py3
-COPY --from=mid_layer / /
 
 
 ##################
 # Other settings #
 ##################
+# Run as root user
+USER root
+
 # Set time zone (Tokyo)
 ENV TZ Asia/Tokyo
 

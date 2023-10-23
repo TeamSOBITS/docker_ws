@@ -4,6 +4,13 @@ LABEL maintainer Valentin Keith
 RUN echo "╔══╣ Install: ros_noetic_sobits_ws:cpu (STARTING) ╠══╗"
 
 
+###################################
+# Environment_variable_preference #
+###################################
+ARG GIT_PSW
+ENV HOMEPATH /home/sobits
+
+
 ###########################
 # Install SOBITS programs #
 ###########################

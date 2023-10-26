@@ -1,4 +1,0 @@
-# ros_noetic_basic_ws/src
-
-ros_noetic_basic_wsのソースコードをまとめたディレクトリ
-コンテナ内のcatkin_ws/srcと一致

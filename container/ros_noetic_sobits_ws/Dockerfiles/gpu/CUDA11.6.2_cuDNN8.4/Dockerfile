@@ -4,6 +4,13 @@ LABEL maintainer Valentin Keith
 RUN echo "╔══╣ Install: ros_noetic_sobits_ws:gpu_cuda11.6.2_cudnn8.4 (STARTING) ╠══╗"
 
 
+########################
+# Environment variable #
+########################
+ARG GIT_PSW
+ENV HOMEPATH /home/sobits
+
+
 ###########################
 # Install SOBITS programs #
 ###########################

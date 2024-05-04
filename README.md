@@ -126,6 +126,7 @@ $ ce
     - gpu
         - CUDA11.6.2_cuDNN8.4
         - CUDA12.1.1_cuDNN8.9
+        - CUDA12.2.2_cuDNN8.9
 - ros2_humble_basic_ws
     - cpu
     - gpu

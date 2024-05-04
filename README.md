@@ -18,9 +18,6 @@ $ bash install_docker.sh
 # Dockerコンテナ内でGPUを使う場合．以下のコマンドも実行する．
 $ bash install_nvidia_docker.sh
 
-# オーディオをセットアップする．
-$ bash setup_audio.sh
-
 # コンテナを可視化するため，以下のコマンドも実行してください．
 $ sudo apt-get update
 $ sudo apt-get install -y python3-tk tk-dev 

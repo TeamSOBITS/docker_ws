@@ -7,7 +7,7 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 
 ```bash
 # docker_wsパッケージをダウンロードする．
-$ git clone https://gitlab.com/TeamSOBITS/docker_ws.git
+$ git clone https://github.com/TeamSOBITS/docker_ws.git
 
 # インストールのフォルダへ移動する．
 $ cd docker_ws/setup_sh

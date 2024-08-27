@@ -1,5 +1,5 @@
 FROM sobits/base_ws:cpu_ubuntu2204
-LABEL maintainer Valentin Keith
+LABEL maintainer="Valentin Keith"
 
 
 RUN echo "╔══╣ Install: ros2_humble_basic_ws:cpu (STARTING) ╠══╗"
@@ -9,7 +9,7 @@ RUN echo "╔══╣ Install: ros2_humble_basic_ws:cpu (STARTING) ╠══╗
 # Environment variable #
 ########################
 ARG GIT_PSW
-ENV HOMEPATH /home/sobits
+ENV HOMEPATH=/home/sobits
 
 
 ####################################################
@@ -33,7 +33,7 @@ RUN cd $HOMEPATH && \
 
 
 ###################################
-# Install ROS2 & create catkin_ws #
+# Install ROS2 & create colcon_ws #
 ###################################
 # Run as sobits user
 USER sobits
@@ -79,22 +79,13 @@ RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chrome.sh
 # Run as root user
 USER root
 
-# Set time zone (Tokyo)
-ENV TZ Asia/Tokyo
-
-# Set Language
-RUN locale-gen ja_JP.UTF-8
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:ja
-ENV LC_ALL ja_JP.UTF-8
-
 # Clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/
 
 # Set user
-ENV USER sobits
+ENV USER=sobits
 
 # Set HOME position
 WORKDIR $HOMEPATH

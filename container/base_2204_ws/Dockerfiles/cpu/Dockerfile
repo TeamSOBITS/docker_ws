@@ -107,7 +107,8 @@ USER ${USER_NAME}
 # install pip
 RUN python3 -m pip install -U \
         pip \
-        wheel
+        wheel \
+        numpy
 
 
 ##############################
@@ -139,6 +140,7 @@ RUN apt-get clean &&\
 
 # Set user
 ENV USER=${USER_NAME}
+USER ${USER_NAME}
 
 # Set HOME position
 WORKDIR ${HOMEPATH}

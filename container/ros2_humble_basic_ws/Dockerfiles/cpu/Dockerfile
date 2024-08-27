@@ -40,7 +40,8 @@ USER sobits
 
 RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros2.sh --humble && \
     bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros2_colcon_ws.sh --humble && \
-	bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros2.sh --humble
+	bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros2.sh --humble && \
+    bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh --ros2
 
 
 #################
@@ -50,17 +51,6 @@ RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros2.sh --humble && \
 USER root
 
 RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
-
-
-#################
-# Alias Setting #
-#################
-# Run as sobits user
-USER sobits
-
-RUN bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh
-
-RUN . $HOMEPATH/.bashrc
 
 
 ###########################

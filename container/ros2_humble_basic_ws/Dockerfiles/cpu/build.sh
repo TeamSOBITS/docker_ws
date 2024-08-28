@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR=$(pwd)
-str=`echo ${DIR} | awk -F "/" '{ print $(NF - 3) }'`
+str=`echo ${DIR} | awk -F "/" '{ print $(NF - 2) }'`
 
 if [[ ${GIT_PSW} == "" ]]
 then

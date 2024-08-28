@@ -9,31 +9,16 @@ xhost +local:${USER}
 
 docker run -it \
     --gpus all \
-    --device /dev/:/dev/ \
-    --device=/dev/video0 \
-    -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
-    -v /etc/localtime:/etc/localtime \
     -v /etc/udev/rules.d/:/etc/udev/rules.d/ \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
-    -v /tmp/pulseaudio.client.conf:/tmp/pulseaudio.client.conf \
-    -v /dev/input/:/dev/input/ \
-    -v /dev/snd/:/dev/snd/ \
-    -v $(pwd)/src/:/home/sobits/catkin_ws/src/ \
-    --env LOCAL_UID=$(id -u ${USER}) \
-    --env LOCAL_GID=$(id -g ${USER}) \
-    --env PULSE_SERVER=unix:/tmp/pulseaudio.socket \
-    --env PULSE_COOKIE=/tmp/pulseaudio.cookie \
-    --env DISPLAY=${DISPLAY} \
-    --env QT_X11_NO_MITSHM=1 \
+    -v $(pwd)/src/:/home/sobits/colcon_ws/src/ \
     --env CONTAINER_NAME=${str} \
-    --shm-size=512m \
+    --shm-size=1g \
     --net host \
     --name ${str} \
     --privileged \
     --user sobits \
     sobits/${str} \
-    /bin/bash 
+    /bin/bash
 
 
     # --mount type=bind,src=/var/run/dbus/system_bus_socket,dst=/var/run/dbus/system_bus_socket,bind-propagation=shared \

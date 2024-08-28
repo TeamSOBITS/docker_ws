@@ -22,8 +22,8 @@ RUN cd $HOMEPATH/sobits_manual_mini && \
     git remote set-url origin https://${GIT_PSW}@github.com/TeamSOBITS/sobits_manual && \
     git pull origin main
 
-# Install Pytorch 2.0.1
-RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_pytorch.sh --2.0.1
+# Install Pytorch 2.4.0
+# RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_pytorch.sh --2.4.0
 
 
 ##################

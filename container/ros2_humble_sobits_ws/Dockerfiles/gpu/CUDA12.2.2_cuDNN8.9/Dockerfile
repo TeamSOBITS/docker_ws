@@ -1,5 +1,5 @@
 FROM sobits/ros2_humble_basic_ws:gpu_cuda12.2.2_cudnn8.9
-LABEL maintainer Valentin Keith
+LABEL maintainer="Valentin Keith"
 
 RUN echo "╔══╣ Install: ros2_humble_sobits_ws:gpu_cuda12.2.2_cudnn8.9 (STARTING) ╠══╗"
 
@@ -8,7 +8,7 @@ RUN echo "╔══╣ Install: ros2_humble_sobits_ws:gpu_cuda12.2.2_cudnn8.9 (S
 # Environment_variable_preference #
 ###################################
 ARG GIT_PSW
-ENV HOMEPATH /home/sobits
+ENV HOMEPATH=/home/sobits
 
 
 ###########################
@@ -41,7 +41,7 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/
 
 # Set user
-ENV USER sobits
+ENV USER=sobits
 
 # Set HOME position
 WORKDIR $HOMEPATH

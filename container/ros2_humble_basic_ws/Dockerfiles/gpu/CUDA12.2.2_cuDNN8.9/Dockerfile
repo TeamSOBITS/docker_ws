@@ -33,7 +33,7 @@ RUN cd $HOMEPATH && \
 
 
 ###################################
-# Install ROS2 & create catkin_ws #
+# Install ROS2 & create colcon_ws #
 ###################################
 # Run as sobits user
 USER sobits

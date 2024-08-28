@@ -1,5 +1,5 @@
 FROM sobits/ros2_humble_basic_ws:gpu_cuda12.1.1_cudnn8.9
-LABEL maintainer Valentin Keith
+LABEL maintainer="Valentin Keith"
 
 RUN echo "╔══╣ Install: ros2_humble_sobits_ws:gpu_cuda12.1.1_cudnn8.9 (STARTING) ╠══╗"
 
@@ -8,7 +8,7 @@ RUN echo "╔══╣ Install: ros2_humble_sobits_ws:gpu_cuda12.1.1_cudnn8.9 (S
 # Environment_variable_preference #
 ###################################
 ARG GIT_PSW
-ENV HOMEPATH /home/sobits
+ENV HOMEPATH=/home/sobits
 
 
 ###########################
@@ -21,9 +21,6 @@ USER sobits
 RUN cd $HOMEPATH/sobits_manual_mini && \
     git remote set-url origin https://${GIT_PSW}@github.com/TeamSOBITS/sobits_manual && \
     git pull origin main
-
-# Install ROS SOBITS Common Packages
-# RUN bash $WORKPATH/sobits_manual_mini/install_sh/install_ros2_sobits.sh --humble
 
 # Install Pytorch 2.0.1
 RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_pytorch.sh --2.0.1
@@ -41,15 +38,10 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/
 
 # Set user
-ENV USER sobits
+ENV USER=sobits
 
 # Set HOME position
 WORKDIR $HOMEPATH
-
-# Clean cache
-RUN apt-get clean &&\
-    apt-get autoremove && \	
-    rm -rf /var/lib/apt/lists/
 
 
 RUN echo "╚══╣ Install: ros2_humble_sobits_ws:gpu_cuda12.1.1_cudnn8.9 (FINISHED) ╠══╝"

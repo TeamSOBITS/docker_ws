@@ -43,10 +43,5 @@ ENV USER=sobits
 # Set HOME position
 WORKDIR $HOMEPATH
 
-# Clean cache
-RUN apt-get clean &&\
-    apt-get autoremove && \	
-    rm -rf /var/lib/apt/lists/
-
 
 RUN echo "╚══╣ Install: ros2_humble_sobits_ws:gpu_cuda12.2.2_cudnn8.9 (FINISHED) ╠══╝"

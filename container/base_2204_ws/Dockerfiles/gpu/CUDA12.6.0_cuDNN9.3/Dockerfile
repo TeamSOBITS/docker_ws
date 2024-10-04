@@ -1,5 +1,5 @@
 FROM ubuntu:22.04
-LABEL maintainerz="Valentin Keith"
+LABEL maintainer="Valentin Keith"
 
 
 RUN echo "╔══╣ Install: base_ws:gpu_cuda12.6.0_cudnn9.3_ubuntu2204 (STARTING) ╠══╗"
@@ -240,7 +240,7 @@ RUN python3 -m pip install -U \
 # Install OpenCV 4.9.0 (GPU) #
 ##############################
 # Run as sobits user
-USER sobits
+USER ${USER_NAME}
 
 # Clone only installation_sh from SOBITS Manual
 RUN cd $HOMEPATH && \

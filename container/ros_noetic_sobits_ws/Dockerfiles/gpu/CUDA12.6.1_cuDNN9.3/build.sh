@@ -31,4 +31,6 @@ docker build \
     --tag sobits/${str} \
     --network host \
     --build-arg GIT_PSW=${GIT_PSW} \
+    --build-arg LOCAL_UID=$(id -u ${USER}) \
+    --build-arg LOCAL_GID=$(id -g ${USER}) \
     .

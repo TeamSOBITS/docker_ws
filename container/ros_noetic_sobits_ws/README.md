@@ -5,9 +5,8 @@
 `ros_noetic_sobits_ws`コンテナは以下の環境で構築されます．
 - Ubuntu : 20.04 (Focal Fossa)
 - ROS : Noetic Ninjemys
-- OpenCV : 4.8.0 (2023-08-04) or 4.6.0 (2021-12-30)
+- OpenCV : 4.10.0, 4.8.0, 4.6.0
 - Python : 3.8 (デフォルト)
-- PyTorch : 2.0.1 (2023-08-04) or 1.12.0
 - UserName : sobits
 
 > [!WARNING]

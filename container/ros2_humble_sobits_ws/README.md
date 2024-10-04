@@ -5,19 +5,18 @@
 `ros2_humble_sobits_ws`コンテナは以下の環境で構築されます．
 - Ubuntu : 22.04 (Jammy Jellyfish)
 - ROS : Humble Hawksbill 
-- OpenCV : 4.8.0 (2023-08-04) or 4.6.0 (2021-12-30)
+- OpenCV : 4.9.0, 4.8.0, 4.6.0
 - Python : 3.10.12 (デフォルト)
-- PyTorch : 2.0.1 (2023-08-04) or 1.12.0
 - UserName : sobits
 
 > [!WARNING]
 > イメージをビルドするには10GBほどのストレージが必要です．十分な容量を確保してください．
 
-また，コンテナ内の `catkin_ws/src` は， `ros2_humble_sobits_ws/src` と接続されています．(run.shを参照) 
+また，コンテナ内の `colcon_ws/src` は， `ros2_humble_sobits_ws/src` と接続されています．(run.shを参照) 
 ホストPC上でコーディングしながら，それをコンテナ内で実行することも可能です．
 
 > [!WARNING]
-> コンテナ側で（`catkin_ws/src`以外のPATHに）作成したファイルに関してはホストPC側からアクセスできないので注意してください．
+> コンテナ側で（`colcon_ws/src`以外のPATHに）作成したファイルに関してはホストPC側からアクセスできないので注意してください．
 
 
 ## Build Container
@@ -146,7 +145,7 @@ $ echo "export ROS_HOSTNAME=172.17.0.X" >> ~/.bashrc
 
 デフォルトで以下のエイリアスコマンドを設定しています．
 - build
-    <!-- - ``` cmd ```: `~/catkin_ws/src/` 内のすべての`python`や`sh`ファイルに対して`chmod`で実行権限を与える
+    <!-- - ``` cmd ```: `~/colcon_ws/src/` 内のすべての`python`や`sh`ファイルに対して`chmod`で実行権限を与える
     - ``` cmk ```: どのディレクトリにいてもcatkin_makeを実行する
     - ``` cm ```: 上記2つのコマンドをまとめて同時に実行する -->
     - ``` cbd ```: `~/colcon_ws/src/` 内のすべてのpythonやshファイルに対して`chmod`で実行権限を与える
@@ -168,7 +167,7 @@ $ echo "export ROS_HOSTNAME=172.17.0.X" >> ~/.bashrc
     - ``` ll ``` : `ls -alF`
 
 - cd
-    <!-- - ``` cdc ``` : `cd ~/catkin_ws/src` -->
+    <!-- - ``` cdc ``` : `cd ~/colcon_ws/src` -->
     - ``` .. ``` : `cd ..`
     - ``` ... ``` : `cd ../..`
     - ``` .... ``` : `cd ../../..`

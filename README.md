@@ -89,30 +89,34 @@ $ ce
         - CUDA11.6.2_cuDNN8.4
         - CUDA11.8.0_cuDNN8.7
         - CUDA12.1.1_cuDNN8.9
+        - CUDA12.2.2_cuDNN8.9
+        - CUDA12.6.1_cuDNN9.3
 - base_2204_ws
     - cpu
     - gpu
         - CUDA11.7.1_cuDNN8.5.0.96
         - CUDA12.1.1_cuDNN8.9
+        - CUDA12.2.2_cuDNN8.9
+        - CUDA12.6.0_cuDNN9.3
 - ros_kinetic_basic_ws (archived)
     - cpu
     - gpu
         - CUDA9.0_cuDNN7.6
-- ros_melodic_basic_l4t_ws
+- ros_melodic_basic_l4t_ws (archived)
     - gpu
         - CUDA10.2_cuDNN8.2.1
-- ros_melodic_basic_ws
+- ros_melodic_basic_ws (archived)
     - cpu
     - gpu
-        - CUDA10.1_cuDNN7.0 (archived)
-        - CUDA11.0_cuDNN8.0 (archived)
-        - CUDA11.2_cuDNN8.1 (archived)
-        - CUDA11.3_cuDNN8.2 (archived)
+        - CUDA10.1_cuDNN7.0
+        - CUDA11.0_cuDNN8.0
+        - CUDA11.2_cuDNN8.1
+        - CUDA11.3_cuDNN8.2
         - CUDA11.6.2_cuDNN8.4
-- ros_melodic_sobits_l4t_ws
+- ros_melodic_sobits_l4t_ws (archived)
     - gpu
         - CUDA10.2_cuDNN8.2.1
-- ros_melodic_sobits_ws
+- ros_melodic_sobits_ws (archived)
     - cpu
     - gpu
         - CUDA11.6.2_cuDNN8.4
@@ -121,22 +125,30 @@ $ ce
     - gpu
         - CUDA11.6.2_cuDNN8.4
         - CUDA12.1.1_cuDNN8.9
+        - CUDA12.2.2_cuDNN8.9
+        - CUDA12.6.1_cuDNN9.3
 - ros_noetic_sobits_ws
     - cpu
     - gpu
         - CUDA11.6.2_cuDNN8.4
         - CUDA12.1.1_cuDNN8.9
         - CUDA12.2.2_cuDNN8.9
+        - CUDA12.2.2_cuDNN8.9
+        - CUDA12.6.1_cuDNN9.3
 - ros2_humble_basic_ws
     - cpu
     - gpu
         - CUDA11.7.1_cuDNN8.5.0.96
         - CUDA12.1.1_cuDNN8.9
+        - CUDA12.2.2_cuDNN8.9
+        - CUDA12.6.0_cuDNN9.3
 - ros2_humble_sobits_ws
     - cpu
     - gpu
         - CUDA11.7.1_cuDNN8.5.0.96
         - CUDA12.1.1_cuDNN8.9
+        - CUDA12.2.2_cuDNN8.9
+        - CUDA12.6.0_cuDNN9.3
 
 </p>
 </details>
@@ -144,6 +156,17 @@ $ ce
 
 ## Change-Log
 
+- 2024/10/04
+    - CUDA12.6.1 cuDNN9.3に対応
+        - base_2004_ws
+        - ros_noetic_basic_ws
+        - ros_noetic_sobits_ws
+    - PulseAudioが利用できない問題を解決
+- 2024/08/20
+    - CUDA12.6.0 cuDNN9.3に対応
+        - base_2204_ws
+        - ros2_humble_basic_ws
+        - ros2_humble_sobits_ws
 - 2023/08/02~05
     - CUDA12.1.1 cuDNN8.9に対応
         - base_2004_ws, base_2204_ws

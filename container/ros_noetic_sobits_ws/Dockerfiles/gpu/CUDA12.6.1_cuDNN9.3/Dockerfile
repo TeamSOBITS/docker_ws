@@ -1,14 +1,14 @@
-FROM sobits/ros_noetic_basic_ws:gpu_cuda12.2.2_cudnn8.9
-LABEL maintainer Valentin Keith
+FROM sobits/ros_noetic_basic_ws:gpu_cuda12.6.1_cudnn9.3
+LABEL maintainer="Valentin Keith"
 
-RUN echo "╔══╣ Install: ros_noetic_sobits_ws:gpu_cuda12.2.2_cudnn8.9 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_noetic_sobits_ws:gpu_cuda12.6.1_cudnn9.3 (STARTING) ╠══╗"
 
 
 ###################################
 # Environment_variable_preference #
 ###################################
 ARG GIT_PSW
-ENV HOMEPATH /home/sobits
+ENV HOMEPATH=/home/sobits
 
 
 ###########################
@@ -22,11 +22,8 @@ RUN cd $HOMEPATH/sobits_manual_mini && \
     git remote set-url origin https://${GIT_PSW}@github.com/TeamSOBITS/sobits_manual && \
     git pull origin main
 
-# Install ROS SOBITS Common Packages
-RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_sobits.sh --noetic
-
-# Install Pytorch 2.0.1
-RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_pytorch.sh --2.0.1
+# Install Pytorch 2.4.0
+RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_pytorch.sh --2.4.0
 
 
 ##################
@@ -41,10 +38,10 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/
 
 # Set user
-ENV USER sobits
+ENV USER=sobits
 
 # Set HOME position
 WORKDIR $HOMEPATH
 
 
-RUN echo "╚══╣ Install: ros_noetic_sobits_ws:gpu_cuda12.2.2_cudnn8.9 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_noetic_sobits_ws:gpu_cuda12.6.1_cudnn9.3 (FINISHED) ╠══╝"

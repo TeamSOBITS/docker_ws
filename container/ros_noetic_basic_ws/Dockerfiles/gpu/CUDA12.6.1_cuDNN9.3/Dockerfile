@@ -1,15 +1,15 @@
-FROM sobits/base_ws:gpu_cuda12.2.2_cudnn8.9_ubuntu2004
-LABEL maintainer Valentin Keith
+FROM sobits/base_ws:gpu_cuda12.6.1_cudnn9.3_ubuntu2004
+LABEL maintainer="Valentin Keith"
 
 
-RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda12.2.2_cudnn8.9 (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda12.6.1_cudnn9.3 (STARTING) ╠══╗"
 
 
 ########################
 # Environment variable #
 ########################
 ARG GIT_PSW
-ENV HOMEPATH /home/sobits
+ENV HOMEPATH=/home/sobits
 
 
 ####################################################
@@ -40,7 +40,8 @@ USER sobits
 
 RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
     bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1_catkin_ws.sh --noetic && \
-	bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh
+    bash $HOMEPATH/sobits_manual_mini/install_sh/setup_ros1.sh && \
+    bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh --ros1
 
 
 #################
@@ -50,17 +51,6 @@ RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_ros1.sh --noetic && \
 USER root
 
 RUN chmod 755 $HOMEPATH/sobits_manual_mini/install_sh/chmod_all.py
-
-
-#################
-# Alias Setting #
-#################
-# Run as sobits user
-USER sobits
-
-RUN bash $HOMEPATH/sobits_manual_mini/install_sh/setup_alias.sh
-
-RUN . $HOMEPATH/.bashrc
 
 
 ###########################
@@ -79,25 +69,16 @@ RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_google_chrome.sh
 # Run as root user
 USER root
 
-# Set time zone (Tokyo)
-ENV TZ Asia/Tokyo
-
-# Set Language
-RUN locale-gen ja_JP.UTF-8
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:ja
-ENV LC_ALL ja_JP.UTF-8
-
 # Clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
     rm -rf /var/lib/apt/lists/
 
 # Set user
-ENV USER sobits
+ENV USER=sobits
 
 # Set HOME position
 WORKDIR $HOMEPATH
 
 
-RUN echo "╚══╣ Install: ros_noetic_basic_ws:gpu_cuda12.2.2_cudnn8.9 (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_noetic_basic_ws:gpu_cuda12.6.1_cudnn9.3 (FINISHED) ╠══╝"

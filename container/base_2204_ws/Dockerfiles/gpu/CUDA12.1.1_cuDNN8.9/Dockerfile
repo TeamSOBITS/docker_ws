@@ -223,7 +223,7 @@ USER sobits
 RUN cd $HOMEPATH && \
     curl https://${GIT_PSW}@raw.githubusercontent.com/TeamSOBITS/sobits_manual/main/install_sh/install_opencv.sh -o install_opencv.sh
 
-RUN bash $HOMEPATH/install_opencv.sh --4.8.0 --GPU
+RUN bash $HOMEPATH/install_opencv.sh --4.9.0 --GPU
 
 RUN rm $HOMEPATH/install_opencv.sh
 

@@ -12,10 +12,8 @@ docker run -it \
     --env CONTAINER_NAME=${str} \
     --env NVIDIA_DISABLE_REQUIRE=true \
     --env DISPLAY=${DISPLAY} \
-    --env PULSE_SERVER=unix:/tmp/pulseaudio.socket \
-    --env PULSE_COOKIE=/tmp/pulseaudio.cookie \
-    --volume /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
-    --volume /tmp/pulseaudio.client.conf:/etc/pulse/client.conf \
+    --device /dev/snd \
+    --env ALSA_CARD=sofhdadsp \
     --volume /etc/udev/rules.d/:/etc/udev/rules.d/ \
     --volume $(pwd)/src/:/home/sobits/colcon_ws/src/ \
     --shm-size=1g \

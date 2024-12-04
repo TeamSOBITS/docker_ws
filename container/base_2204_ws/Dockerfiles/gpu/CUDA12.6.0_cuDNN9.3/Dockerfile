@@ -236,9 +236,9 @@ RUN python3 -m pip install -U \
         numpy
 
 
-##############################
-# Install OpenCV 4.9.0 (GPU) #
-##############################
+###############################
+# Install OpenCV 4.10.0 (GPU) #
+###############################
 # Run as sobits user
 USER ${USER_NAME}
 
@@ -246,7 +246,7 @@ USER ${USER_NAME}
 RUN cd $HOMEPATH && \
     curl https://${GIT_PSW}@raw.githubusercontent.com/TeamSOBITS/sobits_manual/main/install_sh/install_opencv.sh -o install_opencv.sh
 
-RUN bash $HOMEPATH/install_opencv.sh --4.9.0 --GPU
+RUN bash $HOMEPATH/install_opencv.sh --4.10.0 --GPU
 
 RUN rm $HOMEPATH/install_opencv.sh
 

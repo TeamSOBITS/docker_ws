@@ -9,9 +9,13 @@ xhost +local:${USER}
 
 docker run -it \
     --gpus all \
-    -v /etc/udev/rules.d/:/etc/udev/rules.d/ \
-    -v $(pwd)/src/:/home/sobits/colcon_ws/src/ \
     --env CONTAINER_NAME=${str} \
+    --env NVIDIA_DISABLE_REQUIRE=true \
+    --env DISPLAY=${DISPLAY} \
+    --device /dev/snd \
+    --env ALSA_CARD=sofhdadsp \
+    --volume /etc/udev/rules.d/:/etc/udev/rules.d/ \
+    --volume $(pwd)/src/:/home/sobits/colcon_ws/src/ \
     --shm-size=1g \
     --net host \
     --name ${str} \

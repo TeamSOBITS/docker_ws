@@ -10,7 +10,6 @@ xhost +local:${USER}
 docker run -it \
     --gpus all \
     --env CONTAINER_NAME=${str} \
-    --env NVIDIA_DISABLE_REQUIRE=true \
     --env DISPLAY=${DISPLAY} \
     --device /dev/snd \
     --env ALSA_CARD=sofhdadsp \

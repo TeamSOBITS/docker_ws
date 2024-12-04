@@ -63,6 +63,7 @@ RUN apt-get update && \
         libspa-0.2-bluetooth \
         libspa-0.2-jack \
         alsa-utils \
+        apulse \
         uuid-dev \
         fonts-takao-* \
         sudo \

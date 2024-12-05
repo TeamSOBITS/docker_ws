@@ -5,25 +5,32 @@ RUN echo "╔══╣ Install: ros2_humble_sobits_ws:cpu (STARTING) ╠══�
 
 
 ###################################
-# Environment_variable_preference #
+# Environment variable preference #
 ###################################
 ARG GIT_PSW
+ARG LOCAL_UID
+ARG LOCAL_GID
+
+ENV USER_NAME=sobits
+ENV USER_ID=${LOCAL_UID:-1000}
+ENV GROUP_ID=${LOCAL_GID:-1000}
+
 ENV HOMEPATH=/home/sobits
+
+ENV DEBCONF_NOWARNINGS=yes
+ENV DEBIAN_FRONTEND=noninteractive
 
 
 ###########################
 # Install SOBITS programs #
 ###########################
 # Run as sobits user
-USER sobits
+USER ${USER_NAME}
 
 # Update sobit_manual
-RUN cd $HOMEPATH/sobits_manual_mini && \
+RUN cd ${HOMEPATH}/sobits_manual_mini && \
     git remote set-url origin https://${GIT_PSW}@github.com/TeamSOBITS/sobits_manual && \
     git pull origin main
-
-# Install Pytorch 2.4.0
-# RUN bash $HOMEPATH/sobits_manual_mini/install_sh/install_pytorch.sh --2.4.0
 
 
 ##################
@@ -38,10 +45,11 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/
 
 # Set user
-ENV USER=sobits
+ENV USER=${USER_NAME}
+USER ${USER_NAME}
 
 # Set HOME position
-WORKDIR $HOMEPATH
+WORKDIR ${HOMEPATH}
 
 
 RUN echo "╚══╣ Install: ros2_humble_sobits_ws:cpu (FINISHED) ╠══╝"

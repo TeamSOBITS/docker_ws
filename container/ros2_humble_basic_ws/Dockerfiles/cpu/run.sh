@@ -8,9 +8,12 @@ cd $(pwd)/../../
 xhost +local:${USER}
 
 docker run -it \
-    -v /etc/udev/rules.d/:/etc/udev/rules.d/ \
-    -v $(pwd)/src/:/home/sobits/colcon_ws/src/ \
     --env CONTAINER_NAME=${str} \
+    --env DISPLAY=${DISPLAY} \
+    --device /dev/snd \
+    --env ALSA_CARD=sofhdadsp \
+    --volume /etc/udev/rules.d/:/etc/udev/rules.d/ \
+    --volume $(pwd)/src/:/home/sobits/colcon_ws/src/ \
     --shm-size=1g \
     --net host \
     --name ${str} \

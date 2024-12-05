@@ -62,6 +62,7 @@ RUN apt-get update && \
         libspa-0.2-bluetooth \
         libspa-0.2-jack \
         alsa-utils \
+        apulse \
         uuid-dev \
         fonts-takao-* \
         sudo \
@@ -111,9 +112,9 @@ RUN python3 -m pip install -U \
         numpy
 
 
-##############################
-# Install OpenCV 4.9.0 (CPU) #
-##############################
+###############################
+# Install OpenCV 4.10.0 (CPU) #
+###############################
 # Run as sobits user
 USER ${USER_NAME}
 
@@ -121,7 +122,7 @@ USER ${USER_NAME}
 RUN cd $HOMEPATH && \
     curl https://${GIT_PSW}@raw.githubusercontent.com/TeamSOBITS/sobits_manual/main/install_sh/install_opencv.sh -o install_opencv.sh
 
-RUN bash $HOMEPATH/install_opencv.sh --4.9.0 --CPU
+RUN bash $HOMEPATH/install_opencv.sh --4.10.0 --CPU
 
 RUN rm $HOMEPATH/install_opencv.sh
 
@@ -140,6 +141,7 @@ RUN apt-get clean &&\
 
 # Set user
 ENV USER=${USER_NAME}
+USER ${USER_NAME}
 
 # Set HOME position
 WORKDIR ${HOMEPATH}

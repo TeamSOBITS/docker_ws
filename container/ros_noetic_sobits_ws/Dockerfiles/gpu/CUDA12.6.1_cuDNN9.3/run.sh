@@ -9,13 +9,11 @@ xhost +local:${USER}
 
 docker run -it \
     --gpus all \
+    --device /dev/snd \
     --env CONTAINER_NAME=${str} \
-    --env NVIDIA_DISABLE_REQUIRE=true \
     --env DISPLAY=${DISPLAY} \
-    --env PULSE_SERVER=unix:/tmp/pulseaudio.socket \
-    --env PULSE_COOKIE=/tmp/pulseaudio.cookie \
-    --volume /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
-    --volume /tmp/pulseaudio.client.conf:/etc/pulse/client.conf \
+    --env PULSE_SERVER=unix:/run/user/$(id -u)/pulse/native \
+    --volume /run/user/$(id -u)/pulse:/run/user/$(id -u)/pulse \
     --volume /etc/udev/rules.d/:/etc/udev/rules.d/ \
     --volume $(pwd)/src/:/home/sobits/catkin_ws/src/ \
     --shm-size=1g \

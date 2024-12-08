@@ -1,7 +1,7 @@
-FROM sobits/ros_noetic_basic_ws:cpu
+FROM sobits/ros_noetic_basic_ws:gpu_cuda12.5.1_cudnn9.2
 LABEL maintainer="Valentin Keith"
 
-RUN echo "╔══╣ Install: ros_noetic_sobits_ws:cpu (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_noetic_sobits_ws:gpu_cuda12.5.1_cudnn9.2 (STARTING) ╠══╗"
 
 
 ###################################
@@ -32,6 +32,9 @@ RUN cd ${HOMEPATH}/sobits_manual_mini && \
     git remote set-url origin https://${GIT_PSW}@github.com/TeamSOBITS/sobits_manual && \
     git pull origin main
 
+# Install Pytorch 2.5.1
+RUN bash ${HOMEPATH}/sobits_manual_mini/install_sh/install_pytorch.sh --2.4.1
+
 
 ##################
 # Other settings #
@@ -52,4 +55,4 @@ USER ${USER_NAME}
 WORKDIR ${HOMEPATH}
 
 
-RUN echo "╚══╣ Install: ros_noetic_sobits_ws:cpu (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_noetic_sobits_ws:gpu_cuda12.5.1_cudnn9.2 (FINISHED) ╠══╝"

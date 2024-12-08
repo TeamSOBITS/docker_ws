@@ -1,8 +1,8 @@
-FROM sobits/base_ws:cpu_ubuntu2004
+FROM sobits/base_ws:gpu_cuda12.5.1_cudnn9.2_ubuntu2004
 LABEL maintainer="Valentin Keith"
 
 
-RUN echo "╔══╣ Install: ros_noetic_basic_ws:cpu (STARTING) ╠══╗"
+RUN echo "╔══╣ Install: ros_noetic_basic_ws:gpu_cuda12.5.1_cudnn9.2_ubuntu2204 (STARTING) ╠══╗"
 
 
 ###################################
@@ -43,7 +43,7 @@ RUN cd ${HOMEPATH} && \
 
 
 ###################################
-# Install ROS1 & create catkin_ws #
+# Install ROS2 & create catkin_ws #
 ###################################
 # Run as sobits user
 USER ${USER_NAME}
@@ -92,4 +92,4 @@ USER ${USER_NAME}
 WORKDIR ${HOMEPATH}
 
 
-RUN echo "╚══╣ Install: ros_noetic_basic_ws:cpu (FINISHED) ╠══╝"
+RUN echo "╚══╣ Install: ros_noetic_basic_ws:gpu_cuda12.5.1_cudnn9.2_ubuntu2204 (FINISHED) ╠══╝"

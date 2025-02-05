@@ -66,6 +66,11 @@ sudo rm -r ~/.docker/
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 
+# Add alias in bashrc
+exe_PATH=$(pwd)/..
+echo 'alias ce="python3 '$exe_PATH'/container_executer.py"' >> ~/.bashrc
+source ~/.bashrc
+
 
 echo "╚══╣ Install: Docker Engine (FINISHED) ╠══╝"
 echo "Please, reboot your OS"

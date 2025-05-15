@@ -26,13 +26,61 @@ $ sudo apt-get install -y python3-tk tk-dev
 $ python3 -m tkinter
 ```
 
-> **Warning**
-> `GPU版`のDockerをインストールする前に，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．CUDAやcuDNNをインストールすることが必要ではありません．
+> [!WARNING]
+> `GPU版`のDockerをインストールする前に，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
+> CUDAやcuDNNをインストールすることが必要ではありません．
 
 
-## How to use
+## How to build a Container
 
-コンテナの環境情報や起動方法等については，それぞれのコンテナのフォルダの中にあるREADMEを参照してください．
+デフォルトではイメージとコンテナの名前は同じにしています． 
+同じイメージから複数のコンテナを作成する場合は，コンテナの名前が被らないようにしてください．
+
+> [!WARNING]
+> コンテナの作成には10GBほどのストレージが必要です．十分な容量を確保してください．
+
+1. コンテナのフォルダを複製します．
+```bash
+$ cp -r {docker_wsのPATH}/container/{使用するコンテナ}/ {コンテナの新PATH}
+# 例: $ cp -r ~/docker_ws/container/ros2_humble_basic_ws/ ~/
+```
+
+> [!WARNING]
+> 複製されたフォルダの名前を変更してください．
+> 例: `ros2_humble_basic_ws` → `my_new_ws`
+
+
+2. Dockerfileからイメージをビルドします.
+```bash
+# GITを使うため，個人のTOKENを入力する
+$ export GIT_PSW={PERSONAL_GIT_TOKEN_HERE}
+
+# CPUの場合：
+$ cd {コンテナPATH}/Dockerfiles/cpu
+$ bash build.sh
+
+# GPUの場合：
+$ cd {コンテナPATH}/Dockerfiles/gpu/CUDAXX.X.X_cuDNNX.X
+$ bash build.sh
+```
+
+3. イメージからコンテナを起動します．
+```bash
+$ bash run.sh 
+# >> {コンテナ名} sobits@:~$　← この表示に切り替わる
+```
+
+4. 起動中のコンテナに別端末からアクセスします．
+```bash
+$ bash exec.sh
+# >> {コンテナ名} sobits@:~$　← この表示に切り替わる
+```
+
+> [!NOTE]
+コンテナ内の `colcon_ws/src`がローカルの`{コンテナPATH}/src`と接続されていますので，そのフォルダ内のデータのみ共有可能となります．
+
+> [!TIP]
+> コンテナから抜き出すために，`「Ctrl」+「d」`を同時に押すか，ターミナルに`exit`を入力するかです．
 
 
 ## Container Executer
@@ -47,7 +95,7 @@ $ python3 -m tkinter
 $ ce
 ```
 
-> **Note**
+> [!NOTE]
 > このコマンドは自分がいるPATHに依存していないため，どこでも実行可能です．
 
 
@@ -56,97 +104,40 @@ $ ce
 用意されているコンテナ一覧です．
 
 
-<details><summary>Containers List</summary>
+<details><summary>Maintanined Containers List</summary>
 <p>
 
-- base_1804_l4t_ws (archived)
-    - cpu
-    - gpu
-        - CUDA10.2_cuDNN8.2.1
-- base_1804_ws (archived)
-    - cpu
-    - gpu
-        - CUDA11.6.2_cuDNN8.4
-- base_2004_ws (archived)
-    - cpu
-    - gpu
-        - CUDA11.6.2_cuDNN8.4
-        - CUDA11.8.0_cuDNN8.7
-        - CUDA12.1.1_cuDNN8.9
-        - CUDA12.2.2_cuDNN8.9
-        - CUDA12.5.1_cuDNN9.2
-        - CUDA12.6.1_cuDNN9.3
 - base_2204_ws
     - cpu
     - gpu
-        - CUDA11.7.1_cuDNN8.5.0.96 (archived)
-        - CUDA12.1.1_cuDNN8.9 (archived)
-        - CUDA12.2.2_cuDNN8.9 (archived)
         - CUDA12.5.1_cuDNN9.2
         - CUDA12.6.3_cuDNN9.5
-        - CUDA12.8.0_cuDNN9.7 (todo)
-- ros_kinetic_basic_ws (archived)
-    - cpu
-    - gpu
-        - CUDA9.0_cuDNN7.6
-- ros_melodic_basic_l4t_ws (archived)
-    - gpu
-        - CUDA10.2_cuDNN8.2.1
-- ros_melodic_basic_ws (archived)
-    - cpu
-    - gpu
-        - CUDA10.1_cuDNN7.0
-        - CUDA11.0_cuDNN8.0
-        - CUDA11.2_cuDNN8.1
-        - CUDA11.3_cuDNN8.2
-        - CUDA11.6.2_cuDNN8.4
-- ros_melodic_sobits_l4t_ws (archived)
-    - gpu
-        - CUDA10.2_cuDNN8.2.1
-- ros_melodic_sobits_ws (archived)
-    - cpu
-    - gpu
-        - CUDA11.6.2_cuDNN8.4
-- ros_noetic_basic_ws (archived)
-    - cpu
-    - gpu
-        - CUDA11.6.2_cuDNN8.4
-        - CUDA12.1.1_cuDNN8.9
-        - CUDA12.2.2_cuDNN8.9
-        - CUDA12.5.1_cuDNN9.2
-        - CUDA12.6.1_cuDNN9.3
-- ros_noetic_sobits_ws (archived)
-    - cpu
-    - gpu
-        - CUDA11.6.2_cuDNN8.4
-        - CUDA12.1.1_cuDNN8.9
-        - CUDA12.2.2_cuDNN8.9
-        - CUDA12.5.1_cuDNN9.2
-        - CUDA12.6.1_cuDNN9.3
+        - CUDA12.8.1_cuDNN9.8
 - ros2_humble_basic_ws
     - cpu
     - gpu
-        - CUDA11.7.1_cuDNN8.5.0.96 (archived)
-        - CUDA12.1.1_cuDNN8.9 (archived)
-        - CUDA12.2.2_cuDNN8.9 (archived)
         - CUDA12.5.1_cuDNN9.2
         - CUDA12.6.3_cuDNN9.5
-        - CUDA12.8.0_cuDNN9.7 (todo)
+        - CUDA12.8.1_cuDNN9.8
 - ros2_humble_sobits_ws
     - cpu
     - gpu
-        - CUDA11.7.1_cuDNN8.5.0.96 (archived)
-        - CUDA12.1.1_cuDNN8.9
-        - CUDA12.2.2_cuDNN8.9
         - CUDA12.5.1_cuDNN9.2
         - CUDA12.6.3_cuDNN9.5
-        - CUDA12.8.0_cuDNN9.7 (todo)
+        - CUDA12.8.1_cuDNN9.8
 
 </p>
 </details>
 
 
 ## Change-Log
+
+- 2025/05/15
+    - CUDA12.8.1_cuDNN9.8への対応
+        - base_2204_ws
+        - ros2_humble_basic_ws
+        - ros2_humble_sobits_ws
+    - OpenCV 4.11.0にアップデート
 
 - 2025/02/00
     - CUDA12.8.0_cuDNN9.7への対応

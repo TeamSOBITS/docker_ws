@@ -67,9 +67,11 @@ sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 
 # Add alias in bashrc
-exe_PATH=$(pwd)/..
-echo 'alias ce="python3 '$exe_PATH'/container_executer.py"' >> ~/.bashrc
+DIR_PATH=$(pwd)
+cd ..
+echo 'alias ce="python3 `pwd`/container_executer.py"' >> ~/.bashrc
 source ~/.bashrc
+cd $DIR_PATH
 
 
 echo "╚══╣ Install: Docker Engine (FINISHED) ╠══╝"

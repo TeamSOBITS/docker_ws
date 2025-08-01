@@ -103,13 +103,23 @@ RUN apt-get update -q && \
         python3-dev \
         python3-pip
 
-# Run as user sobits
+# Run as user
 USER ${USER_NAME}
 
-# install pip (using --break-system-packages for Ubuntu 24.04+)
-RUN if python3 -m pip --help | grep -q -- '--break-system-packages'; then \
+# Install pip packages (compatible with both Ubuntu 22.04 and 24.04+)
+RUN set -e; \
+    # Check Ubuntu version to determine pip installation method
+    UBUNTU_VERSION=$(lsb_release -rs); \
+    UBUNTU_MAJOR=$(echo $UBUNTU_VERSION | cut -d. -f1); \
+    UBUNTU_MINOR=$(echo $UBUNTU_VERSION | cut -d. -f2); \
+    \
+    if [ "$UBUNTU_MAJOR" -gt 22 ] || ([ "$UBUNTU_MAJOR" -eq 24 ] && [ "$UBUNTU_MINOR" -ge 4 ]); then \
+        echo "Ubuntu $UBUNTU_VERSION detected - using --break-system-packages"; \
+        # For Ubuntu 24.04+, remove EXTERNALLY-MANAGED file and use --break-system-packages
+        sudo rm -f /usr/lib/python3*/EXTERNALLY-MANAGED 2>/dev/null || true; \
         python3 -m pip install -U --break-system-packages pip wheel numpy; \
     else \
+        echo "Ubuntu $UBUNTU_VERSION detected - using standard pip installation"; \
         python3 -m pip install -U pip wheel numpy; \
     fi
 

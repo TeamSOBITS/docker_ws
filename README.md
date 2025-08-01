@@ -124,30 +124,19 @@ $ ce
 <details><summary>Maintanined Containers List</summary>
 <p>
 
-- base_2204_ws
+- sobits_ws
     - cpu
     - gpu
-        - CUDA12.5.1_cuDNN9.2
-        - CUDA12.6.3_cuDNN9.5
-        - CUDA12.8.1_cuDNN9.8
-- ros2_humble_basic_ws
-    - cpu
-    - gpu
-        - CUDA12.5.1_cuDNN9.2
-        - CUDA12.6.3_cuDNN9.5
-        - CUDA12.8.1_cuDNN9.8
-- ros2_humble_sobits_ws
-    - cpu
-    - gpu
-        - CUDA12.5.1_cuDNN9.2
-        - CUDA12.6.3_cuDNN9.5
-        - CUDA12.8.1_cuDNN9.8
 
 </p>
 </details>
 
 
 ## Change-Log
+
+- 2025/08/01
+    - docker composeへの対応
+        - UBUNTU,  CUDA, ROSのバージョン変更を簡易に 
 
 - 2025/05/15
     - CUDA12.8.1_cuDNN9.8への対応

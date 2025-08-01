@@ -69,7 +69,7 @@ sudo systemctl enable containerd.service
 # Add alias in bashrc
 DIR_PATH=$(pwd)
 cd ..
-echo 'alias ce="python3 `pwd`/container_executer.py"' >> ~/.bashrc
+echo "alias ce=\"python3 $(pwd)/container_executer.py\"" >> ~/.bashrc
 source ~/.bashrc
 cd $DIR_PATH
 

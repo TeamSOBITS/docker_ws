@@ -39,22 +39,39 @@ $ python3 -m tkinter
 > [!WARNING]
 > コンテナの作成には10GBほどのストレージが必要です．十分な容量を確保してください．
 
+### 前提条件
+
+このプロジェクトではDocker Composeを使用しています。コンテナをビルドする前に、`.env`ファイルの設定が必要です。
+
 1. コンテナのフォルダを複製します．
 ```bash
 $ cp -r {docker_wsのPATH}/container/{使用するコンテナ}/ {コンテナの新PATH}
-# 例: $ cp -r ~/docker_ws/container/ros2_humble_basic_ws/ ~/
+# 例: $ cp -r ~/docker_ws/container/cpu/ ~/
 ```
 
 > [!WARNING]
 > 複製されたフォルダの名前を変更してください．
-> 例: `ros2_humble_basic_ws` → `my_new_ws`
+> 例: `cpu` → `my_new_ws`
 
-
-2. Dockerfileからイメージをビルドします.
+2. `.env`ファイルを設定します．
 ```bash
-# GITを使うため，個人のTOKENを入力する
-$ export GIT_PSW={PERSONAL_GIT_TOKEN_HERE}
+$ cd {コンテナPATH}/Dockerfiles
+$ nano .env  # または任意のエディタで編集
+```
 
+`.env`ファイルの内容例：
+```properties
+USER_NAME=sobits          # コンテナ内のユーザー名
+UBUNTU_VERSION=22.04      # 使用するUbuntuのバージョン
+ROS_DISTRO=humble        # 使用するROSのディストリビューション
+WORKSPACE_NAME=my_new_ws  # ワークスペース名（イメージ・コンテナ名）
+```
+
+> [!NOTE]
+> `WORKSPACE_NAME`は複製したフォルダ名と一致させることを推奨します。
+
+3. Dockerfileからイメージをビルドします.
+```bash
 # CPUの場合：
 $ cd {コンテナPATH}/Dockerfiles/cpu
 $ bash build.sh

@@ -1,7 +1,6 @@
 ARG UBUNTU_VERSION
-ARG CUDA_VERSION
 
-FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
+FROM ubuntu:${UBUNTU_VERSION}
 
 ###################################
 # Environment_variable_preference #
@@ -57,6 +56,7 @@ RUN apt-get update -q && \
         bash-completion \
         lsb-release \
         dpkg-dev \
+        alsa-base \
         pkg-config \
         net-tools \
         usbutils \

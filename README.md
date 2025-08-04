@@ -69,6 +69,7 @@ WORKSPACE_NAME=my_new_ws  # ワークスペース名（イメージ・コンテ�
 
 > [!NOTE]
 > `WORKSPACE_NAME`は複製したフォルダ名と一致させることを推奨します。
+> ROSのバージョンはros2のみ選択可能です。
 
 3. Dockerfileからイメージをビルドします.
 ```bash

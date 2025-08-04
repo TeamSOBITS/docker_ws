@@ -194,7 +194,7 @@ RUN apt-get clean &&\
     rm /etc/apt/apt.conf.d/docker-clean
 
 # Set user
-ENV USER=${USER_NAME}
+USER ${USER_NAME}
 
 # Set HOME position
 WORKDIR ${HOMEPATH}

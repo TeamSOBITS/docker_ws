@@ -76,7 +76,7 @@ class ContainerExecuter():
             else:
                 if operation == "exec":
                     print("[%s] container has been executed."%container_id)
-                    cmd = "gnome-terminal -- bash -c 'docker exec -it --user sobits %s /bin/bash; bash'"%(container_id)
+                    cmd = "gnome-terminal -- bash -c 'docker exec -it %s /bin/bash; bash'"%(container_id)
                 
                 elif operation == "start":
                     print("[%s] container has been started."%container_id)

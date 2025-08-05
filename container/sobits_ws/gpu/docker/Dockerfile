@@ -58,6 +58,7 @@ RUN apt-get update -q && \
         lsb-release \
         dpkg-dev \
         alsa-base \
+        portaudio19-dev \
         pkg-config \
         net-tools \
         usbutils \
@@ -90,8 +91,8 @@ RUN if id -u ${USER_ID} >/dev/null 2>&1; then \
 ENV USER=${USER_NAME}
 
 # Set HOME position
-WORKDIR $HOMEPATH
-RUN /bin/bash -c ". $HOMEPATH/.bashrc"
+WORKDIR ${HOMEPATH}
+RUN /bin/bash -c ". ${HOMEPATH}/.bashrc"
 
 ###############
 # Install pip #
@@ -137,9 +138,7 @@ RUN if [ "$INSTALL_ROS" = "true" ]; then \
         echo "Installing ROS ${ROS_DISTRO}..."; \
         apt update -q && \
         apt install -yq \
-            curl \
-            gnupg \
-            lsb-release && \
+            gnupg && \
         curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
         . /etc/os-release && \
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $UBUNTU_CODENAME main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
@@ -201,15 +200,15 @@ USER ${USER_NAME}
 WORKDIR ${HOMEPATH}
 
 # Create entrypoint script
-RUN echo '#!/bin/bash' > $HOMEPATH/entrypoint.sh && \
-    echo 'set -e' >> $HOMEPATH/entrypoint.sh && \
+RUN echo '#!/bin/bash' > ${HOMEPATH}/entrypoint.sh && \
+    echo 'set -e' >> ${HOMEPATH}/entrypoint.sh && \
     if [ "$INSTALL_ROS" = "true" ] || [ "$INSTALL_ROS" = "True" ] || [ "$INSTALL_ROS" = "TRUE" ]; then \
-        echo 'if [ -d "$HOMEPATH/colcon_ws/src" ]; then' >> $HOMEPATH/entrypoint.sh; \
-        echo '    find $HOMEPATH/colcon_ws/src \( -name "*.py" -o -name "*.sh" \) -exec chmod 755 {} +' >> $HOMEPATH/entrypoint.sh; \
-        echo 'fi' >> $HOMEPATH/entrypoint.sh; \
-        echo 'source /opt/ros/${ROS_DISTRO}/setup.bash 2>/dev/null || true' >> $HOMEPATH/entrypoint.sh; \
+        echo 'if [ -d "${HOMEPATH}/colcon_ws/src" ]; then' >> ${HOMEPATH}/entrypoint.sh; \
+        echo '    find ${HOMEPATH}/colcon_ws/src \( -name "*.py" -o -name "*.sh" \) -exec chmod 755 {} +' >> ${HOMEPATH}/entrypoint.sh; \
+        echo 'fi' >> ${HOMEPATH}/entrypoint.sh; \
+        echo 'source /opt/ros/${ROS_DISTRO}/setup.bash 2>/dev/null || true' >> ${HOMEPATH}/entrypoint.sh; \
     fi && \
-    echo 'exec "$@"' >> $HOMEPATH/entrypoint.sh && \
-    chmod +x $HOMEPATH/entrypoint.sh
+    echo 'exec "$@"' >> ${HOMEPATH}/entrypoint.sh && \
+    chmod +x ${HOMEPATH}/entrypoint.sh
 
-ENTRYPOINT ["bash", "-c", "$HOMEPATH/entrypoint.sh bash"]
+ENTRYPOINT ["bash", "-c", "${HOMEPATH}/entrypoint.sh bash"]

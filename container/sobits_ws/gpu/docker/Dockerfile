@@ -58,6 +58,8 @@ RUN apt-get update -q && \
         lsb-release \
         dpkg-dev \
         alsa-base \
+        pulseaudio \
+        pulseaudio-utils \
         portaudio19-dev \
         pkg-config \
         net-tools \

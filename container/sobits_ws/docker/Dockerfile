@@ -1,6 +1,13 @@
 ARG UBUNTU_VERSION
+ARG CUDA_VERSION
+ARG COMPUTE_TYPE
 
-FROM ubuntu:${UBUNTU_VERSION}
+# Multi-stage build approach to select base image based on COMPUTE_TYPE
+FROM ubuntu:${UBUNTU_VERSION} as base-cpu
+FROM nvidia/cuda:${CUDA_VERSION}-cudnn-devel-ubuntu${UBUNTU_VERSION} as base-gpu
+
+# Select the appropriate base image
+FROM base-${COMPUTE_TYPE} as base
 
 ###################################
 # Environment_variable_preference #
@@ -16,11 +23,6 @@ ENV USER_ID=${LOCAL_UID:-1000}
 ENV GROUP_ID=${LOCAL_GID:-1000}
 
 ENV HOMEPATH=/home/${USER_NAME}
-
-# Set ROS_DISTRO environment variable only if ROS will be installed
-RUN if [ "$INSTALL_ROS" = "true" ]; then \
-        echo "export ROS_DISTRO=${ROS_DISTRO}" >> /etc/environment; \
-    fi
 
 ENV DEBCONF_NOWARNINGS=yes
 ENV DEBIAN_FRONTEND=noninteractive
@@ -134,6 +136,11 @@ RUN set -e; \
 # Run as root for ROS installation
 USER root
 
+# Set ROS_DISTRO environment variable only if ROS will be installed
+RUN if [ "$INSTALL_ROS" = "true" ]; then \
+        echo "export ROS_DISTRO=${ROS_DISTRO}" >> /etc/environment; \
+    fi
+    
 # Install ROS only if INSTALL_ROS=true
 RUN if [ "$INSTALL_ROS" = "true" ]; then \
         echo "Installing ROS ${ROS_DISTRO}..."; \

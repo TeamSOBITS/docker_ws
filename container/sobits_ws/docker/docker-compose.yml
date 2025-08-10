@@ -5,16 +5,17 @@ services:
       dockerfile: Dockerfile
       network: host
       args:
-        LOCAL_UID: $UID
-        LOCAL_GID: $GID
-        USER_NAME: $USER_NAME
-        CUDA_VERSION: $CUDA_VERSION
-        UBUNTU_VERSION: $UBUNTU_VERSION
-        INSTALL_ROS: $INSTALL_ROS
-        ROS_DISTRO: $ROS_DISTRO
+        LOCAL_UID: ${UID}
+        LOCAL_GID: ${GID}
+        USER_NAME: ${USER_NAME}
+        UBUNTU_VERSION: ${UBUNTU_VERSION}
+        INSTALL_ROS: ${INSTALL_ROS}
+        ROS_DISTRO: ${ROS_DISTRO}
+        COMPUTE_TYPE: ${COMPUTE_TYPE}
+        CUDA_VERSION: ${CUDA_VERSION}
     env_file: .env
-    image: ${USER_NAME}/${WORKSPACE_NAME}
-    container_name: ${WORKSPACE_NAME}
+    image: ${USER_NAME}/${WORKSPACE_NAME}:${COMPUTE_TYPE}
+    container_name: ${WORKSPACE_NAME}_${COMPUTE_TYPE}
     privileged: true
     user: "${UID}:${GID}"
     network_mode: host
@@ -24,17 +25,25 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${UID}/pulse/native
-      - CONTAINER_NAME=${WORKSPACE_NAME}
+      - CONTAINER_NAME=${WORKSPACE_NAME}_${COMPUTE_TYPE}
+      - COMPUTE_TYPE=${COMPUTE_TYPE}
     devices:
       - /dev/snd
     volumes:
       - ${XDG_RUNTIME_DIR}/pulse:/run/user/${UID}/pulse
       - ../src:/home/${USER_NAME}/colcon_ws/src
       - /etc/udev/rules.d/:/etc/udev/rules.d/
+    stdin_open: true
+    tty: true
+    
+  # # GPU configuration with device access
+  sobits_container_gpu:
+    extends:
+      service: sobits_container
     deploy:
       resources:
         reservations:
           devices:
             - capabilities: [gpu]
-    stdin_open: true
-    tty: true
+    profiles:
+      - gpu

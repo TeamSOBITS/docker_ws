@@ -35,7 +35,7 @@ fi
 
 # Build the Docker image
 if [ "${COMPUTE_TYPE}" = "gpu" ]; then
-    docker compose build sobits_container_gpu
+    docker compose build sobits-container-gpu
 else
-    docker compose build sobits_container
+    docker compose build sobits-container
 fi

@@ -1,5 +1,5 @@
 services:
-  sobits_container:
+  sobits-container:
     build:
       context: .
       dockerfile: Dockerfile
@@ -26,7 +26,6 @@ services:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${UID}/pulse/native
       - CONTAINER_NAME=${WORKSPACE_NAME}_${COMPUTE_TYPE}
-      - COMPUTE_TYPE=${COMPUTE_TYPE}
     devices:
       - /dev/snd
     volumes:
@@ -37,13 +36,12 @@ services:
     tty: true
     
   # # GPU configuration with device access
-  sobits_container_gpu:
+  sobits-container-gpu:
     extends:
-      service: sobits_container
+      service: sobits-container
     deploy:
       resources:
         reservations:
           devices:
             - capabilities: [gpu]
-    profiles:
-      - gpu
+    runtime: nvidia

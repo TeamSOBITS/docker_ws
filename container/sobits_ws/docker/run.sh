@@ -24,10 +24,10 @@ echo "Starting Docker container for ${COMPUTE_TYPE} environment..."
 
 # Select service name based on COMPUTE_TYPE
 if [ "${COMPUTE_TYPE}" = "cpu" ]; then
-    SERVICE_NAME="sobits_container"
+    SERVICE_NAME="sobits-container"
 else
-    SERVICE_NAME="sobits_container_gpu"
+    SERVICE_NAME="sobits-container-gpu"
 fi
 
 # Start the appropriate container
-docker compose -f docker-compose.yml up -d "$SERVICE_NAME"
+docker compose -f docker-compose.yml up -d "${SERVICE_NAME}"

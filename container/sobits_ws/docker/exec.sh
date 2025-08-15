@@ -4,7 +4,7 @@
 export $(cat .env | grep -v '^#' | xargs)
 
 # Check COMPUTE_TYPE
-if [ -z "$COMPUTE_TYPE" ]; then
+if [ -z "${COMPUTE_TYPE}" ]; then
     echo "Error: COMPUTE_TYPE not set in .env file"
     exit 1
 fi
@@ -12,11 +12,11 @@ fi
 CONTAINER_NAME="${WORKSPACE_NAME}_${COMPUTE_TYPE}"
 
 # Check if container is running
-if [ ! "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
-    echo "Container $CONTAINER_NAME is not running."
+if [ ! "$(docker ps -q -f name=${CONTAINER_NAME})" ]; then
+    echo "Container ${CONTAINER_NAME} is not running."
     echo "Please run './run.sh' first to start the container."
     exit 1
 fi
 
-echo "Entering container: $CONTAINER_NAME"
-docker exec -it --user ${USER_NAME} "$CONTAINER_NAME" bash
+echo "Entering container: ${CONTAINER_NAME}"
+docker exec -it --user ${USER_NAME} "${CONTAINER_NAME}" bash

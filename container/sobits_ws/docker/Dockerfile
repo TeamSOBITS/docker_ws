@@ -186,9 +186,8 @@ RUN if [ "$INSTALL_ROS" = "true" ] || [ "$INSTALL_ROS" = "True" ] || [ "$INSTALL
 
 # User specific environment variables
 RUN echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/${USER}/.bash_aliases && \
-    echo "export PS1='\[\e[1;33;40m\]\$CONTAINER_NAME\[\e[0m\] \${debian_chroot:+(\$debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USER}/.bash_aliases && \
-    echo "export EDITOR='nano'" >> /home/${USER}/.bash_aliases
-
+    echo "export PS1='\[\e[1;33;40m\]\$CONTAINER_NAME\[\e[0m\] \${debian_chroot:+(\$debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USER}/.bash_aliases
+    
 ##################
 # Other settings #
 ##################

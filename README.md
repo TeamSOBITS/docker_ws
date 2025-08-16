@@ -46,16 +46,16 @@ $ python3 -m tkinter
 1. コンテナのフォルダを複製します．
 ```bash
 $ cp -r {docker_wsのPATH}/container/{使用するコンテナ}/ {コンテナの新PATH}
-# 例: $ cp -r ~/docker_ws/container/cpu/ ~/
+# 例: $ cp -r ~/docker_ws/container/sobits_ws/ ~/
 ```
 
 > [!WARNING]
 > 複製されたフォルダの名前を変更してください．
-> 例: `cpu` → `my_new_ws`
+> 例: `sobits_ws` → `my_new_ws`
 
 2. `.env`ファイルを設定します．
 ```bash
-$ cd {コンテナPATH}/Dockerfiles
+$ cd {コンテナPATH}/docker
 $ nano .env  # または任意のエディタで編集
 ```
 
@@ -74,11 +74,11 @@ WORKSPACE_NAME=my_new_ws  # ワークスペース名（イメージ・コンテ�
 3. Dockerfileからイメージをビルドします.
 ```bash
 # CPUの場合：
-$ cd {コンテナPATH}/Dockerfiles/cpu
+$ cd {コンテナPATH}/docker
 $ bash build.sh
 
 # GPUの場合：
-$ cd {コンテナPATH}/Dockerfiles/gpu/CUDAXX.X.X_cuDNNX.X
+$ cd {コンテナPATH}/docker
 $ bash build.sh
 ```
 
@@ -95,7 +95,8 @@ $ bash exec.sh
 ```
 
 > [!NOTE]
-コンテナ内の `colcon_ws/src`がローカルの`{コンテナPATH}/src`と接続されていますので，そのフォルダ内のデータのみ共有可能となります．
+>コンテナ内の `colcon_ws/src`がローカルの`{コンテナPATH}/src`と接続されていますので，そのフォルダ内のデータのみ共有可能となります．
+>複数の同じ環境を作成する場合、サービス名を変更する必要があります。
 
 > [!TIP]
 > コンテナから抜き出すために，`「Ctrl」+「d」`を同時に押すか，ターミナルに`exit`を入力するかです．
@@ -126,14 +127,14 @@ $ ce
 <p>
 
 - sobits_ws
-    - cpu
-    - gpu
 
 </p>
 </details>
 
 
 ## Change-Log
+- 2025/08/17
+    - マルチステージビルド化しDockerfileを一つに管理
 
 - 2025/08/01
     - docker composeへの対応

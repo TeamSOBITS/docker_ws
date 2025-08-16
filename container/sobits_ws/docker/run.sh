@@ -3,9 +3,9 @@
 # Load environment variables
 export $(cat .env | grep -v '^#' | xargs)
 
-# Get UID and GID
-export UID=$(id -u)
-export GID=$(id -g)
+# Get LOCAL_UID and GID
+export LOCAL_UID=$(id -u)
+export LOCAL_GID=$(id -g)
 
 # Check COMPUTE_TYPE
 if [ -z "${COMPUTE_TYPE}" ]; then
@@ -22,6 +22,8 @@ fi
 
 echo "Starting Docker container for ${COMPUTE_TYPE} environment..."
 
+PROJECT_NAME=$WORKSPACE_NAME
+
 # Select service name based on COMPUTE_TYPE
 if [ "${COMPUTE_TYPE}" = "cpu" ]; then
     SERVICE_NAME="sobits-container"
@@ -30,4 +32,4 @@ else
 fi
 
 # Start the appropriate container
-docker compose -f docker-compose.yml up -d "${SERVICE_NAME}"
+docker compose -f docker-compose.yml -p "${PROJECT_NAME}" up -d "${SERVICE_NAME}"

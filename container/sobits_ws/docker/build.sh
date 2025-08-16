@@ -3,9 +3,9 @@
 # Load environment variables
 export $(cat .env | grep -v '^#' | xargs)
 
-# Get UID and GID
-export UID=$(id -u)
-export GID=$(id -g)
+# Get LOCAL_UID and LOCAL_GID
+export LOCAL_UID=$(id -u)
+export LOCAL_GID=$(id -g)
 
 # Check COMPUTE_TYPE and validate
 if [ -z "${COMPUTE_TYPE}" ]; then

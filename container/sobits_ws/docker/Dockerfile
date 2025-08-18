@@ -205,17 +205,3 @@ USER ${USER_NAME}
 
 # Set HOME position
 WORKDIR ${HOMEPATH}
-
-# Create entrypoint script
-RUN echo '#!/bin/bash' > ${HOMEPATH}/entrypoint.sh && \
-    echo 'set -e' >> ${HOMEPATH}/entrypoint.sh && \
-    if [ "$INSTALL_ROS" = "true" ] || [ "$INSTALL_ROS" = "True" ] || [ "$INSTALL_ROS" = "TRUE" ]; then \
-        echo 'if [ -d "${HOMEPATH}/colcon_ws/src" ]; then' >> ${HOMEPATH}/entrypoint.sh; \
-        echo '    find ${HOMEPATH}/colcon_ws/src \( -name "*.py" -o -name "*.sh" \) -exec chmod 755 {} +' >> ${HOMEPATH}/entrypoint.sh; \
-        echo 'fi' >> ${HOMEPATH}/entrypoint.sh; \
-        echo 'source /opt/ros/${ROS_DISTRO}/setup.bash 2>/dev/null || true' >> ${HOMEPATH}/entrypoint.sh; \
-    fi && \
-    echo 'exec "$@"' >> ${HOMEPATH}/entrypoint.sh && \
-    chmod +x ${HOMEPATH}/entrypoint.sh
-
-ENTRYPOINT ["bash", "-c", "${HOMEPATH}/entrypoint.sh bash"]

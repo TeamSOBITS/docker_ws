@@ -13,7 +13,7 @@ services:
         ROS_DISTRO: ${ROS_DISTRO}
         COMPUTE_TYPE: ${COMPUTE_TYPE}
         CUDA_VERSION: ${CUDA_VERSION}
-    env_file: env.sh
+    env_file: .env
     image: ${USER_NAME}/${WORKSPACE_NAME}:${COMPUTE_TYPE}
     container_name: ${WORKSPACE_NAME}_${COMPUTE_TYPE}
     privileged: true

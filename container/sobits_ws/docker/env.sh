@@ -1,7 +1,5 @@
 # Docker Environment Configuration
 
-dir=`echo $(pwd) | awk -F "/" '{ print $(NF - 1) }'`
-
 # Get LOCAL_UID and LOCAL_GID
 LOCAL_UID=$(id -u)
 LOCAL_GID=$(id -g)
@@ -11,7 +9,7 @@ COMPUTE_TYPE=cpu
 
 # User Configuration
 USER_NAME=$(whoami)
-WORKSPACE_NAME=$(dir)
+WORKSPACE_NAME=$(basename $(dirname $(pwd)))
 
 # System Configuration
 UBUNTU_VERSION=24.04

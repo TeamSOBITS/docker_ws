@@ -3,11 +3,11 @@ ARG CUDA_VERSION
 ARG COMPUTE_TYPE
 
 # Multi-stage build approach to select base image based on COMPUTE_TYPE
-FROM ubuntu:${UBUNTU_VERSION} as base-cpu
-FROM nvidia/cuda:${CUDA_VERSION}-cudnn-devel-ubuntu${UBUNTU_VERSION} as base-gpu
+FROM ubuntu:${UBUNTU_VERSION} AS base-cpu
+FROM nvidia/cuda:${CUDA_VERSION}-cudnn-devel-ubuntu${UBUNTU_VERSION} AS base-gpu
 
 # Select the appropriate base image
-FROM base-${COMPUTE_TYPE} as base
+FROM base-${COMPUTE_TYPE} AS base
 
 ###################################
 # Environment_variable_preference #

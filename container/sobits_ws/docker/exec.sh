@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Load environment variables
-export $(cat .env | grep -v '^#' | xargs)
+export $(cat env.sh | grep -v '^#' | xargs)
 
 # Check COMPUTE_TYPE
 if [ -z "${COMPUTE_TYPE}" ]; then
-    echo "Error: COMPUTE_TYPE not set in .env file"
+    echo "Error: COMPUTE_TYPE not set in env.sh file"
     exit 1
 fi
 

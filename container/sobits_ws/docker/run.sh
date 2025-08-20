@@ -1,15 +1,11 @@
 #!/bin/bash
 
 # Load environment variables
-export $(cat .env | grep -v '^#' | xargs)
-
-# Get LOCAL_UID and GID
-export LOCAL_UID=$(id -u)
-export LOCAL_GID=$(id -g)
+export $(cat env.sh | grep -v '^#' | xargs)
 
 # Check COMPUTE_TYPE
 if [ -z "${COMPUTE_TYPE}" ]; then
-    echo "Error: COMPUTE_TYPE not set in .env file"
+    echo "Error: COMPUTE_TYPE not set in env.sh file"
     echo "Please set COMPUTE_TYPE to either 'cpu' or 'gpu'"
     exit 1
 fi

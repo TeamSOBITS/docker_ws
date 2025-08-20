@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Load environment variables
-export $(cat env.sh | grep -v '^#' | xargs)
+if [[ -f "./env.sh" ]]; then
+  source ./env.sh
+else
+  echo "env.sh not found"; exit 1
+fi
 
 # Check COMPUTE_TYPE
 if [ -z "${COMPUTE_TYPE}" ]; then

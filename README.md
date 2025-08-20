@@ -41,7 +41,7 @@ $ python3 -m tkinter
 
 ### 前提条件
 
-このプロジェクトではDocker Composeを使用しています。コンテナをビルドする前に、`.env`ファイルの設定が必要です。
+このプロジェクトではDocker Composeを使用しています。コンテナをビルドする前に、`env.sh`ファイルの設定が必要です。
 
 1. コンテナのフォルダを複製します．
 ```bash
@@ -53,18 +53,18 @@ $ cp -r {docker_wsのPATH}/container/{使用するコンテナ}/ {コンテナ�
 > 複製されたフォルダの名前を変更してください．
 > 例: `sobits_ws` → `my_new_ws`
 
-2. `.env`ファイルを設定します．
+2. `env.sh`ファイルを設定します．
 ```bash
 $ cd {コンテナPATH}/docker
-$ nano .env  # または任意のエディタで編集
+$ gedit env.sh  # または任意のエディタで編集
 ```
 
-`.env`ファイルの内容例：
+`env.sh`ファイルの設定例：
 ```properties
-USER_NAME=sobits          # コンテナ内のユーザー名
-UBUNTU_VERSION=22.04      # 使用するUbuntuのバージョン
-ROS_DISTRO=humble        # 使用するROSのディストリビューション
-WORKSPACE_NAME=my_new_ws  # ワークスペース名（イメージ・コンテナ名）
+COMPUTE_TYPE=cpu        # 使用するプロセッサ
+UBUNTU_VERSION=22.04    # 使用するUbuntuのバージョン
+ROS_DISTRO=humble       # 使用するROSのディストリビューション
+CUDA_VERSION=12.6.0     # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
 ```
 
 > [!NOTE]
@@ -96,7 +96,6 @@ $ bash exec.sh
 
 > [!NOTE]
 >コンテナ内の `colcon_ws/src`がローカルの`{コンテナPATH}/src`と接続されていますので，そのフォルダ内のデータのみ共有可能となります．
->複数の同じ環境を作成する場合、サービス名を変更する必要があります。
 
 > [!TIP]
 > コンテナから抜き出すために，`「Ctrl」+「d」`を同時に押すか，ターミナルに`exit`を入力するかです．
@@ -133,6 +132,9 @@ $ ce
 
 
 ## Change-Log
+- 2025/08/20
+    - 環境ファイルをenv.shに変更
+    - PROJECT_NAMEを追加し、同じサービス名で複数の環境を作成できるように
 - 2025/08/17
     - マルチステージビルド化しDockerfileを一つに管理
 

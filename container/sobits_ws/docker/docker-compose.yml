@@ -25,7 +25,7 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${LOCAL_UID}/pulse/native
-      - CONTAINER_NAME=${WORKSPACE_NAME}_${COMPUTE_TYPE}
+      - CONTAINER_NAME=${WORKSPACE_NAME}
     devices:
       - /dev/snd
     volumes:

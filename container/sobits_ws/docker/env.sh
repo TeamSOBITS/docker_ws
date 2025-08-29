@@ -4,17 +4,15 @@
 LOCAL_UID=$(id -u)
 LOCAL_GID=$(id -g)
 
-# Set COMPUTE_TYPE to either "cpu" or "gpu"
-COMPUTE_TYPE=cpu
+# System Configuration
+UBUNTU_VERSION=22.04
+USE_GPU=true
+INSTALL_ROS=true
 
 # User Configuration
-USER_NAME=$(whoami)
-WORKSPACE_NAME=$(basename $(dirname $(pwd)))
+USERNAME=$(whoami)
+CONTAINER_NAME=$(basename $(dirname $(pwd)))
 
-# System Configuration
-UBUNTU_VERSION=24.04
-INSTALL_ROS=true
-ROS_DISTRO=jazzy
-
-# GPU Configuration (only used when COMPUTE_TYPE=gpu)
-CUDA_VERSION=12.6.0
+# Packages
+CUDA_VERSION=12.5.1 # when USE_GPU=true
+ROS_DISTRO=humble   # when INSTALL_ROS=true

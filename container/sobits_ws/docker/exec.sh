@@ -7,14 +7,6 @@ else
   echo "env.sh not found"; exit 1
 fi
 
-# Check COMPUTE_TYPE
-if [ -z "${COMPUTE_TYPE}" ]; then
-    echo "Error: COMPUTE_TYPE not set in env.sh file"
-    exit 1
-fi
-
-CONTAINER_NAME="${WORKSPACE_NAME}_${COMPUTE_TYPE}"
-
 # Check if container is running
 if [ ! "$(docker ps -q -f name=${CONTAINER_NAME})" ]; then
     echo "Container ${CONTAINER_NAME} is not running."
@@ -23,4 +15,4 @@ if [ ! "$(docker ps -q -f name=${CONTAINER_NAME})" ]; then
 fi
 
 echo "Entering container: ${CONTAINER_NAME}"
-docker exec -it --user ${USER_NAME} "${CONTAINER_NAME}" bash
+docker exec -it --user ${USERNAME} ${CONTAINER_NAME} bash

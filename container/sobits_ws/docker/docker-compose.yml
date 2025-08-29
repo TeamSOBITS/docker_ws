@@ -7,15 +7,16 @@ services:
       args:
         LOCAL_UID: ${LOCAL_UID}
         LOCAL_GID: ${LOCAL_GID}
-        USER_NAME: ${USER_NAME}
         UBUNTU_VERSION: ${UBUNTU_VERSION}
+        COMPUTE_TYPE: ${COMPUTE_TYPE}
+        USERNAME: ${USERNAME}
+        CONTAINER_NAME: ${CONTAINER_NAME}
+        CUDA_VERSION: ${CUDA_VERSION}
         INSTALL_ROS: ${INSTALL_ROS}
         ROS_DISTRO: ${ROS_DISTRO}
-        COMPUTE_TYPE: ${COMPUTE_TYPE}
-        CUDA_VERSION: ${CUDA_VERSION}
     env_file: .env
-    image: ${USER_NAME}/${WORKSPACE_NAME}:${COMPUTE_TYPE}
-    container_name: ${WORKSPACE_NAME}_${COMPUTE_TYPE}
+    image: ${USERNAME}/${CONTAINER_NAME}:${COMPUTE_TYPE}
+    container_name: ${CONTAINER_NAME}
     privileged: true
     user: "${LOCAL_UID}:${LOCAL_GID}"
     network_mode: host
@@ -25,12 +26,12 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${LOCAL_UID}/pulse/native
-      - CONTAINER_NAME=${WORKSPACE_NAME}
     devices:
       - /dev/snd
     volumes:
       - ${XDG_RUNTIME_DIR}/pulse:/run/user/${LOCAL_UID}/pulse
-      - ../src:/home/${USER_NAME}/colcon_ws/src
+      - ../src:/home/${USERNAME}/colcon_ws/src
+      - /dev/bus/usb:/dev/bus/usb
       - /etc/udev/rules.d/:/etc/udev/rules.d/
     stdin_open: true
     tty: true

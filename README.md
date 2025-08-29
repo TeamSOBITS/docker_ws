@@ -61,15 +61,18 @@ $ gedit env.sh  # または任意のエディタで編集
 
 `env.sh`ファイルの設定例：
 ```properties
-COMPUTE_TYPE=cpu        # 使用するプロセッサ
+USE_GPU=false          # GPUを使用するかどうか
 UBUNTU_VERSION=22.04    # 使用するUbuntuのバージョン
 ROS_DISTRO=humble       # 使用するROSのディストリビューション
 CUDA_VERSION=12.6.0     # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
 ```
 
 > [!NOTE]
-> `WORKSPACE_NAME`は複製したフォルダ名と一致させることを推奨します。
+> `CONTAINER_NAME`は複製したフォルダ名と一致させることを推奨します。
 > ROSのバージョンはros2のみ選択可能です。
+
+> [!TIP]
+> ubuntuのバージョンと対応するcudaのバージョンを[下の表](#各ubuntuバージョンに対応するcudaバージョン)に記載しています。
 
 3. Dockerfileからイメージをビルドします.
 ```bash
@@ -116,6 +119,21 @@ $ ce
 > [!NOTE]
 > このコマンドは自分がいるPATHに依存していないため，どこでも実行可能です．
 
+## 各Ubuntuバージョンに対応するCUDAバージョン
+
+| CUDA Version   | Ubuntu 22.04 | Ubuntu 24.04 |
+|:--------------:|:------------:|:------------:|
+| 12.4.1         | ✓            |              |
+| 12.5.1         | ✓            |              |
+| 12.6.0         | ✓            | ✓            |
+| 12.6.1         | ✓            | ✓            |
+| 12.6.2         | ✓            | ✓            |
+| 12.6.3         | ✓            | ✓            |
+| 12.8.0         | ✓            | ✓            |
+| 12.8.1         | ✓            | ✓            |
+| 12.9.0         | ✓            | ✓            |
+| 12.9.1         | ✓            | ✓            |
+| 13.0.0         | ✓            | ✓            |
 
 ## Docker Containers 
 

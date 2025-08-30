@@ -16,6 +16,7 @@ ARG USER_ID=${LOCAL_UID:-1000}
 ARG GROUP_ID=${LOCAL_GID:-1000}
 ARG USERNAME
 ARG INSTALL_ROS
+ARG INSTALL_GAZEBO
 ARG ROS_DISTRO
 ARG HOME=/home/${USERNAME}
 
@@ -118,20 +119,36 @@ USER root
 RUN if [ ${INSTALL_ROS} = "true" ]; then \
         echo "export ROS_DISTRO=${ROS_DISTRO}" >> /etc/environment; \
         echo "Installing ROS ${ROS_DISTRO}..."; \
-        apt update -q && \
-        apt install -yq \
+        apt-get install -yq \
             gnupg && \
         curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
         . /etc/os-release && \
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu ${UBUNTU_CODENAME} main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
-        apt update -q && \
-        apt install -yq \
+        apt-get update -q && \
+        apt-get install -yq \
             ros-${ROS_DISTRO}-desktop \
             python3-colcon-common-extensions \
             python3-rosdep && \
         rosdep init; \
     else \
         echo "Skipping ROS installation..."; \
+    fi
+
+# Install Gazebo only if specified
+RUN if [ ${INSTALL_GAZEBO} = "true" ]; then \
+        echo "Installing Gazebo..."; \
+        curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
+        apt-get update -q && \
+        if [ ${ROS_DISTRO} = "humble" ]; then \
+            apt-get install -yq ignition-fortress; \
+        elif [ ${ROS_DISTRO} = "jazzy" ]; then \
+            apt-get install -yq gz-harmonic; \
+        else \
+            echo "Unknown ROS_DISTRO for Gazebo: ${ROS_DISTRO}, skipping Gazebo install."; \
+        fi \
+    else \
+        echo "Skipping Gazebo installation..."; \
     fi
 
 # Switch back to user for workspace setup

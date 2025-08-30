@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Load environment variables
-if [[ -f "./env.sh" ]]; then
-  source ./env.sh
+if [[ -f ".env" ]]; then
+  source .env
 else
-  echo "env.sh not found"; exit 1
+  echo ".env not found"; exit 1
 fi
 
 echo "Starting Docker container for $(if [ ${USE_GPU} = "true" ]; then echo "GPU"; else echo "CPU"; fi) environment..."
@@ -19,4 +19,4 @@ else
 fi
 
 # Start the appropriate container
-docker compose -f docker-compose.yml -p ${PROJECT_NAME} up -d ${SERVICE_NAME}
+docker compose -p ${PROJECT_NAME} up -d ${SERVICE_NAME}

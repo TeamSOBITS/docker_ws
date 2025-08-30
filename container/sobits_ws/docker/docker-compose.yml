@@ -13,6 +13,7 @@ services:
         CONTAINER_NAME: ${CONTAINER_NAME}
         CUDA_VERSION: ${CUDA_VERSION}
         INSTALL_ROS: ${INSTALL_ROS}
+        INSTALL_GAZEBO: ${INSTALL_GAZEBO}
         ROS_DISTRO: ${ROS_DISTRO}
     env_file: .env
     image: ${USERNAME}/${CONTAINER_NAME}:${COMPUTE_TYPE}
@@ -32,11 +33,11 @@ services:
       - ${XDG_RUNTIME_DIR}/pulse:/run/user/${LOCAL_UID}/pulse
       - ../src:/home/${USERNAME}/colcon_ws/src
       - /dev/bus/usb:/dev/bus/usb
-      - /etc/udev/rules.d/:/etc/udev/rules.d/
+      # - /etc/udev/rules.d/:/etc/udev/rules.d/:
     stdin_open: true
     tty: true
-    
-  # # GPU configuration with device access
+
+  # GPU configuration with device access
   sobits-container-gpu:
     extends:
       service: sobits-container

@@ -8,6 +8,7 @@ LOCAL_GID=$(id -g)
 UBUNTU_VERSION=22.04
 USE_GPU=true
 INSTALL_ROS=true
+INSTALL_GAZEBO=true
 
 # User Configuration
 USERNAME=$(whoami)

@@ -33,7 +33,7 @@ services:
       - ${XDG_RUNTIME_DIR}/pulse:/run/user/${LOCAL_UID}/pulse
       - ../src:/home/${USERNAME}/colcon_ws/src
       - /dev/bus/usb:/dev/bus/usb
-      # - /etc/udev/rules.d/:/etc/udev/rules.d/:
+      - /etc/udev/rules.d/:/etc/udev/rules.d/
     stdin_open: true
     tty: true
 

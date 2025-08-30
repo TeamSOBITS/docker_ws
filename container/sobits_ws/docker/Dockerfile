@@ -145,7 +145,7 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
         echo "export ROS_DOMAIN_ID=1" >> ~/.bashrc && \
         echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc && \
         # Create bash aliases (only for ROS builds)
-        echo "alias cb='CURRENT_DIR=\`pwd\` && cd /home/\${USER}/colcon_ws/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'" >> /home/${USER}/.bash_aliases && \
+        echo "alias cb='CURRENT_DIR=\`pwd\` && cd /home/\${USER}/colcon_ws/ && colcon build --symlink-install && source ~/colcon_ws/install/setup.bash && cd \${CURRENT_DIR}'" >> /home/${USER}/.bash_aliases && \
         echo "" >> /home/${USER}/.bash_aliases; \
     else \
         echo "ROS is not installed, skipping ROS configuration..."; \

@@ -159,7 +159,7 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
         rosdep update && \
         mkdir -p ~/colcon_ws/src && \
         echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc && \
-        echo "source ~/colcon_ws/install/setup.bash" && \
+        echo "source ~/colcon_ws/install/setup.bash"  >> ~/.bashrc && \
         echo "export ROS_DOMAIN_ID=1" >> ~/.bashrc && \
         echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc && \
         # Create bash aliases (only for ROS builds)

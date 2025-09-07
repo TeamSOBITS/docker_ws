@@ -7,6 +7,8 @@ else
   echo ".env not found"; exit 1
 fi
 
+PROJECT_NAME=${CONTAINER_NAME}
+
 # Check if container is running
 if [ ! "$(docker ps -q -f name=${CONTAINER_NAME})" ]; then
     echo "Container ${CONTAINER_NAME} is not running."
@@ -22,4 +24,4 @@ else
 fi
 
 echo "Entering container: ${CONTAINER_NAME}"
-docker compose -p ${CONTAINER_NAME} exec -it ${SERVICE_NAME} /bin/bash
+docker compose -p ${PROJECT_NAME} exec -it ${SERVICE_NAME} /bin/bash

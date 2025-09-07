@@ -61,7 +61,7 @@ $ gedit env.sh  # または任意のエディタで編集
 
 `env.sh`ファイルの設定例：
 ```properties
-USE_GPU=false          # GPUを使用するかどうか
+USE_GPU=false           # GPUを使用するかどうか
 UBUNTU_VERSION=22.04    # 使用するUbuntuのバージョン
 ROS_DISTRO=humble       # 使用するROSのディストリビューション
 CUDA_VERSION=12.6.0     # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
@@ -76,25 +76,20 @@ CUDA_VERSION=12.6.0     # COMPUTE_TYPEがgpuの場合に使用するCUDAバー�
 
 3. Dockerfileからイメージをビルドします.
 ```bash
-# CPUの場合：
-$ cd {コンテナPATH}/docker
-$ bash build.sh
-
-# GPUの場合：
 $ cd {コンテナPATH}/docker
 $ bash build.sh
 ```
 
 3. イメージからコンテナを起動します．
 ```bash
-$ bash run.sh 
-# >> {コンテナ名} sobits@:~$　← この表示に切り替わる
+$ bash up.sh 
+# >> {コンテナ名} username@:~$　← この表示に切り替わる
 ```
 
 4. 起動中のコンテナに別端末からアクセスします．
 ```bash
 $ bash exec.sh
-# >> {コンテナ名} sobits@:~$　← この表示に切り替わる
+# >> {コンテナ名} username@:~$　← この表示に切り替わる
 ```
 
 > [!NOTE]
@@ -103,6 +98,11 @@ $ bash exec.sh
 > [!TIP]
 > コンテナから抜き出すために，`「Ctrl」+「d」`を同時に押すか，ターミナルに`exit`を入力するかです．
 
+## Stop and remove container
+作成したコンテナを停止して削除します。
+```bash
+$ bash down.sh
+```
 
 ## Container Executer
 

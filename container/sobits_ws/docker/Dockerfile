@@ -117,8 +117,8 @@ USER root
 
 # Set ROS_DISTRO environment variable and install ROSonly if ROS will be installed
 RUN if [ ${INSTALL_ROS} = "true" ]; then \
-        echo "export ROS_DISTRO=${ROS_DISTRO}" >> /etc/environment; \
         echo "Installing ROS ${ROS_DISTRO}..."; \
+        echo "export ROS_DISTRO=${ROS_DISTRO}" >> /etc/environment; \
         apt-get install -yq \
             gnupg && \
         curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \

@@ -18,6 +18,6 @@ USERNAME=$(whoami)
 CONTAINER_NAME=$(basename $(dirname $(pwd)))
 
 # Packages
-CUDA_VERSION=12.5.1 # when USE_GPU=true
+CUDA_VERSION=12.6.3 # when USE_GPU=true
 PYTORCH_VERSION=2.8.0 # when INSTALL_PYTORCH=true
 ROS_DISTRO=humble   # when INSTALL_ROS=true

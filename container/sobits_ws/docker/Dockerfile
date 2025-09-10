@@ -172,7 +172,39 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
 # User specific environment variables
 RUN echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/${USER}/.bash_aliases && \
     echo "export PS1='\[\e[1;33;40m\]\${CONTAINER_NAME}\[\e[0m\] \${debian_chroot:+(\${debian_chroot})}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USER}/.bash_aliases
+
     
+####################
+# Install PyTorch #
+####################
+ARG CUDA_VERSION
+ARG COMPUTE_TYPE
+ARG UBUNTU_VERSION
+ARG INSTALL_PYTORCH
+ARG PYTORCH_VERSION
+
+RUN if [ ${INSTALL_PYTORCH} = "true" ]; then \
+        echo "Installing PyTorch ${PYTORCH_VERSION}..."; \
+        # Check Ubuntu version to determine pip installation method
+        UBUNTU_MAJOR=$(echo ${UBUNTU_VERSION} | cut -d. -f1); \
+        PIP_ARGS=""; \
+        if [ ${UBUNTU_MAJOR} -ge 24 ]; then \
+            PIP_ARGS="--break-system-packages"; \
+        fi; \
+        # Determine CUDA tag for PyTorch installation
+        CUDA_TAG="cpu"; \
+        if [ ${COMPUTE_TYPE} = "gpu" ] && echo ${CUDA_VERSION} | grep -qE '^[0-9]+'; then \
+            CUDA_MAJOR=$(echo ${CUDA_VERSION} | cut -d. -f1); \
+            CUDA_MINOR=$(echo ${CUDA_VERSION} | cut -d. -f2); \
+            CUDA_TAG="cu${CUDA_MAJOR}${CUDA_MINOR}"; \
+            echo "CUDA Tag detected: ${CUDA_TAG}"; \
+        fi; \
+        echo "Installing PyTorch with CUDA tag: ${CUDA_TAG}"; \
+        python3 -m pip install -U ${PIP_ARGS} torch==${PYTORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/${CUDA_TAG}; \
+    else \
+        echo "Skipping PyTorch installation..."; \
+    fi
+
 ##################
 # Other settings #
 ##################

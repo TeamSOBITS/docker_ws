@@ -12,8 +12,10 @@ FROM base-${COMPUTE_TYPE} AS base
 ###################################
 # Environment_variable_preference #
 ###################################
-ARG USER_ID=${LOCAL_UID:-1000}
-ARG GROUP_ID=${LOCAL_GID:-1000}
+ARG LOCAL_UID
+ARG LOCAL_GID
+ARG USER_ID=${LOCAL_UID}
+ARG GROUP_ID=${LOCAL_GID}
 ARG USERNAME
 ARG INSTALL_ROS
 ARG INSTALL_GAZEBO
@@ -33,12 +35,7 @@ RUN apt-get update -q && \
 
 ENV TZ="Asia/Tokyo"
 
-# Set Language
-RUN apt-get install -yq \
-        locales && \
-    sed -i '/ja_JP.UTF-8/s/^# //g' /etc/locale.gen && \
-    locale-gen ja_JP.UTF-8
-
+# Set Language to Japanese
 ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:ja
 
@@ -80,11 +77,7 @@ RUN apt-get install -yq \
 # Add ${USERNAME} user #
 #######################
 # Add sudo user
-RUN if id -u ${USER_ID} >/dev/null 2>&1; then \
-        EXISTING_USER=$(id -nu ${USER_ID}); \
-        userdel -r ${EXISTING_USER} 2>/dev/null || true; \
-    fi && \
-    useradd --create-home --home-dir ${HOME} --shell /bin/bash --user-group --groups adm,sudo,audio,video -u ${USER_ID} ${USERNAME} && \
+RUN useradd --create-home --home-dir ${HOME} --shell /bin/bash --user-group --groups adm,sudo,audio,video -u ${USER_ID} ${USERNAME} && \
     groupmod -g ${GROUP_ID} -o ${USERNAME} && \
     echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 

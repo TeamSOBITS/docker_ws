@@ -24,4 +24,4 @@ else
 fi
 
 echo "Entering container: ${CONTAINER_NAME}"
-docker compose -p ${PROJECT_NAME} exec -it ${SERVICE_NAME} /bin/bash
+docker compose -p ${PROJECT_NAME} exec -it --user ${USERNAME} ${SERVICE_NAME} /bin/bash

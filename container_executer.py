@@ -4,17 +4,14 @@
 
 import os
 import subprocess
-try:
-    import Tkinter  # Python2
-except ImportError: 
-    import tkinter as Tkinter # Python3
+import tkinter
 
 class ContainerExecuter():
     def __init__(self):
-        self.tk = Tkinter.Tk()
+        self.tk = tkinter.Tk()
         self.running_containers_info = []       # 起動中のコンテナの一覧を格納する変数
         self.containers_info = []               # 全てのコンテナの一覧を格納する変数
-        self.iconfile = Tkinter.PhotoImage(file=os.path.dirname(__file__)+'/img/icon.png')
+        self.iconfile = tkinter.PhotoImage(file=os.path.dirname(__file__)+'/img/icon.png')
         self.tk.call('wm', 'iconphoto', self.tk._w, self.iconfile)
 
     def create_gui(self):
@@ -44,25 +41,25 @@ class ContainerExecuter():
             
             # コンテナの実行中の場合は"restart"，"stop"，"exec"というボタンを表示させる
             if is_running:
-                button = Tkinter.Button(self.tk, width=4, text="    ",    command=self.button_clicked_callback("dummy",   container_id)).place(x=100, y=i*30)
-                button = Tkinter.Button(self.tk, width=4, text="restart", command=self.button_clicked_callback("restart", container_id)).place(x=160, y=i*30)
-                button = Tkinter.Button(self.tk, width=4, text="stop",    command=self.button_clicked_callback("stop",    container_id)).place(x=220, y=i*30)
-                button = Tkinter.Button(self.tk, width=4, text="exec",    command=self.button_clicked_callback("exec",    container_id)).place(x=280, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="    ",    command=self.button_clicked_callback("dummy",   container_id)).place(x=100, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="restart", command=self.button_clicked_callback("restart", container_id)).place(x=160, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="stop",    command=self.button_clicked_callback("stop",    container_id)).place(x=220, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="exec",    command=self.button_clicked_callback("exec",    container_id)).place(x=280, y=i*30)
 
             else:
-                button = Tkinter.Button(self.tk, width=4, text="start", command=self.button_clicked_callback("start", container_id)).place(x=100, y=i*30)
-                button = Tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=160, y=i*30)
-                button = Tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=220, y=i*30)
-                button = Tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=280, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="start", command=self.button_clicked_callback("start", container_id)).place(x=100, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=160, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=220, y=i*30)
+                button = tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=280, y=i*30)
 
-            label = Tkinter.Label(text=container_name, font=("",15)).place(x=340, y=i*30)
+            label = tkinter.Label(text=container_name, font=("",15)).place(x=340, y=i*30)
 
 	    #GUI再起動用のボタンを定義
-        btn = Tkinter.Button(self.tk, width=3, text="refresh", command=self.refresh_gui)
+        btn = tkinter.Button(self.tk, width=3, text="refresh", command=self.refresh_gui)
         btn.place(x=0, y=0)
         
         #GUI停止用のボタンを定義
-        btn = Tkinter.Button(self.tk, width=3, text="close", command=self.quit_gui)
+        btn = tkinter.Button(self.tk, width=3, text="close", command=self.quit_gui)
         btn.place(x=0, y=30)
 
         self.tk.mainloop()
@@ -76,7 +73,7 @@ class ContainerExecuter():
             else:
                 if operation == "exec":
                     print("[%s] container has been executed."%container_id)
-                    cmd = "gnome-terminal -- bash -c 'docker exec -it %s /bin/bash; bash'"%(container_id)
+                    cmd = "gnome-terminal -- bash -c 'docker exec -it --user ${USER} %s /bin/bash; bash'"%(container_id)
                 
                 elif operation == "start":
                     print("[%s] container has been started."%container_id)

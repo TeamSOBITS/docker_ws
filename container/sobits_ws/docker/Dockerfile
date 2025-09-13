@@ -77,7 +77,11 @@ RUN apt-get install -yq \
 # Add ${USERNAME} user #
 #######################
 # Add sudo user
-RUN useradd --create-home --home-dir ${HOME} --shell /bin/bash --user-group --groups adm,sudo,audio,video -u ${USER_ID} ${USERNAME} && \
+RUN if id -u ${USER_ID} >/dev/null 2>&1; then \
+        EXISTING_USER=$(id -nu ${USER_ID}); \
+        userdel -r ${EXISTING_USER} 2>/dev/null || true; \
+    fi && \
+    useradd --create-home --home-dir ${HOME} --shell /bin/bash --user-group --groups adm,sudo,audio,video -u ${USER_ID} ${USERNAME} && \
     groupmod -g ${GROUP_ID} -o ${USERNAME} && \
     echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 

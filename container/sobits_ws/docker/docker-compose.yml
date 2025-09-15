@@ -17,6 +17,7 @@ services:
         INSTALL_ROS: ${INSTALL_ROS}
         INSTALL_GAZEBO: ${INSTALL_GAZEBO}
         ROS_DISTRO: ${ROS_DISTRO}
+        ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
     env_file: .env
     image: ${USERNAME}/${CONTAINER_NAME}:${COMPUTE_TYPE}
     container_name: ${CONTAINER_NAME}

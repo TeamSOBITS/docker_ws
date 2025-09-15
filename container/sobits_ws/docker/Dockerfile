@@ -20,6 +20,7 @@ ARG USERNAME
 ARG INSTALL_ROS
 ARG INSTALL_GAZEBO
 ARG ROS_DISTRO
+ARG ROS_DOMAIN_ID
 ARG HOME=/home/${USERNAME}
 
 ENV DEBCONF_NOWARNINGS=yes
@@ -157,7 +158,7 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
         mkdir -p ~/colcon_ws/src && \
         echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc && \
         echo "source ~/colcon_ws/install/setup.bash"  >> ~/.bashrc && \
-        echo "export ROS_DOMAIN_ID=1" >> ~/.bashrc && \
+        echo "export ROS_DOMAIN_ID=${ROS_DOMAIN_ID}" >> ~/.bashrc && \
         echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc && \
         # Create bash aliases (only for ROS builds)
         echo "alias cb='CURRENT_DIR=\`pwd\` && cd ~/colcon_ws/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'" >> /home/${USER}/.bash_aliases && \

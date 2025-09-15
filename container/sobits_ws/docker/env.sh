@@ -13,11 +13,12 @@ INSTALL_PYTORCH=true
 INSTALL_ROS=true
 INSTALL_GAZEBO=true
 
-# User Configuration
-USERNAME=$(whoami)
-CONTAINER_NAME=$(basename $(dirname $(pwd)))
-
 # Packages
 CUDA_VERSION=12.6.3 # when USE_GPU=true
 PYTORCH_VERSION=2.8.0 # when INSTALL_PYTORCH=true
 ROS_DISTRO=humble   # when INSTALL_ROS=true
+
+# User Configuration
+USERNAME=$(whoami)
+CONTAINER_NAME=$(basename $(dirname $(pwd)))
+ROS_DOMAIN_ID=1 # when INSTALL_ROS=true

@@ -32,10 +32,3 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         software-properties-common sudo && \
     chmod +x /tmp/install_opencv.sh && \
     /tmp/install_opencv.sh build ${COMPUTE_TYPE} ${CV2_VERSION}
-
-
-# Set OpenCV environment variables
-ENV OPENCV_DIR="/tmp/opencv_pkg_install"
-ENV LD_LIBRARY_PATH="${OPENCV_DIR}/lib:${LD_LIBRARY_PATH}"
-ENV PKG_CONFIG_PATH="${OPENCV_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-ENV PYTHONPATH="${OPENCV_DIR}/lib/${PYTHON_VERSION_DIR}/dist-packages:${PYTHONPATH}"

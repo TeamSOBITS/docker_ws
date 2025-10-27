@@ -60,16 +60,22 @@ $ gedit env.sh  # または任意のエディタで編集
 ```
 
 `env.sh`ファイルの設定例：
-```properties
-USE_GPU=false           # GPUを使用するかどうか
-UBUNTU_VERSION=22.04    # 使用するUbuntuのバージョン
-PYTORCH_VERSION=2.8.0   # 使用するPyTorchのバージョン
-ROS_DISTRO=humble       # 使用するROSのディストリビューション
-CUDA_VERSION=12.6.0     # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
+```sh
+UBUNTU_VERSION="22.04"  # 使用するUbuntuのバージョン
+COMPUTE_TYPE="gpu"      # gpuもしくはcpuを選択
+CUDA_VERSION="12.6.0"   # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
+INSTALL_CV2="true"      # OpenCVのインストール
+INSTALL_ROS="true"      # ROSのインストール
+INSTALL_PYTORCH="true"  # PyTorchのインストール
+INSTALL_GAZEBO="true"   # Gazeboのインストール
+ROS_DISTRO="humble"     # 使用するROSのディストリビューション
+CV2_VERSION="4.12.0"    # 使用するOpenCVのバージョン
+PYTORCH_VERSION="2.8.0" # 使用するPyTorchのバージョン
+ROS_DISTRO="humble"     # 使用するROSのディストリビューション
+ROS_DOMAIN_ID="30"      # 使用するROSのドメインID
 ```
 
 > [!NOTE]
-> `CONTAINER_NAME`は複製したフォルダ名と一致させることを推奨します。
 > ROSのバージョンはros2のみ選択可能です。
 
 > [!TIP]
@@ -150,6 +156,10 @@ $ ce
 
 
 ## Change-Log
+- 2025/10/27
+    - OpenCV用のDockerfile作成
+    - OpenCVのためのマルチステージ
+    - OpenCV 4.12.0にアップデート(DockerHubに対応)
 - 2025/08/20
     - PyTorchインストール(via pip)
     - CUDA/Ubuntu/PyTorch対応表の追加

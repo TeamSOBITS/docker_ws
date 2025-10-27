@@ -6,9 +6,6 @@ export DOCKERHUB_USERNAME="sobits"
 
 # -- Base System Configuration --
 export UBUNTU_VERSION="22.04"
-export USERNAME=$(whoami)
-export LOCAL_UID=$(id -u)
-export LOCAL_GID=$(id -g)
 
 # -- GPU / CPU Configuration --
 # Set to "true" to build the GPU-enabled container, "false" for CPU-only.
@@ -30,6 +27,11 @@ export ROS_DOMAIN_ID="30"
 
 
 # --- Do not modify below this line ---
+
+# -- User and Group IDs --
+export USERNAME=$(whoami)
+export LOCAL_UID=$(id -u)
+export LOCAL_GID=$(id -g)
 
 # -- Naming --
 

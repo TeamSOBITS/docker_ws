@@ -31,7 +31,7 @@ COPY install_sh/install_opencv.sh /tmp/install_opencv.sh
 RUN apt-get update && apt-get install -y --no-install-recommends \
         software-properties-common sudo && \
     chmod +x /tmp/install_opencv.sh && \
-    /tmp/install_opencv.sh ${COMPUTE_TYPE} ${CV2_VERSION}
+    /tmp/install_opencv.sh build ${COMPUTE_TYPE} ${CV2_VERSION}
 
 
 # Set OpenCV environment variables

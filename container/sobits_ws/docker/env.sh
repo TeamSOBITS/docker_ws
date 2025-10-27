@@ -5,19 +5,15 @@
 export DOCKERHUB_USERNAME="sobits"
 
 # -- Base System Configuration --
-export UBUNTU_VERSION="24.04"
+export UBUNTU_VERSION="22.04"
 export USERNAME=$(whoami)
 export LOCAL_UID=$(id -u)
 export LOCAL_GID=$(id -g)
 
 # -- GPU / CPU Configuration --
 # Set to "true" to build the GPU-enabled container, "false" for CPU-only.
-export USE_GPU="true"
+export COMPUTE_TYPE="gpu"    # Options: "cpu" or "gpu"
 export CUDA_VERSION="12.8.1" # Required only if USE_GPU is true
-export COMPUTE_TYPE="cpu"
-if [[ "${USE_GPU}" == "true" ]]; then
-    COMPUTE_TYPE="gpu"
-fi
 
 # -- Component Installation Flags --
 export INSTALL_CV2="true"      # Set to "true" or "false"
@@ -28,8 +24,12 @@ export INSTALL_GAZEBO="true"   # Set to "true" or "false"
 # -- Component Versions --
 export CV2_VERSION="4.12.0"
 export PYTORCH_VERSION="2.9.0" # Example version
-export ROS_DISTRO="jazzy"     # "humble" for 22.04, "jazzy" for 24.04
+export ROS_DISTRO="humble"     # "humble" for 22.04, "jazzy" for 24.04
 export ROS_DOMAIN_ID="30"
+
+
+
+# --- Do not modify below this line ---
 
 # -- Naming --
 

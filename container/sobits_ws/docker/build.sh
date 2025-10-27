@@ -35,7 +35,6 @@ cat > .env <<EOF
 LOCAL_UID=${LOCAL_UID}
 LOCAL_GID=${LOCAL_GID}
 UBUNTU_VERSION=${UBUNTU_VERSION}
-USE_GPU=${USE_GPU}
 COMPUTE_TYPE=${COMPUTE_TYPE}
 USERNAME=${USERNAME}
 CONTAINER_NAME=${CONTAINER_NAME}
@@ -93,7 +92,7 @@ case ${COMMAND} in
     fi
     echo ""
 
-    if [ ${USE_GPU} = "true" ]; then
+    if [ ${COMPUTE_TYPE} = "gpu" ]; then
         if ! command -v nvidia-smi &> /dev/null; then
             echo "Error: nvidia-smi not found. GPU may not be available."
             exit 1

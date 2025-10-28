@@ -16,8 +16,8 @@ if [ ! "$(docker ps -q -f name=${CONTAINER_NAME})" ]; then
     exit 1
 fi
 
-# Select service name based on USE_GPU
-if [ ${USE_GPU} = "false" ]; then
+# Select service name based on COMPUTE_TYPE
+if [ ${COMPUTE_TYPE} = "cpu" ]; then
     SERVICE_NAME="sobits-container"
 else
     SERVICE_NAME="sobits-container-gpu"

@@ -10,7 +10,7 @@ export UBUNTU_VERSION="22.04"
 # -- GPU / CPU Configuration --
 # Set to "true" to build the GPU-enabled container, "false" for CPU-only.
 export COMPUTE_TYPE="gpu"    # Options: "cpu" or "gpu"
-export CUDA_VERSION="12.8.1" # Required only if USE_GPU is true
+export CUDA_VERSION="12.8.1" # Required only if COMPUTE_TYPE is "gpu"
 
 # -- Component Installation Flags --
 export INSTALL_CV2="true"      # Set to "true" or "false"
@@ -22,7 +22,7 @@ export INSTALL_GAZEBO="true"   # Set to "true" or "false"
 export CV2_VERSION="4.12.0"
 export PYTORCH_VERSION="2.9.0" # Example version
 export ROS_DISTRO="humble"     # "humble" for 22.04, "jazzy" for 24.04
-export ROS_DOMAIN_ID="30"
+export ROS_DOMAIN_ID="0"
 
 
 

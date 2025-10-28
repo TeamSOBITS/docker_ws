@@ -1,26 +1,58 @@
 #!/bin/bash
 
-# Docker Environment Configuration
+# -- Docker Hub --
+# Your Docker Hub username is required to push/pull the reusable OpenCV image.
+export DOCKERHUB_USERNAME="sobits"
 
-# Get LOCAL_UID and LOCAL_GID
-LOCAL_UID=$(id -u)
-LOCAL_GID=$(id -g)
+# -- Base System Configuration --
+export UBUNTU_VERSION="22.04"
 
-# System Configuration
-UBUNTU_VERSION=22.04
-USE_GPU=true
-INSTALL_PYTORCH=true
-INSTALL_ROS=true
-INSTALL_GAZEBO=true
-INSTALL_CV2=true
+# -- GPU / CPU Configuration --
+# Set to "true" to build the GPU-enabled container, "false" for CPU-only.
+export COMPUTE_TYPE="gpu"    # Options: "cpu" or "gpu"
+export CUDA_VERSION="12.8.1" # Required only if COMPUTE_TYPE is "gpu"
 
-# Packages
-CUDA_VERSION=12.6.3 # when USE_GPU=true
-PYTORCH_VERSION=2.8.0 # when INSTALL_PYTORCH=true
-ROS_DISTRO=humble   # when INSTALL_ROS=true
-CV2_VERSION=4.12.0   # when INSTALL_CV2=true
+# -- Component Installation Flags --
+export INSTALL_CV2="true"      # Set to "true" or "false"
+export INSTALL_ROS="true"      # Set to "true" or "false"
+export INSTALL_PYTORCH="true"  # Set to "true" or "false"
+export INSTALL_GAZEBO="true"   # Set to "true" or "false"
 
-# User Configuration
-USERNAME=$(whoami)
-CONTAINER_NAME=$(basename $(dirname $(pwd)))
-ROS_DOMAIN_ID=1 # when INSTALL_ROS=true
+# -- Component Versions --
+export CV2_VERSION="4.12.0"
+export PYTORCH_VERSION="2.9.0" # Example version
+export ROS_DISTRO="humble"     # "humble" for 22.04, "jazzy" for 24.04
+export ROS_DOMAIN_ID="0"
+
+
+
+# --- Do not modify below this line ---
+
+# -- User and Group IDs --
+export USERNAME=$(whoami)
+export LOCAL_UID=$(id -u)
+export LOCAL_GID=$(id -g)
+
+# -- Naming --
+
+# () The name of the image based on the configuration
+export IMAGE_NAME="${DOCKERHUB_USERNAME}/workspace:${COMPUTE_TYPE}-ubuntu${UBUNTU_VERSION}"
+
+if [ "${INSTALL_CV2}" == "true" ]; then
+  export IMAGE_NAME+="-opencv${CV2_VERSION}"
+fi
+
+if [ "${INSTALL_PYTORCH}" == "true" ]; then
+  export IMAGE_NAME+="-pytorch${PYTORCH_VERSION}"
+fi
+
+if [ "${INSTALL_ROS}" == "true" ]; then
+  export IMAGE_NAME+="-ros${ROS_DISTRO}"
+fi
+
+if [ "${INSTALL_GAZEBO}" == "true" ]; then
+  export IMAGE_NAME+="-gz"
+fi
+
+# () The name of the Docker container
+export CONTAINER_NAME=$(basename $(dirname $(pwd)))

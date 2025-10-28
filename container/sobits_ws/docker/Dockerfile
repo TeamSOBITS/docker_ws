@@ -1,153 +1,72 @@
-ARG UBUNTU_VERSION
-ARG CUDA_VERSION
-ARG COMPUTE_TYPE
+# =========================================================================================
+#  ARGUMENTS - Define all build arguments at the top
+# =========================================================================================
+ARG UBUNTU_VERSION=22.04
+ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
+ARG CUDA_VERSION=12.8.1
+ARG CV2_VERSION=4.12.0
+ARG CV_IMAGE_TAG=sobits/opencv:${CV2_VERSION}-${COMPUTE_TYPE}-ubuntu${UBUNTU_VERSION}
 
-# Multi-stage build approach to select base image based on COMPUTE_TYPE
+# =========================================================================================
+#  STAGE 1: Common Base
+#  This stage contains everything that is common to both build types.
+# =========================================================================================
 FROM ubuntu:${UBUNTU_VERSION} AS base-cpu
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn-devel-ubuntu${UBUNTU_VERSION} AS base-gpu
-
-# Select the appropriate base image
 FROM base-${COMPUTE_TYPE} AS base
 
-###################################
-# Environment_variable_preference #
-###################################
-ARG LOCAL_UID
-ARG LOCAL_GID
-ARG USER_ID=${LOCAL_UID}
-ARG GROUP_ID=${LOCAL_GID}
-ARG USERNAME
-ARG INSTALL_ROS
-ARG INSTALL_GAZEBO
-ARG ROS_DISTRO
-ARG ROS_DOMAIN_ID
-ARG HOME=/home/${USERNAME}
+ARG LOCAL_UID=1000
+ARG LOCAL_GID=1000
+ARG USERNAME=sobits
 
-ENV DEBCONF_NOWARNINGS=yes
 ENV DEBIAN_FRONTEND=noninteractive
-
-######################
-# Install basic apps #
-######################
-# Time-zone setting
-RUN apt-get update -q && \
-    apt-get install -yq \
-        tzdata
-
 ENV TZ="Asia/Tokyo"
-
-# Set Language to Japanese
 ENV LANG=ja_JP.UTF-8
-ENV LANGUAGE=ja_JP:ja
+ENV ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
 
-# Install basic apps
-RUN apt-get install -yq \
-        language-pack-ja \
-        software-properties-common \
-        bash-completion \
-        lsb-release \
-        dpkg-dev \
-        alsa-base \
-        pulseaudio \
-        pulseaudio-utils \
-        portaudio19-dev \
-        pkg-config \
-        net-tools \
-        usbutils \
-        libusb-1.0-0-dev \
-        libudev-dev \
-        iputils-ping \
-        uuid-dev \
-        sudo \
-        git-all \
-        wget \
-        curl \
-        nano \
-        gedit
+# Install common dependencies, create user, etc.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        tzdata language-pack-ja software-properties-common sudo git-all wget curl nano gedit \
+        bash-completion lsb-release dpkg-dev pkg-config net-tools iputils-ping \
+        usbutils libusb-1.0-0-dev libudev-dev uuid-dev \
+        python3-full python3-pip python3-venv python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-###############
-# Install pip #
-###############
-# Run as root user
-RUN apt-get install -yq \
-        python3 \
-        python3-dev \
-        python3-pip
+# Add user
 
-#######################
-# Add ${USERNAME} user #
-#######################
-# Add sudo user
-RUN if id -u ${USER_ID} >/dev/null 2>&1; then \
-        EXISTING_USER=$(id -nu ${USER_ID}); \
+RUN echo "Creating user '${USERNAME}' with UID:${LOCAL_UID} and GID:${LOCAL_GID}" 
+
+RUN if id -u ${LOCAL_UID} >/dev/null 2>&1; then \
+        EXISTING_USER=$(id -nu ${LOCAL_UID}); \
         userdel -r ${EXISTING_USER} 2>/dev/null || true; \
     fi && \
-    useradd --create-home --home-dir ${HOME} --shell /bin/bash --user-group --groups adm,sudo,audio,video -u ${USER_ID} ${USERNAME} && \
-    groupmod -g ${GROUP_ID} -o ${USERNAME} && \
+    useradd --create-home --home-dir /home/${USERNAME} --shell /bin/bash --user-group --groups adm,sudo,audio,video -u ${LOCAL_UID} ${USERNAME} && \
+    groupmod -g ${LOCAL_GID} -o ${USERNAME} && \
     echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Set user
-ENV USER=${USERNAME}
+# =========================================================================================
+#  STAGE 2: A reference to the pre-built OpenCV image
+# =========================================================================================
+FROM ${CV_IMAGE_TAG} AS opencv_prebuilt
 
-# Run as user
-USER ${USERNAME}
+# =========================================================================================
+#  FINAL STAGE 1: Application WITHOUT OpenCV
+# =========================================================================================
+FROM base AS base_without_opencv
 
-# Install pip packages (compatible with both Ubuntu 22.04 and 24.04+)
-ARG UBUNTU_VERSION
-RUN set -e; \
-    # Check Ubuntu version to determine pip installation method
-    UBUNTU_MAJOR=$(echo ${UBUNTU_VERSION} | cut -d. -f1); \
-    if [ ${UBUNTU_MAJOR} -ge 24 ]; then \
-        echo "Ubuntu ${UBUNTU_VERSION} detected - using --break-system-packages"; \
-        # For Ubuntu 24.04+, use --break-system-packages
-        python3 -m pip install -U --break-system-packages pip wheel numpy; \
-    else \
-        echo "Ubuntu ${UBUNTU_VERSION} detected - using standard pip installation"; \
-        python3 -m pip install -U pip wheel numpy; \
-    fi
+ARG UBUNTU_VERSION=22.04
+ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
+ARG CONTAINER_NAME=sobits_ws
+ARG CUDA_VERSION=12.8.1
+ARG INSTALL_PYTORCH=false
+ARG INSTALL_ROS=false
+ARG INSTALL_GAZEBO=false
+ARG INSTALL_CV2=false
+ARG PYTORCH_VERSION=2.9.0
+ARG CV2_VERSION=4.12.0
+ARG ROS_DISTRO=humble
+ARG ROS_DOMAIN_ID=0
 
-
-# Install OpenCV in multi-stage to reduce image size
-FROM base AS opencv-build
-
-##################
-# Install OpenCV #
-##################
-ARG INSTALL_CV2
-ARG CV2_VERSION
-ARG COMPUTE_TYPE
-
-COPY ./install_sh/install_opencv.sh /tmp/install_opencv.sh
-
-# Run as user
-USER ${USERNAME}
-
-RUN if [ ${INSTALL_CV2} = "true" ]; then \
-        echo "Installing OpenCV ${CV2_VERSION}..."; \
-        bash /tmp/install_opencv.sh --${CV2_VERSION} --${COMPUTE_TYPE}; \
-    else \
-        echo "Skipping OpenCV installation..."; \
-    fi
-
-USER root
-RUN rm /tmp/install_opencv.sh
-
-
-FROM base AS final
-ARG INSTALL_CV2
-ARG CV2_VERSION
-
-# Copy OpenCV from the build stage if installed
-COPY --from=opencv-build /opt/opencv/opencv_${CV2_VERSION} /opt/opencv/opencv_${CV2_VERSION}
-
-# Run as root for ROS installation
-USER root
-
-# Set OpenCV Python path if installed
-RUN if [ ${INSTALL_CV2} = "true" ]; then \
-        PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"); \
-        ln -s /opt/opencv/opencv_${CV2_VERSION}/lib/python${PYTHON_VERSION}/dist-packages/cv2.so /usr/local/lib/python${PYTHON_VERSION}/dist-packages/cv2.so; \
-    fi
 
 ###################################
 # Install ROS & create colcon_ws #
@@ -155,7 +74,7 @@ RUN if [ ${INSTALL_CV2} = "true" ]; then \
 # Run as root for ROS installation
 USER root
 
-# Set ROS_DISTRO environment variable and install ROSonly if ROS will be installed
+# Set ROS_DISTRO environment variable and install ROS only if ROS will be installed
 RUN if [ ${INSTALL_ROS} = "true" ]; then \
         echo "Installing ROS ${ROS_DISTRO}..."; \
         echo "export ROS_DISTRO=${ROS_DISTRO}" >> /etc/environment; \
@@ -174,24 +93,26 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
         echo "Skipping ROS installation..."; \
     fi
 
-# Install Gazebo only if specified
 RUN if [ ${INSTALL_GAZEBO} = "true" ]; then \
         echo "Installing Gazebo..."; \
-        curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
-        apt-get update -q && \
-        if [ ${ROS_DISTRO} = "humble" ]; then \
-            apt-get install -yq ignition-fortress; \
-        elif [ ${ROS_DISTRO} = "jazzy" ]; then \
-            apt-get install -yq gz-harmonic; \
+        if [ "${ROS_DISTRO}" = "humble" ] || [ "${ROS_DISTRO}" = "jazzy" ]; then \
+            curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
+            apt-get update -q && \
+            if [ ${ROS_DISTRO} = "humble" ]; then \
+                apt-get install -yq ignition-fortress; \
+            elif [ ${ROS_DISTRO} = "jazzy" ]; then \
+                apt-get install -yq gz-harmonic; \
+            fi; \
         else \
-            echo "Unknown ROS_DISTRO for Gazebo: ${ROS_DISTRO}, skipping Gazebo install."; \
+            echo "ERROR: Unsupported ROS_DISTRO '${ROS_DISTRO}' for Gazebo installation. Supported: humble, jazzy."; \
+            exit 1; \
         fi \
     else \
         echo "Skipping Gazebo installation..."; \
     fi
 
-# Switch back to user for workspace setup
+
 USER ${USERNAME}
 
 # Configure ROS environment only if ROS is installed
@@ -199,32 +120,27 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
         rosdep update && \
         mkdir -p ~/colcon_ws/src && \
         echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc && \
-        echo "source ~/colcon_ws/install/setup.bash"  >> ~/.bashrc && \
-        echo "export ROS_DOMAIN_ID=${ROS_DOMAIN_ID}" >> ~/.bashrc && \
-        echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc && \
         # Create bash aliases (only for ROS builds)
-        echo "alias cb='CURRENT_DIR=\`pwd\` && cd ~/colcon_ws/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'" >> /home/${USER}/.bash_aliases && \
-        echo "" >> /home/${USER}/.bash_aliases; \
+        echo "alias cb='CURRENT_DIR=\`pwd\` && cd ~/colcon_ws/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'" >> /home/${USERNAME}/.bash_aliases && \
+        echo "" >> /home/${USERNAME}/.bash_aliases; \
     else \
-        echo "ROS is not installed, skipping ROS configuration..."; \
+        echo "alias cb='CURRENT_DIR=\`pwd\` && cd ~/colcon_ws/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'" >> /home/${USERNAME}/.bash_aliases && \
+        echo "" >> /home/${USERNAME}/.bash_aliases; \
     fi
 
 # User specific environment variables
-RUN echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/${USER}/.bash_aliases && \
-    echo "export PS1='\[\e[1;33;40m\]\${CONTAINER_NAME}\[\e[0m\] \${debian_chroot:+(\${debian_chroot})}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USER}/.bash_aliases
+RUN echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/${USERNAME}/.bash_aliases && \
+    echo "export PS1='\[\e[1;33;40m\]${CONTAINER_NAME}\[\e[0m\] \${debian_chroot:+(\${debian_chroot})}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USERNAME}/.bash_aliases
+# User specific environment variables
+RUN echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/${USERNAME}/.bash_aliases && \
+    echo "export PS1='\[\e[1;33;40m\]${CONTAINER_NAME}\[\e[0m\] \${debian_chroot:+(\${debian_chroot})}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USERNAME}/.bash_aliases
 
-    
-####################
+
+###################
 # Install PyTorch #
-####################
-ARG CUDA_VERSION
-ARG COMPUTE_TYPE
-ARG UBUNTU_VERSION
-ARG INSTALL_PYTORCH
-ARG PYTORCH_VERSION
-
+###################
 RUN if [ ${INSTALL_PYTORCH} = "true" ]; then \
-        echo "Installing PyTorch ${PYTORCH_VERSION}..."; \
+        echo "Installing PyTorch ${PYTORCH_VERSION}..." >&2; \
         # Check Ubuntu version to determine pip installation method
         UBUNTU_MAJOR=$(echo ${UBUNTU_VERSION} | cut -d. -f1); \
         PIP_ARGS=""; \
@@ -237,19 +153,34 @@ RUN if [ ${INSTALL_PYTORCH} = "true" ]; then \
             CUDA_MAJOR=$(echo ${CUDA_VERSION} | cut -d. -f1); \
             CUDA_MINOR=$(echo ${CUDA_VERSION} | cut -d. -f2); \
             CUDA_TAG="cu${CUDA_MAJOR}${CUDA_MINOR}"; \
-            echo "CUDA Tag detected: ${CUDA_TAG}"; \
+            echo "CUDA Tag detected: ${CUDA_TAG}" >&2; \
         fi; \
-        echo "Installing PyTorch with CUDA tag: ${CUDA_TAG}"; \
-        python3 -m pip install -U ${PIP_ARGS} torch==${PYTORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/${CUDA_TAG}; \
+        echo "Installing PyTorch with CUDA tag: ${CUDA_TAG}" >&2; \
+        python3 -m pip install -U ${PIP_ARGS} --no-cache-dir torch==${PYTORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/${CUDA_TAG}; \
     else \
-        echo "Skipping PyTorch installation..."; \
+        echo "Skipping PyTorch installation..." >&2; \
     fi
 
-##################
-# Other settings #
-##################
-# Run as root user
+
+# =========================================================================================
+#  FINAL STAGE 2: Application WITH OpenCV
+# =========================================================================================
+FROM base_without_opencv AS base_with_opencv
+
+ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
+ARG CV2_VERSION=4.12.0
+
+# Switch back to root to modify /usr/local
+USER ${USERNAME}
+
+# First, bring in the pre-built OpenCV files from our reference stage
+COPY --from=opencv_prebuilt /tmp/opencv_pkg_install/ /tmp/opencv_pkg_install
+COPY install_sh/install_opencv.sh /tmp/install_opencv.sh
+
+RUN bash /tmp/install_opencv.sh runtime ${COMPUTE_TYPE} ${CV2_VERSION}
+
 USER root
+RUN ldconfig
 
 # Clean cache
 RUN apt-get clean &&\
@@ -257,8 +188,6 @@ RUN apt-get clean &&\
     rm -rf /var/lib/apt/lists/* && \
     rm /etc/apt/apt.conf.d/docker-clean
 
-# Set user
+# Switch back to the user
 USER ${USERNAME}
-
-# Set HOME position
-WORKDIR ${HOME}
+WORKDIR /home/${USERNAME}

@@ -7,12 +7,12 @@ else
   echo ".env not found"; exit 1
 fi
 
-echo "Starting Docker container for $(if [ ${USE_GPU} = "true" ]; then echo "GPU"; else echo "CPU"; fi) environment..."
+echo "Starting Docker container for $(if [ ${COMPUTE_TYPE} = "gpu" ]; then echo "GPU"; else echo "CPU"; fi) environment..."
 
 PROJECT_NAME=${CONTAINER_NAME}
 
-# Select service name based on USE_GPU
-if [ ${USE_GPU} = "false" ]; then
+# Select service name based on COMPUTE_TYPE
+if [ ${COMPUTE_TYPE} = "cpu" ]; then
     SERVICE_NAME="sobits-container"
 else
     SERVICE_NAME="sobits-container-gpu"

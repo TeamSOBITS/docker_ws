@@ -107,6 +107,48 @@ RUN set -e; \
     fi
 
 
+# Install OpenCV in multi-stage to reduce image size
+FROM base AS opencv-build
+
+##################
+# Install OpenCV #
+##################
+ARG INSTALL_CV2
+ARG CV2_VERSION
+ARG COMPUTE_TYPE
+
+COPY ./install_sh/install_opencv.sh /tmp/install_opencv.sh
+
+# Run as user
+USER ${USERNAME}
+
+RUN if [ ${INSTALL_CV2} = "true" ]; then \
+        echo "Installing OpenCV ${CV2_VERSION}..."; \
+        bash /tmp/install_opencv.sh --${CV2_VERSION} --${COMPUTE_TYPE}; \
+    else \
+        echo "Skipping OpenCV installation..."; \
+    fi
+
+USER root
+RUN rm /tmp/install_opencv.sh
+
+
+FROM base AS final
+ARG INSTALL_CV2
+ARG CV2_VERSION
+
+# Copy OpenCV from the build stage if installed
+COPY --from=opencv-build /opt/opencv/opencv_${CV2_VERSION} /opt/opencv/opencv_${CV2_VERSION}
+
+# Run as root for ROS installation
+USER root
+
+# Set OpenCV Python path if installed
+RUN if [ ${INSTALL_CV2} = "true" ]; then \
+        PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"); \
+        ln -s /opt/opencv/opencv_${CV2_VERSION}/lib/python${PYTHON_VERSION}/dist-packages/cv2.so /usr/local/lib/python${PYTHON_VERSION}/dist-packages/cv2.so; \
+    fi
+
 ###################################
 # Install ROS & create colcon_ws #
 ###################################

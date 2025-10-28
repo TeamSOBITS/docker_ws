@@ -18,6 +18,8 @@ services:
         INSTALL_GAZEBO: ${INSTALL_GAZEBO}
         ROS_DISTRO: ${ROS_DISTRO}
         ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
+        INSTALL_CV2: ${INSTALL_CV2}
+        CV2_VERSION: ${CV2_VERSION}
     env_file: .env
     image: ${USERNAME}/${CONTAINER_NAME}:${COMPUTE_TYPE}
     container_name: ${CONTAINER_NAME}

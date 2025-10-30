@@ -40,7 +40,7 @@ RUN if id -u ${LOCAL_UID} >/dev/null 2>&1; then \
         EXISTING_USER=$(id -nu ${LOCAL_UID}); \
         userdel -r ${EXISTING_USER} 2>/dev/null || true; \
     fi && \
-    useradd --create-home --home-dir ${HOME} --shell /bin/bash --user-group -u ${USER_ID} ${USERNAME} && \
+    useradd --create-home --home-dir /home/${USERNAME} --shell /bin/bash --user-group -u $${LOCAL_UID} ${USERNAME} && \
     groupmod -g ${LOCAL_GID} -o ${USERNAME} && \
     echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 

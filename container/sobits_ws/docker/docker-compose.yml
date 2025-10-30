@@ -51,6 +51,8 @@ services:
 
   # GPU configuration with device access
   sobits-container-gpu:
+    build: 
+      target: ${IMAGE_BUILD_TARGET}
     extends:
       service: sobits-container
     environment:

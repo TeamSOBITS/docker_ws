@@ -41,18 +41,25 @@ services:
       - ../src:/home/${USERNAME}/colcon_ws/src
       - /dev/bus/usb:/dev/bus/usb
       - /etc/udev/rules.d/:/etc/udev/rules.d/
+    group_add:
+      - adm
+      - audio
+      - sudo
+      - video
     stdin_open: true
     tty: true
 
   # GPU configuration with device access
   sobits-container-gpu:
-    build: 
-      target: ${IMAGE_BUILD_TARGET}
     extends:
       service: sobits-container
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all  
+      - NVIDIA_DRIVER_CAPABILITIES=all  
     deploy:
       resources:
         reservations:
           devices:
-            - capabilities: [gpu]
-    runtime: nvidia
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

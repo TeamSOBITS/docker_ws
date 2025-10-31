@@ -77,7 +77,7 @@ USER root
 RUN if [ ${INSTALL_ROS} = "true" ]; then \
         echo "Installing ROS ${ROS_DISTRO}..."; \
         echo "export ROS_DISTRO=${ROS_DISTRO}" >> /etc/environment; \
-        apt-get install -yq \
+        apt-get update && apt-get install -yq \
             gnupg && \
         curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
         . /etc/os-release && \

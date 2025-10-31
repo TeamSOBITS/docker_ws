@@ -159,6 +159,18 @@ RUN if [ ${INSTALL_PYTORCH} = "true" ]; then \
         echo "Skipping PyTorch installation..." >&2; \
     fi
 
+USER root
+RUN ldconfig
+
+# Clean cache
+RUN apt-get clean &&\
+	apt-get autoremove && \	
+    rm -rf /var/lib/apt/lists/* && \
+    rm /etc/apt/apt.conf.d/docker-clean
+
+# Switch back to the user
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}
 
 # =========================================================================================
 #  FINAL STAGE 2: Application WITH OpenCV

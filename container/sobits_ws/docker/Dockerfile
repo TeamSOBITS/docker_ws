@@ -22,7 +22,6 @@ ARG USERNAME=sobits
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Asia/Tokyo"
 ENV LANG=ja_JP.UTF-8
-ENV ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
 
 # Install common dependencies, create user, etc.
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -120,17 +119,16 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
         rosdep update && \
         mkdir -p ~/colcon_ws/src && \
         echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc && \
+        echo "source ~/colcon_ws/install/setup.bash"  >> ~/.bashrc && \
+        echo "export ROS_DOMAIN_ID=${ROS_DOMAIN_ID}" >> ~/.bashrc && \
+        echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc && \
         # Create bash aliases (only for ROS builds)
         echo "alias cb='CURRENT_DIR=\`pwd\` && cd ~/colcon_ws/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'" >> /home/${USERNAME}/.bash_aliases && \
         echo "" >> /home/${USERNAME}/.bash_aliases; \
     else \
-        echo "alias cb='CURRENT_DIR=\`pwd\` && cd ~/colcon_ws/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'" >> /home/${USERNAME}/.bash_aliases && \
-        echo "" >> /home/${USERNAME}/.bash_aliases; \
+        echo "ROS is not installed. Skipping configuration..."; \
     fi
 
-# User specific environment variables
-RUN echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/${USERNAME}/.bash_aliases && \
-    echo "export PS1='\[\e[1;33;40m\]${CONTAINER_NAME}\[\e[0m\] \${debian_chroot:+(\${debian_chroot})}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USERNAME}/.bash_aliases
 # User specific environment variables
 RUN echo "export PYTHONDONTWRITEBYTECODE=1" >> /home/${USERNAME}/.bash_aliases && \
     echo "export PS1='\[\e[1;33;40m\]${CONTAINER_NAME}\[\e[0m\] \${debian_chroot:+(\${debian_chroot})}\[\033[01;32m\]\u@\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${USERNAME}/.bash_aliases

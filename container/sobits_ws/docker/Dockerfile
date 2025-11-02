@@ -87,30 +87,15 @@ RUN if [ ${INSTALL_ROS} = "true" ]; then \
             ros-${ROS_DISTRO}-desktop \
             python3-colcon-common-extensions \
             python3-rosdep && \
+        if [ ${INSTALL_GAZEBO} = "true" ]; then \
+            echo "Installing Gazebo for ROS ${ROS_DISTRO}..."; \
+            apt-get install -yq \
+                ros-${ROS_DISTRO}-simulation; \
+        fi; \
         rosdep init; \
     else \
         echo "Skipping ROS installation..."; \
     fi
-
-RUN if [ ${INSTALL_GAZEBO} = "true" ]; then \
-        echo "Installing Gazebo..."; \
-        if [ "${ROS_DISTRO}" = "humble" ] || [ "${ROS_DISTRO}" = "jazzy" ]; then \
-            curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
-            apt-get update -q && \
-            if [ ${ROS_DISTRO} = "humble" ]; then \
-                apt-get install -yq ignition-fortress; \
-            elif [ ${ROS_DISTRO} = "jazzy" ]; then \
-                apt-get install -yq gz-harmonic; \
-            fi; \
-        else \
-            echo "ERROR: Unsupported ROS_DISTRO '${ROS_DISTRO}' for Gazebo installation. Supported: humble, jazzy."; \
-            exit 1; \
-        fi \
-    else \
-        echo "Skipping Gazebo installation..."; \
-    fi
-
 
 USER ${USERNAME}
 

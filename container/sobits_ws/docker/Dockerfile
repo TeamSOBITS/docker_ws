@@ -150,8 +150,7 @@ RUN ldconfig
 # Clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
-    rm -rf /var/lib/apt/lists/* && \
-    rm /etc/apt/apt.conf.d/docker-clean
+    rm -rf /var/lib/apt/lists/*
 
 # Switch back to the user
 USER ${USERNAME}
@@ -180,8 +179,7 @@ RUN ldconfig
 # Clean cache
 RUN apt-get clean &&\
 	apt-get autoremove && \	
-    rm -rf /var/lib/apt/lists/* && \
-    rm /etc/apt/apt.conf.d/docker-clean
+    rm -rf /var/lib/apt/lists/*
 
 # Switch back to the user
 USER ${USERNAME}

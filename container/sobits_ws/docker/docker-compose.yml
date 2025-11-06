@@ -46,6 +46,7 @@ services:
       - audio
       - sudo
       - video
+      - dialout
     stdin_open: true
     tty: true
 

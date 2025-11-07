@@ -30,7 +30,10 @@ services:
     ipc: host
     shm_size: "1g"
     stop_grace_period: 1s
-    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp=unconfined
     environment:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${LOCAL_UID}/pulse/native

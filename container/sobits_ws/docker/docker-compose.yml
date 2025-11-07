@@ -32,6 +32,7 @@ services:
     stop_grace_period: 1s
     cap_add:
       - SYS_ADMIN
+      - NET_ADMIN
     security_opt:
       - seccomp=unconfined
     environment:
@@ -39,6 +40,7 @@ services:
       - PULSE_SERVER=unix:/run/user/${LOCAL_UID}/pulse/native
     devices:
       - /dev/snd
+      - /dev/dri:/dev/dri
       - /dev/ttyUSB-DXL-sobit_home-lower:/dev/ttyUSB-DXL-sobit_home-lower
       - /dev/ttyUSB-DXL-sobit_home-upper:/dev/ttyUSB-DXL-sobit_home-upper
     volumes:
@@ -52,6 +54,7 @@ services:
       - sudo
       - video
       - dialout
+      - render
     stdin_open: true
     tty: true
 

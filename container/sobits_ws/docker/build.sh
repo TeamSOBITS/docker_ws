@@ -55,7 +55,7 @@ EOF
 
 # Setup rules for USB devices
 # Remove old rules if they exist
-sudo rm /etc/udev/rules.d/99-dxl-sobit_home-*.rules
+sudo rm /etc/udev/rules.d/99-dxl-sobit_home-*.rules || true
 
 # Create new rules
 # (1) Upper Dynamixel USB2DYNAMIXEL (head, arm, hand)

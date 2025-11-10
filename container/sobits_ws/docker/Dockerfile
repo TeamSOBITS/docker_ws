@@ -25,7 +25,8 @@ ENV LANG=ja_JP.UTF-8
 
 # Install common dependencies, create user, etc.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        tzdata language-pack-ja software-properties-common sudo git-all wget curl nano gedit \
+        tzdata language-pack-ja fonts-ipafont software-properties-common \
+        sudo git-all wget curl nano gedit \
         bash-completion lsb-release dpkg-dev pkg-config net-tools iputils-ping \
         usbutils libusb-1.0-0-dev libudev-dev uuid-dev \
         python3-full python3-pip python3-venv python3-dev \

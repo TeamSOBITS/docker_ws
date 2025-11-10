@@ -41,6 +41,7 @@ services:
       - ../src:/home/${USERNAME}/colcon_ws/src
       - /dev/bus/usb:/dev/bus/usb
       - /etc/udev/rules.d/:/etc/udev/rules.d/
+      - /dev/serial/by-id/:/dev/serial/by-id/
     group_add:
       - adm
       - audio

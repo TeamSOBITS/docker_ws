@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: ${IMAGE_BUILD_TARGET}
+      target: final
       network: host
       args:
         LOCAL_UID: ${LOCAL_UID}
@@ -13,15 +13,19 @@ services:
         USERNAME: ${USERNAME}
         CONTAINER_NAME: ${CONTAINER_NAME}
         CUDA_VERSION: ${CUDA_VERSION}
-        INSTALL_PYTORCH: ${INSTALL_PYTORCH}
         PYTORCH_VERSION: ${PYTORCH_VERSION}
         INSTALL_ROS: ${INSTALL_ROS}
         INSTALL_GAZEBO: ${INSTALL_GAZEBO}
+        INSTALL_PYTORCH: ${INSTALL_PYTORCH}
+        INSTALL_CV2: ${INSTALL_CV2}
         ROS_DISTRO: ${ROS_DISTRO}
         ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
-        INSTALL_CV2: ${INSTALL_CV2}
         CV2_VERSION: ${CV2_VERSION}
         CV_IMAGE_TAG: ${CV_IMAGE_TAG}
+        PYTORCH_IMAGE_TAG: ${PYTORCH_IMAGE_TAG}
+        OPENCV_BASE_STAGE: ${OPENCV_BASE_STAGE}
+        PYTORCH_BASE_STAGE: ${PYTORCH_BASE_STAGE}
+        FINAL_STAGE: ${FINAL_STAGE}
     env_file: .env
     image: ${IMAGE_NAME}
     container_name: ${CONTAINER_NAME}
@@ -54,7 +58,7 @@ services:
   # GPU configuration with device access
   sobits-container-gpu:
     build: 
-      target: ${IMAGE_BUILD_TARGET}
+      target: final
     extends:
       service: sobits-container
     environment:

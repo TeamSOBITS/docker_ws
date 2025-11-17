@@ -18,7 +18,11 @@ fi
 
 # Construct the unique tag for our reusable OpenCV image
 CV_IMAGE_TAG="${DOCKERHUB_USERNAME}/opencv:${CV2_VERSION}-${COMPUTE_TYPE}-ubuntu${UBUNTU_VERSION}"
-PYTORCH_IMAGE_TAG="${DOCKERHUB_USERNAME}/pytorch:${PYTORCH_VERSION}-cuda${CUDA_VERSION%.*}-ubuntu${UBUNTU_VERSION}"
+if [[ "${COMPUTE_TYPE}" == "gpu" ]]; then
+    PYTORCH_IMAGE_TAG="${DOCKERHUB_USERNAME}/pytorch:${PYTORCH_VERSION}-cuda${CUDA_VERSION%.*}-ubuntu${UBUNTU_VERSION}"
+else
+    PYTORCH_IMAGE_TAG="${DOCKERHUB_USERNAME}/pytorch:${PYTORCH_VERSION}-cpu-ubuntu${UBUNTU_VERSION}"
+fi
 
 # Determine base images for intermediate stages and final stage
 PYTORCH_BASE_STAGE="base"

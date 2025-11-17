@@ -13,17 +13,16 @@ export COMPUTE_TYPE="gpu"    # Options: "cpu" or "gpu"
 export CUDA_VERSION="12.8.1" # Required only if COMPUTE_TYPE is "gpu"
 
 # -- Component Installation Flags --
-export INSTALL_CV2="true"      # Set to "true" or "false"
-export INSTALL_ROS="true"      # Set to "true" or "false"
-export INSTALL_PYTORCH="true"  # Set to "true" or "false"
-export INSTALL_GAZEBO="true"   # Set to "true" or "false"
+export INSTALL_ROS="true"   # Set to "true" or "false"
+export INSTALL_GAZEBO="false"  # Set to "true" or "false"
+export INSTALL_PYTORCH="false"  # Set to "true" or "false"
+export INSTALL_CV2="false"  # Set to "true" or "false"
 
 # -- Component Versions --
-export CV2_VERSION="4.12.0"
-export PYTORCH_VERSION="2.9.0" # Example version
-export ROS_DISTRO="humble"     # "humble" for 22.04, "jazzy" for 24.04
+export ROS_DISTRO="humble"  # "humble" for 22.04, "jazzy" for 24.04
 export ROS_DOMAIN_ID="0"
-
+export PYTORCH_VERSION="2.9.0"
+export CV2_VERSION="4.12.0"
 
 
 # --- Do not modify below this line ---

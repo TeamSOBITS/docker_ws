@@ -1,102 +1,166 @@
+<a name="readme-top"></a>
+
+[JA](README.md) | [EN](README.en.md)
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![License][license-shield]][license-url]
+
 # Docker Workspaces
+
+<!-- 目次 -->
+<details>
+  <summary>目次</summary>
+  <ol>
+    <li>
+      <a href="#概要">概要</a>
+    </li>
+    <li>
+      <a href="#セットアップ">セットアップ</a>
+      <ul>
+        <li><a href="#環境条件">環境条件</a></li>
+        <li><a href="#インストール方法">インストール方法</a></li>
+      </ul>
+    </li>
+    <li>
+        <a href="#実行操作方法">実行・操作方法</a>
+              <ul>
+        <li><a href="#コンテナのビルド方法">コンテナのビルド方法</a></li>
+        <li><a href="#コンテナの削除方法">コンテナの削除方法   </a></li>
+        <li><a href="#コンテナの実行操作方法">コンテナの実行・操作方法</a></li>
+      </ul>       
+    </li>
+    <li><a href="#cuda-table">CUDA / Ubuntu / PyTorch 対応表</a></li>
+    <li><a href="#マイルストーン">マイルストーン</a></li>
+    <li><a href="#参考文献">参考文献</a></li>
+  </ol>
+</details>
+
+<!-- レポジトリの概要 -->
+## 概要
 
 Docker環境セットアップの方法とDockerfileをまとめたリポジトリです．
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
-## Install Docker
+## セットアップ
+ここで，本レポジトリのセットアップ方法について説明します．
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
-```bash
-# docker_wsパッケージをダウンロードする．
-$ git clone https://github.com/TeamSOBITS/docker_ws.git
-
-# インストールのフォルダへ移動する．
-$ cd docker_ws/setup_sh
-
-# 必要なリソースをインストールする．
-$ bash install_docker.sh
-
-# Dockerコンテナ内でGPUを使う場合．以下のコマンドも実行する．
-$ bash install_nvidia_docker.sh
-
-# コンテナを可視化するため，以下のコマンドも実行してください．
-$ sudo apt-get update
-$ sudo apt-get install -y python3-tk tk-dev 
-
-# GUIを表示されたら，インストール完了．
-$ python3 -m tkinter
-```
+### 環境条件
+まず，以下の環境を整えてから，次のインストール方法に進んでください．
+| System  | Version |
+| --- | --- |
+| Ubuntu | 22.04 (Jammy Jellyfish) or 24.04 (Noble Numbat)|
 
 > [!WARNING]
-> `GPU版`のDockerをインストールする前に，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
-> CUDAやcuDNNをインストールすることが必要ではありません．
-
-
-## How to build a Container
-
-デフォルトではイメージとコンテナの名前は同じにしています． 
-同じイメージから複数のコンテナを作成する場合は，コンテナの名前が被らないようにしてください．
+> `GPU版`のDockerを使用する場合は，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
+> CUDAやcuDNNをインストールすることは必要ではありません．
 
 > [!WARNING]
 > コンテナの作成には10GBほどのストレージが必要です．十分な容量を確保してください．
 
-### 前提条件
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
-このプロジェクトではDocker Composeを使用しています。コンテナをビルドする前に、`env.sh`ファイルの設定が必要です。
+### インストール方法
+既にコンテナをビルド済みで，別のコンテナをビルドしたい場合はこのセクションをスキップし，コンテナのビルド方法に進んでください．
 
+1. 本レポジトリをcloneします．
+    ```sh
+    $ git clone https://github.com/TeamSOBITS/docker_ws.git
+    ```
+2. レポジトリの中のインストールのフォルダへ移動します．
+    ```sh
+    $ cd docker_ws/setup_sh
+    ```
+3. 必要なリソースをインストールします．
+    ```sh
+    $ bash install_docker.sh
+    ```
+    Dockerコンテナ内でGPUを使う場合．以下のコマンドも実行します．
+    ```sh
+    $ bash install_nvidia_docker.sh
+    ```
+    > [!WARNING]
+    > `GPU版`のDockerをインストールする前に，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
+    > CUDAやcuDNNをインストールすることが必要ではありません．
+
+4. コンテナを可視化するため，以下のコマンドを実行します．
+    ```sh
+    $ sudo apt-get update
+    $ sudo apt-get install -y python3-tk tk-dev 
+    ```
+5. 以下を実行後，GUIが表示されたらインストール完了です．
+    ```sh
+    $ python3 -m tkinter
+    ```
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+## 実行・操作方法
+
+### コンテナのビルド方法
 1. コンテナのフォルダを複製します．
-```bash
-$ cp -r {docker_wsのPATH}/container/{使用するコンテナ}/ {コンテナの新PATH}
-# 例: $ cp -r ~/docker_ws/container/sobits_ws/ ~/
-```
+    ```bash
+    $ cp -r {docker_wsのPATH}/container/{使用するコンテナ}/ {コンテナの新PATH}
+    # 例: $ cp -r ~/docker_ws/container/sobits_ws/ ~/
+    ```
 
 > [!WARNING]
 > 複製されたフォルダの名前を変更してください．
 > 例: `sobits_ws` → `my_new_ws`
+> デフォルトではイメージとコンテナの名前は同じにしています．
+> 同じイメージから複数のコンテナを作成する場合は，コンテナの名前が被らないようにしてください．
 
-2. `env.sh`ファイルを設定します．
-```bash
-$ cd {コンテナPATH}/docker
-$ gedit env.sh  # または任意のエディタで編集
-```
+2. このプロジェクトではDocker Composeを使用しているため，コンテナをビルドする前に、[env.sh](container/sobits_ws/docker/env.sh)ファイルの設定を行う必要があります．
+    ```bash
+    $ cd {コンテナPATH}/docker
+    $ gedit env.sh  # または任意のエディタで編集
+    ```
 
-`env.sh`ファイルの設定例：
-```sh
-UBUNTU_VERSION="22.04"  # 使用するUbuntuのバージョン
-COMPUTE_TYPE="gpu"      # gpuもしくはcpuを選択
-CUDA_VERSION="12.6.0"   # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
-INSTALL_CV2="true"      # OpenCVのインストール
-INSTALL_ROS="true"      # ROSのインストール
-INSTALL_PYTORCH="true"  # PyTorchのインストール
-INSTALL_GAZEBO="true"   # Gazeboのインストール
-ROS_DISTRO="humble"     # 使用するROSのディストリビューション
-CV2_VERSION="4.12.0"    # 使用するOpenCVのバージョン
-PYTORCH_VERSION="2.8.0" # 使用するPyTorchのバージョン
-ROS_DISTRO="humble"     # 使用するROSのディストリビューション
-ROS_DOMAIN_ID="30"      # 使用するROSのドメインID
-```
+    [env.sh](container/sobits_ws/docker/env.sh)ファイルの設定例：
+    ```sh
+    UBUNTU_VERSION="22.04"  # 使用するUbuntuのバージョン
+    COMPUTE_TYPE="gpu"      # gpuもしくはcpuを選択
+    CUDA_VERSION="12.6.0"   # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
+
+    INSTALL_ROS="true"      # ROSのインストール
+    INSTALL_GAZEBO="true"   # Gazeboのインストール
+    INSTALL_PYTORCH="true"  # PyTorchのインストール
+    INSTALL_CV2="true"      # OpenCVのインストール
+
+    ROS_DISTRO="humble"     # 使用するROSのディストリビューション
+    ROS_DOMAIN_ID="30"      # 使用するROSのドメインID
+    PYTORCH_VERSION="2.8.0" # 使用するPyTorchのバージョン
+    CV2_VERSION="4.12.0"    # 使用するOpenCVのバージョン
+
+    USERNAME=$(whoami)      # 使用するユーザー名
+    ```
 
 > [!NOTE]
-> ROSのバージョンはros2のみ選択可能です。
+> ROSのバージョンはROS2のみ選択可能です。
 
 > [!TIP]
-> ubuntuのバージョンと対応するcudaのバージョンを[下の表](#各ubuntuバージョンに対応するcudaバージョン)に記載しています。
+> ubuntuのバージョンと対応するcudaのバージョンを[下の表](#cuda-table)に記載しています。
 
 3. Dockerfileからイメージをビルドします.
-```bash
-$ cd {コンテナPATH}/docker
-$ bash build.sh
-```
+    ```bash
+    $ cd {コンテナPATH}/docker
+    $ bash build.sh
+    ```
 
-3. イメージからコンテナを起動します．
-```bash
-$ bash up.sh 
-```
+4. イメージからコンテナを起動します．
+    ```bash
+    $ bash up.sh 
+    ```
 
-4. 起動中のコンテナに別端末からアクセスします．
-```bash
-$ bash exec.sh
-# >> {コンテナ名} username@:~$　← この表示に切り替わる
-```
+5. 起動中のコンテナに別端末からアクセスします．
+    ```bash
+    $ bash exec.sh
+    # >> {コンテナ名} username@:~$　← この表示に切り替わる
+    ```
 
 > [!NOTE]
 >コンテナ内の `colcon_ws/src`がローカルの`{コンテナPATH}/src`と接続されていますので，そのフォルダ内のデータのみ共有可能となります．
@@ -104,13 +168,17 @@ $ bash exec.sh
 > [!TIP]
 > コンテナから抜き出すために，`「Ctrl」+「d」`を同時に押すか，ターミナルに`exit`を入力するかです．
 
-## Stop and remove container
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+### コンテナの削除方法
 作成したコンテナを停止して削除します。
 ```bash
 $ bash down.sh
 ```
 
-## Container Executer
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+### コンテナの実行・操作方法
 
 ![Container Executer](img/container_executer.png)
 
@@ -125,7 +193,13 @@ $ ce
 > [!NOTE]
 > このコマンドは自分がいるPATHに依存していないため，どこでも実行可能です．
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+
+<a id="cuda-table"></a>
+
 ## CUDA / Ubuntu / PyTorch 対応表
+
 
 | CUDA Version   | Ubuntu 22.04 | Ubuntu 24.04 | PyTorch Versions |
 |:--------------:|:------------:|:------------:|:------------:|
@@ -141,12 +215,15 @@ $ ce
 | 12.9.1         | ✓            | ✓            | 2.8.0 |
 | 13.0.0         | ✓            | ✓            | 未対応 |
 
-## Docker Containers 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+
+## Docker コンテナ一覧
 
 用意されているコンテナ一覧です．
 
 
-<details><summary>Maintanined Containers List</summary>
+<details><summary>用意されているコンテナ一覧</summary>
 <p>
 
 - sobits_ws
@@ -154,8 +231,13 @@ $ ce
 </p>
 </details>
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
-## Change-Log
+## マイルストーン
+
+現時点のバッグや新規機能の依頼を確認するためにIssueページ をご覧ください．
+
+
 - 2025/10/27
     - OpenCV用のDockerfile作成
     - OpenCVのためのマルチステージ
@@ -233,9 +315,27 @@ $ ce
     - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（済）
 
 
-## Reference
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+## 参考文献
 
 Docker上の環境構築や使い方についてより詳しく知りたい場合は，以下のサイトのドキュメントを読んでみてください．
 
 - SOBITS Manual: [Docker Workspaceの使用方法](https://github.com/TeamSOBITS/sobits_manual/blob/main/docs/using_docker_ws.md)
 - 公式サイト: [Docker Docs](https://docs.docker.com/)
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/TeamSOBITS/docker_ws.svg?style=for-the-badge
+[contributors-url]: https://github.com/TeamSOBITS/docker_ws/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/TeamSOBITS/docker_ws.svg?style=for-the-badge
+[forks-url]: https://github.com/TeamSOBITS/docker_ws/network/members
+[stars-shield]: https://img.shields.io/github/stars/TeamSOBITS/docker_ws.svg?style=for-the-badge
+[stars-url]: https://github.com/TeamSOBITS/docker_ws/stargazers
+[issues-shield]: https://img.shields.io/github/issues/TeamSOBITS/docker_ws.svg?style=for-the-badge
+[issues-url]: https://github.com/TeamSOBITS/docker_ws/issues
+[license-shield]: https://img.shields.io/github/license/TeamSOBITS/docker_ws.svg?style=for-the-badge
+[license-url]: LICENSE

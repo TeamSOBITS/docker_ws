@@ -51,4 +51,5 @@ RUN echo "Installing PyTorch ${PYTORCH_VERSION}..." >&2; \
         echo "CUDA Tag detected: ${CUDA_TAG}" >&2; \
     fi; \
     echo "Installing PyTorch with CUDA tag: ${CUDA_TAG}" >&2; \
-    uv pip install -U --no-cache-dir torch==${PYTORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/${CUDA_TAG};
+    uv pip install -U --no-cache-dir torch==${PYTORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/${CUDA_TAG}; \
+    uv pip uninstall numpy;

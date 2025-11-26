@@ -23,6 +23,7 @@ if [[ "${COMPUTE_TYPE}" == "gpu" ]]; then
 else
     PYTORCH_IMAGE_TAG="${DOCKERHUB_USERNAME}/pytorch:${PYTORCH_VERSION}-cpu-ubuntu${UBUNTU_VERSION}"
 fi
+ROS_IMAGE_TAG="ros:${ROS_DISTRO}"
 
 # Determine base images for intermediate stages and final stage
 PYTORCH_BASE_STAGE="base"
@@ -63,29 +64,46 @@ fi
 cat > .env <<EOF
 LOCAL_UID=${LOCAL_UID}
 LOCAL_GID=${LOCAL_GID}
+UBUNTU_VERSION=${UBUNTU_VERSION}
+COMPUTE_TYPE=${COMPUTE_TYPE}
 USERNAME=${USERNAME}
 IMAGE_NAME=${IMAGE_NAME}
 CONTAINER_NAME=${CONTAINER_NAME}
-UBUNTU_VERSION=${UBUNTU_VERSION}
-COMPUTE_TYPE=${COMPUTE_TYPE}
 CUDA_VERSION=${CUDA_VERSION}
-INSTALL_ROS=${INSTALL_ROS}
-INSTALL_GAZEBO=${INSTALL_GAZEBO}
-INSTALL_PYTORCH=${INSTALL_PYTORCH}
-INSTALL_CV2=${INSTALL_CV2}
 PYTORCH_IMAGE_TAG=${PYTORCH_IMAGE_TAG}
 CV_IMAGE_TAG=${CV_IMAGE_TAG}
-ROS_DISTRO=${ROS_DISTRO}
-ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
 PYTORCH_VERSION=${PYTORCH_VERSION}
 CV2_VERSION=${CV2_VERSION}
-PYTORCH_IMAGE_TAG=${PYTORCH_IMAGE_TAG}
+ROS_IMAGE_TAG=${ROS_IMAGE_TAG}
+ROS_DISTRO=${ROS_DISTRO}
+ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
+ROS_WORKSPACE=${ROS_WORKSPACE}
 PYTORCH_BASE_STAGE=${PYTORCH_BASE_STAGE}
 OPENCV_BASE_STAGE=${OPENCV_BASE_STAGE}
 FINAL_STAGE=${FINAL_STAGE}
 EOF
 
-
+if [[ "${INSTALL_ROS}" == "true" ]]; then
+    if [[ "${ROS_VERSION}" == "1" ]]; then
+cat > ros_entrypoint.sh <<EOF
+source /opt/ros/${ROS_DISTRO}/setup.bash
+source ~/${ROS_WORKSPACE}/devel/setup.bash
+export ROS_MASTER_URI=http://localhost:11311
+alias cm='CURRENT_DIR=\`pwd\` && cd ~/${ROS_WORKSPACE}/ && catkin_make && source ~/.bashrc && cd \${CURRENT_DIR}'
+EOF
+    elif [[ "${ROS_VERSION}" == "2" ]]; then
+cat > ros_entrypoint.sh <<EOF
+source /opt/ros/${ROS_DISTRO}/setup.bash
+source ~/${ROS_WORKSPACE}/install/setup.bash
+export ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+alias cb='CURRENT_DIR=\`pwd\` && cd ~/${ROS_WORKSPACE}/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'
+EOF
+    else
+        echo "Error: Unsupported ROS_VERSION: ${ROS_VERSION}. Supported versions are: 1, 2."
+        exit 1
+    fi
+fi
 # =============================================================================
 # Main Command Logic
 # =============================================================================
@@ -192,5 +210,5 @@ case ${COMMAND} in
     exit 1
     ;;
 esac
-
+rm -f ros_entrypoint.sh
 echo "Done."

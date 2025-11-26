@@ -13,18 +13,15 @@ services:
         USERNAME: ${USERNAME}
         CONTAINER_NAME: ${CONTAINER_NAME}
         CUDA_VERSION: ${CUDA_VERSION}
+        PYTORCH_IMAGE_TAG: ${PYTORCH_IMAGE_TAG}
+        CV_IMAGE_TAG: ${CV_IMAGE_TAG}
+        ROS_IMAGE_TAG: ${ROS_IMAGE_TAG}
         PYTORCH_VERSION: ${PYTORCH_VERSION}
-        INSTALL_ROS: ${INSTALL_ROS}
-        INSTALL_GAZEBO: ${INSTALL_GAZEBO}
-        INSTALL_PYTORCH: ${INSTALL_PYTORCH}
-        INSTALL_CV2: ${INSTALL_CV2}
+        CV2_VERSION: ${CV2_VERSION}
         ROS_DISTRO: ${ROS_DISTRO}
         ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
-        CV2_VERSION: ${CV2_VERSION}
-        CV_IMAGE_TAG: ${CV_IMAGE_TAG}
-        PYTORCH_IMAGE_TAG: ${PYTORCH_IMAGE_TAG}
-        OPENCV_BASE_STAGE: ${OPENCV_BASE_STAGE}
         PYTORCH_BASE_STAGE: ${PYTORCH_BASE_STAGE}
+        OPENCVBASE_STAGE: ${OPENCVBASE_STAGE}
         FINAL_STAGE: ${FINAL_STAGE}
     env_file: .env
     image: ${IMAGE_NAME}
@@ -63,7 +60,7 @@ services:
       service: sobits-container
     environment:
       - NVIDIA_VISIBLE_DEVICES=all  
-      - NVIDIA_DRIVER_CAPABILITIES=all  
+      - NVIDIA_DRIVER_CAPABILITIES=all
     deploy:
       resources:
         reservations:

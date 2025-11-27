@@ -12,10 +12,13 @@ echo "Starting Docker container for $(if [ ${COMPUTE_TYPE} = "gpu" ]; then echo 
 PROJECT_NAME=${CONTAINER_NAME}
 
 # Select service name based on COMPUTE_TYPE
-if [ ${COMPUTE_TYPE} = "cpu" ]; then
+if [ "${COMPUTE_TYPE}" = "cpu" ]; then
     SERVICE_NAME="sobits-container"
-else
+elif [ "${COMPUTE_TYPE}" = "gpu" ]; then
     SERVICE_NAME="sobits-container-gpu"
+else
+    echo "Error: Invalid COMPUTE_TYPE '${COMPUTE_TYPE}' in .env"
+    exit 1
 fi
 
 # Start the appropriate container

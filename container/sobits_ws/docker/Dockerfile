@@ -108,8 +108,7 @@ USER root
 RUN apt-get update && apt-get install -y \
         ros-${ROS_DISTRO}-desktop \
         ros-dev-tools && \
-    rosdep init && \
-    rosdep update
+    rosdep init
 
 # Install Gazebo if specified
 RUN if [ "${INSTALL_GAZEBO}" = "true" ]; then \
@@ -117,7 +116,8 @@ RUN if [ "${INSTALL_GAZEBO}" = "true" ]; then \
     fi
 
 USER ${USERNAME}
-RUN mkdir -p ~/${ROS_WORKSPACE}/src && \
+RUN rosdep update && \
+    mkdir -p ~/${ROS_WORKSPACE}/src && \
     echo "source /ros_entrypoint.sh" >> /home/${USERNAME}/.bashrc
 
 # =========================================================================================

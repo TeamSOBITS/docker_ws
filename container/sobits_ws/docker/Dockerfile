@@ -12,10 +12,11 @@ ARG PYTORCH_IMAGE_TAG=sobits/pytorch:${PYTORCH_VERSION}-cuda${CUDA_VERSION%.*}-u
 ARG ROS_IMAGE_TAG=ros:${ROS_DISTRO}
 ARG OPENCV_BASE_STAGE=base
 ARG PYTORCH_BASE_STAGE=base
+ARG ROS_BASE_STAGE=base
 ARG FINAL_STAGE=base
 
 # =========================================================================================
-#  STAGE 1: Common Base
+#  BASE STAGE : Common Base
 #  This stage contains everything that is common to both build types.
 # =========================================================================================
 FROM ubuntu:${UBUNTU_VERSION} AS base-cpu
@@ -64,11 +65,38 @@ FROM ${CV_IMAGE_TAG} AS opencv_prebuilt
 FROM ${PYTORCH_IMAGE_TAG} AS pytorch_prebuilt
 
 # =========================================================================================
-#  FINAL STAGE 1: Application WITH ROS
+#  PYTORCH STAGE : Application WITH PyTorch
 # =========================================================================================
-FROM base AS base_with_ros
+FROM ${PYTORCH_BASE_STAGE} AS base_with_pytorch
+ARG UBUNTU_VERSION=22.04
+COPY --from=pytorch_prebuilt /opt/pytorch/ /opt/pytorch/
+RUN if [ "${UBUNTU_VERSION}" = "22.04" ]; then \
+    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/python3.10/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc; \
+    elif [ "${UBUNTU_VERSION}" = "24.04" ]; then \
+    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/python3.12/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc; \
+    fi;
+    
+# =========================================================================================
+#  OPENCV STAGE : Application WITH OpenCV
+# =========================================================================================
+FROM ${OPENCV_BASE_STAGE} AS base_with_opencv
+ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
+ARG CV2_VERSION=4.12.0
+
+# First, bring in the pre-built OpenCV files from our reference stage
+COPY --from=opencv_prebuilt /tmp/opencv_pkg_install/ /tmp/opencv_pkg_install
+COPY install_sh/install_opencv.sh /tmp/install_opencv.sh
+
+RUN bash /tmp/install_opencv.sh runtime ${COMPUTE_TYPE} ${CV2_VERSION}
+
+# =========================================================================================
+#  ROS STAGE: Application WITH ROS
+# =========================================================================================
+FROM ${ROS_BASE_STAGE} AS base_with_ros
+ARG USERNAME=sobits
 ARG ROS_DISTRO=humble
 ARG ROS_DOMAIN_ID=0
+ARG INSTALL_GAZEBO=true
 ARG ROS_WORKSPACE=colcon_ws
 
 COPY --from=ros_prebuilt /etc/apt/sources.list.d/ros* /etc/apt/sources.list.d/
@@ -81,30 +109,20 @@ RUN apt-get update && apt-get install -y \
         ros-${ROS_DISTRO}-desktop \
         ros-dev-tools && \
     rosdep init && \
-    rosdep update && \
-    mkdir -p ~/${ROS_WORKSPACE}/src && \
+    rosdep update
+
+# Install Gazebo if specified
+RUN if [ "${INSTALL_GAZEBO}" = "true" ]; then \
+        apt-get install -y ros-${ROS_DISTRO}-simulation; \
+    fi
+
+USER ${USERNAME}
+RUN mkdir -p ~/${ROS_WORKSPACE}/src && \
     echo "source /ros_entrypoint.sh" >> /home/${USERNAME}/.bashrc
 
 # =========================================================================================
-#  FINAL STAGE 2: Application WITH PyTorch
+#  FINAL STAGE : Cleanup and Final Setup
 # =========================================================================================
-FROM ${PYTORCH_BASE_STAGE} AS base_with_pytorch
-COPY --from=pytorch_prebuilt /opt/pytorch/ /opt/pytorch/
-RUN echo "PYTHONPATH=/opt/pytorch:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc
-
-# =========================================================================================
-#  FINAL STAGE 3: Application WITH OpenCV
-# =========================================================================================
-FROM ${OPENCV_BASE_STAGE} AS base_with_opencv
-ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
-ARG CV2_VERSION=4.12.0
-
-# First, bring in the pre-built OpenCV files from our reference stage
-COPY --from=opencv_prebuilt /tmp/opencv_pkg_install/ /tmp/opencv_pkg_install
-COPY install_sh/install_opencv.sh /tmp/install_opencv.sh
-
-RUN bash /tmp/install_opencv.sh runtime ${COMPUTE_TYPE} ${CV2_VERSION}
-
 FROM ${FINAL_STAGE} AS final
 USER root
 RUN ldconfig

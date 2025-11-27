@@ -6,23 +6,26 @@ services:
       target: final
       network: host
       args:
-        LOCAL_UID: ${LOCAL_UID}
-        LOCAL_GID: ${LOCAL_GID}
-        UBUNTU_VERSION: ${UBUNTU_VERSION}
-        COMPUTE_TYPE: ${COMPUTE_TYPE}
-        USERNAME: ${USERNAME}
-        CONTAINER_NAME: ${CONTAINER_NAME}
-        CUDA_VERSION: ${CUDA_VERSION}
-        PYTORCH_IMAGE_TAG: ${PYTORCH_IMAGE_TAG}
-        CV_IMAGE_TAG: ${CV_IMAGE_TAG}
-        ROS_IMAGE_TAG: ${ROS_IMAGE_TAG}
-        PYTORCH_VERSION: ${PYTORCH_VERSION}
-        CV2_VERSION: ${CV2_VERSION}
-        ROS_DISTRO: ${ROS_DISTRO}
-        ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
+        LOCAL_UID:          ${LOCAL_UID}
+        LOCAL_GID:          ${LOCAL_GID}
+        UBUNTU_VERSION:     ${UBUNTU_VERSION}
+        COMPUTE_TYPE:       ${COMPUTE_TYPE}
+        USERNAME:           ${USERNAME}
+        CONTAINER_NAME:     ${CONTAINER_NAME}
+        CUDA_VERSION:       ${CUDA_VERSION}
+        INSTALL_GAZEBO:     ${INSTALL_GAZEBO}
+        PYTORCH_IMAGE_TAG:  ${PYTORCH_IMAGE_TAG}
+        CV_IMAGE_TAG:       ${CV_IMAGE_TAG}
+        ROS_IMAGE_TAG:      ${ROS_IMAGE_TAG}
+        PYTORCH_VERSION:    ${PYTORCH_VERSION}
+        CV2_VERSION:        ${CV2_VERSION}
+        ROS_DISTRO:         ${ROS_DISTRO}
+        ROS_DOMAIN_ID:      ${ROS_DOMAIN_ID}
+        ROS_WORKSPACE:      ${ROS_WORKSPACE}
         PYTORCH_BASE_STAGE: ${PYTORCH_BASE_STAGE}
-        OPENCV_BASE_STAGE: ${OPENCV_BASE_STAGE}
-        FINAL_STAGE: ${FINAL_STAGE}
+        OPENCV_BASE_STAGE:  ${OPENCV_BASE_STAGE}
+        ROS_BASE_STAGE:     ${ROS_BASE_STAGE}
+        FINAL_STAGE:        ${FINAL_STAGE}
     env_file: .env
     image: ${IMAGE_NAME}
     container_name: ${CONTAINER_NAME}
@@ -39,7 +42,7 @@ services:
       - /dev/snd
     volumes:
       - ${XDG_RUNTIME_DIR}/pulse:/run/user/${LOCAL_UID}/pulse
-      - ../src:/home/${USERNAME}/colcon_ws/src
+      - ../src:/home/${USERNAME}/${ROS_WORKSPACE}/src
       - /dev/bus/usb:/dev/bus/usb
       - /etc/udev/rules.d/:/etc/udev/rules.d/
       - /dev/serial/by-id/:/dev/serial/by-id/
@@ -61,6 +64,8 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all  
       - NVIDIA_DRIVER_CAPABILITIES=all
+    group_add:
+      - render
     deploy:
       resources:
         reservations:

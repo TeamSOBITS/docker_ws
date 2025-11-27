@@ -16,6 +16,8 @@ curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dear
 sudo apt-get update
 sudo apt-get install -y nvidia-container-toolkit
 
+# Add your user to the 'render' group to allow access to GPU devices
+sudo usermod -a -G render $USER
 
 # Configure the container runtime by using the nvidia-ctk command
 sudo nvidia-ctk runtime configure --runtime=docker
@@ -26,3 +28,5 @@ sudo systemctl restart docker
 
 
 echo "╚══╣ Install: NVIDIA Container Toolkit (FINISHED) ╠══╝"
+echo "Please, reboot your OS"
+echo "You can type: 'reboot now'"

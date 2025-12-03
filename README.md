@@ -33,6 +33,7 @@
       </ul>       
     </li>
     <li><a href="#cuda-table">CUDA / Ubuntu / PyTorch 対応表</a></li>
+    <li><a href="#トラブルシューティング">トラブルシューティング</a></li>
     <li><a href="#マイルストーン">マイルストーン</a></li>
     <li><a href="#参考文献">参考文献</a></li>
   </ol>
@@ -83,9 +84,9 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
     ```sh
     $ bash install_nvidia_docker.sh
     ```
-    > [!WARNING]
-    > `GPU版`のDockerをインストールする前に，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
-    > CUDAやcuDNNをインストールすることが必要ではありません．
+> [!WARNING]
+> `GPU版`のDockerをインストールする前に，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
+> CUDAやcuDNNをインストールすることが必要ではありません．
 
 4. コンテナを可視化するため，以下のコマンドを実行します．
     ```sh
@@ -104,7 +105,6 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 ### コンテナのビルド方法
 1. コンテナのフォルダを複製します．
     ```bash
-    $ cp -r {docker_wsのPATH}/container/{使用するコンテナ}/ {コンテナの新PATH}
     # 例: $ cp -r ~/docker_ws/container/sobits_ws/ ~/
     ```
 
@@ -122,25 +122,34 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 
     [env.sh](container/sobits_ws/docker/env.sh)ファイルの設定例：
     ```sh
-    UBUNTU_VERSION="22.04"  # 使用するUbuntuのバージョン
-    COMPUTE_TYPE="gpu"      # gpuもしくはcpuを選択
-    CUDA_VERSION="12.6.0"   # COMPUTE_TYPEがgpuの場合に使用するCUDAバージョン
+    export DOCKERHUB_USERNAME="sobits"
 
-    INSTALL_ROS="true"      # ROSのインストール
-    INSTALL_GAZEBO="true"   # Gazeboのインストール
-    INSTALL_PYTORCH="true"  # PyTorchのインストール
-    INSTALL_CV2="true"      # OpenCVのインストール
+    # -- Base System Configuration --
+    export UBUNTU_VERSION="22.04"
 
-    ROS_DISTRO="humble"     # 使用するROSのディストリビューション
-    ROS_DOMAIN_ID="30"      # 使用するROSのドメインID
-    PYTORCH_VERSION="2.8.0" # 使用するPyTorchのバージョン
-    CV2_VERSION="4.12.0"    # 使用するOpenCVのバージョン
+    # -- GPU / CPU Configuration --
+    # Set to "true" to build the GPU-enabled container, "false" for CPU-only.
+    export COMPUTE_TYPE="gpu"    # Options: "cpu" or "gpu"
+    export CUDA_VERSION="12.8.1" # Required only if COMPUTE_TYPE is "gpu"
 
-    USERNAME=$(whoami)      # 使用するユーザー名
+    # -- Component Installation Flags --
+    export INSTALL_ROS="true"       # Set to "true" or "false"
+    export INSTALL_GAZEBO="true"    # Set to "true" or "false"
+    export INSTALL_PYTORCH="false"  # Set to "true" or "false"
+    export INSTALL_CV2="false"      # Set to "true" or "false"
+
+    # -- Component Versions --
+    export ROS_DISTRO="humble"     # ROS 1: "noetic", ROS 2: "humble", "jazzy"
+    export ROS_DOMAIN_ID="0"       # Applicable only for ROS 2
+    export PYTORCH_VERSION="2.9.0" # PyTorch version 
+    export CV2_VERSION="4.12.0"    # OpenCV version
+
+    # -- ROS Workspace --
+    export ROS_WORKSPACE="colcon_ws" # ROS workspace name
     ```
 
 > [!NOTE]
-> ROSのバージョンはROS2のみ選択可能です。
+> ROSのバージョンでROS1を選択する場合は`ROS_WORKSPACE`をcatkin_wsに変更してください．
 
 > [!TIP]
 > ubuntuのバージョンと対応するcudaのバージョンを[下の表](#cuda-table)に記載しています。
@@ -205,115 +214,55 @@ $ ce
 |:--------------:|:------------:|:------------:|:------------:|
 | 12.4.1         | ✓            | -            | 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0 |
 | 12.5.1         | ✓            | -            | - |
-| 12.6.0         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0 |
+| 12.6.0         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0, 2.9.0 |
 | 12.6.1         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0 |
 | 12.6.2         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0 |
 | 12.6.3         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0 |
-| 12.8.0         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0 |
+| 12.8.0         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0,  2.9.0 |
 | 12.8.1         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0 |
 | 12.9.0         | ✓            | ✓            | 2.8.0 |
 | 12.9.1         | ✓            | ✓            | 2.8.0 |
-| 13.0.0         | ✓            | ✓            | 未対応 |
+| 13.0.0         | ✓            | ✓            | 2.9.0 |
+
+詳細は[Installing previous versions of PyTorch](https://pytorch.org/get-started/previous-versions/)を確認してください．
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 
-## Docker コンテナ一覧
+## トラブルシューティング
 
-用意されているコンテナ一覧です．
+- `bash buid.sh`実行時に，Dockerが指定されたイメージをDocker Hubで見つけることができなかったというエラーが出た場合
 
+    - 例
+    ```sh
+    failed to solve: sobits/pytorch:3.8.0-cuda12.8-ubuntu22.04: failed to resolve source metadata for docker.io/sobits/pytorch:3.8.0-cuda12.8-ubuntu22.04: docker.io/sobits/pytorch:3.8.0-cuda12.8-ubuntu22.04: not found
+    ```
 
-<details><summary>用意されているコンテナ一覧</summary>
-<p>
+    - 対処法
+        - [Docker Hub](https://hub.docker.com/u/sobits)にイメージがないので，dockerにログインしてから，ビルドしてアップロードしてください．
 
-- sobits_ws
+        - 例： opencvがない場合       
+            ```sh
+            bash buid.sh opencv
+            ```
+            足りないものをすべてビルドした後に
+            ```sh
+            "Build complete. Do you want to push this image to Docker Hub? (y/N) "
+            ```
+            と言われるのでdocker hubにpushするか選択してください
 
-</p>
-</details>
+- 特定のイメージを削除するコマンド
+    ```
+    docker rmi <イメージ名またはID>
+    ```
+    - 削除後は```docker images```で削除されたか確認すること
+
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## マイルストーン
 
 現時点のバッグや新規機能の依頼を確認するためにIssueページ をご覧ください．
-
-
-- 2025/10/27
-    - OpenCV用のDockerfile作成
-    - OpenCVのためのマルチステージ
-    - OpenCV 4.12.0にアップデート(DockerHubに対応)
-- 2025/08/20
-    - PyTorchインストール(via pip)
-    - CUDA/Ubuntu/PyTorch対応表の追加
-- 2025/08/20
-    - 環境ファイルをenv.shに変更
-    - PROJECT_NAMEを追加し、同じサービス名で複数の環境を作成できるように
-- 2025/08/17
-    - マルチステージビルド化しDockerfileを一つに管理
-
-- 2025/08/01
-    - docker composeへの対応
-        - UBUNTU,  CUDA, ROSのバージョン変更を簡易に 
-
-- 2025/05/15
-    - CUDA12.8.1_cuDNN9.8への対応
-        - base_2204_ws
-        - ros2_humble_basic_ws
-        - ros2_humble_sobits_ws
-    - OpenCV 4.11.0にアップデート
-
-- 2025/02/00
-    - CUDA12.8.0_cuDNN9.7への対応
-        - base_2204_ws
-        - ros2_humble_basic_ws
-        - ros2_humble_sobits_ws
-    - 20.04がアーカイブに
-        - base_2004_ws
-        - ros_noetic_basic_ws
-        - ros_noetic_sobits_ws
-
-- 2024/12/00
-    - CUDA12.6.3 cuDNN9.5への切り替え
-        - CUDA12.6.1_cuDNN9.3を未対応
-    - CUDA12.5.1_cuDNN9.2に対応
-        - base_2004_ws
-        - ros_noetic_basic_ws
-        - ros_noetic_sobits_ws
-        - base_2204_ws
-        - ros2_humble_basic_ws
-        - ros2_humble_sobits_ws
-    - CUDA12.6.3 cuDNN9.5に対応
-        - base_2204_ws
-        - ros2_humble_basic_ws
-        - ros2_humble_sobits_ws
-
-- 2024/10/04
-    - CUDA12.6.1 cuDNN9.3に対応
-        - base_2004_ws
-        - ros_noetic_basic_ws
-        - ros_noetic_sobits_ws
-    - PulseAudioが利用できない問題を解決
-- 2024/08/20
-    - CUDA12.6.0 cuDNN9.3に対応
-        - base_2204_ws
-        - ros2_humble_basic_ws
-        - ros2_humble_sobits_ws
-- 2023/08/02~05
-    - CUDA12.1.1 cuDNN8.9に対応
-        - base_2004_ws, base_2204_ws
-        - ros_noetic_basic_ws, ros2_humble_basic_ws
-        - ros_noetic_sobits_ws, ros2_humble_sobits_ws
-    - トークンの削除し，要求する
-    - レイヤのコピを省略し，容量の縮小
-    - 必要なパッケージの縮小
-- 2023/01/21 (RCJP22向け)
-    - CUDA11.8.0 cuDNN8.7の環境構築
-    - ホストPCがUbuntu22.04の環境でCPU/GPUともに動作確認（済）
-    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（未）
-- 2022/05/28
-    - CUDA11.6.2 cuDNN8.4の環境構築
-    - ホストPCがUbuntu20.04の環境でCPU/GPUともに動作確認（済）
-
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 

@@ -28,12 +28,13 @@
         <a href="#実行操作方法">実行・操作方法</a>
               <ul>
         <li><a href="#コンテナのビルド方法">コンテナのビルド方法</a></li>
-        <li><a href="#コンテナの削除方法">コンテナの削除方法   </a></li>
         <li><a href="#コンテナの実行操作方法">コンテナの実行・操作方法</a></li>
       </ul>       
     </li>
     <li><a href="#cuda-table">CUDA / Ubuntu / PyTorch 対応表</a></li>
     <li><a href="#トラブルシューティング">トラブルシューティング</a></li>
+    <li><a href="#コンテナの削除方法">コンテナの削除方法   </a></li>
+    <li><a href="#イメージの削除方法">イメージの削除方法   </a></li>
     <li><a href="#マイルストーン">マイルストーン</a></li>
     <li><a href="#参考文献">参考文献</a></li>
   </ol>
@@ -103,22 +104,12 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 ## 実行・操作方法
 
 ### コンテナのビルド方法
-1. コンテナのフォルダを複製します．
-    ```bash
-    # 例: $ cp -r ~/docker_ws/container/sobits_ws/ ~/
-    ```
+1. `sobits_ws`のディレクトリをディレクトリごとコピーし，Homeディレクトリなどに貼り付けてください．
+    - この際，複製されたフォルダの名前を変更してください．
+    - 例: `sobits_ws` → `my_new_ws`
+    - コンテナの名前が被らないようにしてください．
 
-> [!WARNING]
-> 複製されたフォルダの名前を変更してください．
-> 例: `sobits_ws` → `my_new_ws`
-> デフォルトではイメージとコンテナの名前は同じにしています．
-> 同じイメージから複数のコンテナを作成する場合は，コンテナの名前が被らないようにしてください．
-
-2. このプロジェクトではDocker Composeを使用しているため，コンテナをビルドする前に、[env.sh](container/sobits_ws/docker/env.sh)ファイルの設定を行う必要があります．
-    ```bash
-    $ cd {コンテナPATH}/docker
-    $ gedit env.sh  # または任意のエディタで編集
-    ```
+2. コピーして名前を変更した`sobits_ws`ディレクトリの[env.sh](container/sobits_ws/docker/env.sh)ファイルを開いてください．
 
     [env.sh](container/sobits_ws/docker/env.sh)ファイルの設定例：
     ```sh
@@ -152,7 +143,7 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 > ROSのバージョンでROS1を選択する場合は`ROS_WORKSPACE`をcatkin_wsに変更してください．
 
 > [!TIP]
-> ubuntuのバージョンと対応するcudaのバージョンを[下の表](#cuda-table)に記載しています。
+> Ubuntuのバージョンと対応するCUDAのバージョンを[下の表](#cuda-table)に記載しています。
 
 3. Dockerfileからイメージをビルドします.
     ```bash
@@ -179,14 +170,6 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
-### コンテナの削除方法
-作成したコンテナを停止して削除します。
-```bash
-$ bash down.sh
-```
-
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
-
 ### コンテナの実行・操作方法
 
 ![Container Executer](img/container_executer.png)
@@ -209,6 +192,11 @@ $ ce
 
 ## CUDA / Ubuntu / PyTorch 対応表
 
+- CUDAについて，ローカル環境に入っているNvidia Driverが対応している最大のCUDAのバージョンより高いバージョンのCUDAをDockerで入れることはできません．
+- 以下のコマンドで右上に出力されるものが，対応している最大のCUDAバージョンです．
+```sh
+nvidia-smi
+```
 
 | CUDA Version   | Ubuntu 22.04 | Ubuntu 24.04 | PyTorch Versions |
 |:--------------:|:------------:|:------------:|:------------:|
@@ -251,11 +239,23 @@ $ ce
             ```
             と言われるのでdocker hubにpushするか選択してください
 
-- 特定のイメージを削除するコマンド
-    ```
-    docker rmi <イメージ名またはID>
-    ```
-    - 削除後は```docker images```で削除されたか確認すること
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+### コンテナの削除方法
+作成したコンテナを停止して削除します。
+```bash
+$ bash down.sh
+```
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+### イメージの削除方法
+
+特定のイメージを削除するコマンド
+```
+docker rmi <イメージ名またはID>
+```
+- 削除後は```docker images```で削除されたか確認すること
 
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
@@ -270,7 +270,6 @@ $ ce
 
 Docker上の環境構築や使い方についてより詳しく知りたい場合は，以下のサイトのドキュメントを読んでみてください．
 
-- SOBITS Manual: [Docker Workspaceの使用方法](https://github.com/TeamSOBITS/sobits_manual/blob/main/docs/using_docker_ws.md)
 - 公式サイト: [Docker Docs](https://docs.docker.com/)
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>

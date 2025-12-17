@@ -18,7 +18,7 @@
       <a href="#introduction">Introduction</a>
     </li>
     <li>
-      <a href="getting-started">Getting Started</a>
+      <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
@@ -241,16 +241,16 @@ failed to solve: sobits/pytorch:3.8.0-cuda12.8-ubuntu22.04: failed to resolve so
 
 ```
 - Solution.
-        - Since there is no image in [Docker Hub](https://hub.docker.com/u/sobits), please login to docker, build and upload the image.
-        - Example: If there is no opencv 
-           ```sh 
-           bash buid.sh opencv 
-           ``` 
-           After building everything that is missing 
-           ```sh 
-           "Build complete. Do you want to push this image to Docker Hub? (y/N) " 
-           ``` 
-           You will be told Choose to push to docker hub
+  - Since there is no image in [Docker Hub](https://hub.docker.com/u/sobits), please login to docker, build and upload the image.
+  - Example: If there is no opencv 
+    ```sh 
+    bash buid.sh opencv 
+    ``` 
+    After building everything that is missing 
+    ```sh 
+    "Build complete. Do you want to push this image to Docker Hub? (y/N) " 
+    ``` 
+    You will be told Choose to push to docker hub
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

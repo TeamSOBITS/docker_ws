@@ -51,14 +51,6 @@ sudo apt-get install -y \
     docker-buildx-plugin \
     docker-compose-plugin
 
-
-# Manage Docker as a non-root user
-# Reference: https://docs.docker.com/engine/install/linux-postinstall/
-sudo groupdel docker
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
-
 sudo rm -r ~/.docker/
 
 
@@ -69,11 +61,17 @@ sudo systemctl enable containerd.service
 # Add alias in bashrc
 DIR_PATH=$(pwd)
 cd ..
-echo "alias ce=\"python3 $(pwd)/container_executer.py\"" >> ~/.bashrc
+echo "alias ce=\"python3 $DIR_PATH/container_executer.py\"" >> ~/.bashrc
 source ~/.bashrc
 cd $DIR_PATH
-
 
 echo "╚══╣ Install: Docker Engine (FINISHED) ╠══╝"
 echo "Please, reboot your OS"
 echo "You can type: 'reboot now'"
+
+# Manage Docker as a non-root user
+# Reference: https://docs.docker.com/engine/install/linux-postinstall/
+sudo groupdel dockers
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker

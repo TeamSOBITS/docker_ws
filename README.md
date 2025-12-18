@@ -233,6 +233,18 @@ nvidia-smi
             ```
             と言われるのでdocker hubにpushするか選択してください
 
+- コンテナ内でGUIが開けない場合
+    - 例
+    ```sh
+    (gedit:296): Gtk-WARNING **: 21:53:21.863: cannot open display: :0
+    ```
+
+    - 対処法
+        - 以下のコマンドを入力
+        ```sh
+        $ xhost +local:
+        ```
+
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ### コンテナの削除方法

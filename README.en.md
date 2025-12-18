@@ -246,6 +246,17 @@ failed to solve: sobits/pytorch:3.8.0-cuda12.8-ubuntu22.04: failed to resolve so
     ``` 
     You will be told Choose to push to docker hub
 
+- If GUI applications fail to start inside the container:
+- Example:
+```sh
+(gedit:296): Gtk-WARNING **: 21:53:21.863: cannot open display: :0
+```
+- Solution:
+  - Allow local connections to the X server:
+    ```sh
+    xhost +local:
+    ```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Removing Containers -->

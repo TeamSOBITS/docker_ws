@@ -63,7 +63,7 @@ Please ensure the following environment is prepared before proceeding with the n
 | Ubuntu | 22.04 (Jammy Jellyfish) or 24.04 (Noble Numbat) |
 
 > [!WARNING]
-> When using the `GPU version` of Docker, ensure that the [Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda) is installed.
+> When using the `GPU version` of Docker, ensure that the [Nvidia Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/ubuntu.html) is installed.
 > CUDA or cuDNN installations are not required.
 
 > [!WARNING]
@@ -91,10 +91,6 @@ If you already have pre-built containers and want to build additional ones, skip
     ```sh
     $ bash install_nvidia_docker.sh
     ```
-
-> [!WARNING]
-> Before installing the `GPU version` of Docker, ensure that the [Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda) is installed.
-> CUDA or cuDNN installations are not required.
 
 4. To enable GUI functionality for containers, install the following packages.
     ```sh
@@ -147,8 +143,6 @@ If you already have pre-built containers and want to build additional ones, skip
    # -- ROS Workspace --
    export ROS_WORKSPACE="colcon_ws" # ROS workspace name
    ```
-> [!NOTE]
-> If using ROS1, change `ROS_WORKSPACE` to `catkin_ws`.
 
 > [!TIP]
 > Refer to the [CUDA / Ubuntu / PyTorch Compatibility](#cuda-compatibility) for supported versions.
@@ -259,6 +253,7 @@ failed to solve: sobits/pytorch:3.8.0-cuda12.8-ubuntu22.04: failed to resolve so
 
 To stop and delete all created containers:
 ```bash
+$ cd {path-to-container}/docker
 $ bash down.sh
 ```
 

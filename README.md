@@ -58,7 +58,7 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 | Ubuntu | 22.04 (Jammy Jellyfish) or 24.04 (Noble Numbat)|
 
 > [!WARNING]
-> `GPU版`のDockerを使用する場合は，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
+> `GPU版`のDockerを使用する場合は，必ず[Nvidia Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/ubuntu.html)のインストールを済ませてください．
 > CUDAやcuDNNをインストールすることは必要ではありません．
 
 > [!WARNING]
@@ -85,9 +85,6 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
     ```sh
     $ bash install_nvidia_docker.sh
     ```
-> [!WARNING]
-> `GPU版`のDockerをインストールする前に，必ず[Nvidia Driver](https://github.com/TeamSOBITS/sobits_manual/tree/main/install_sh#cuda)のインストールを済ませてください．
-> CUDAやcuDNNをインストールすることが必要ではありません．
 
 4. コンテナを可視化するため，以下のコマンドを実行します．
     ```sh
@@ -138,9 +135,6 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
     # -- ROS Workspace --
     export ROS_WORKSPACE="colcon_ws" # ROS workspace name
     ```
-
-> [!NOTE]
-> ROSのバージョンでROS1を選択する場合は`ROS_WORKSPACE`をcatkin_wsに変更してください．
 
 > [!TIP]
 > Ubuntuのバージョンと対応するCUDAのバージョンを[下の表](#cuda-table)に記載しています。
@@ -244,6 +238,7 @@ nvidia-smi
 ### コンテナの削除方法
 作成したコンテナを停止して削除します。
 ```bash
+$ cd {コンテナPATH}/docker
 $ bash down.sh
 ```
 

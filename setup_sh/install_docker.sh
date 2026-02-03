@@ -61,9 +61,12 @@ sudo systemctl enable containerd.service
 # Add alias in bashrc
 DIR_PATH=$(pwd)
 cd ..
-echo "alias ce=\"python3 $DIR_PATH/container_executer.py\"" >> ~/.bashrc
+echo "alias ce=\"python3 $(pwd)/container_executer.py\"" >> ~/.bashrc
 source ~/.bashrc
-cd $DIR_PATH
+cd $DIR_PATH    
+
+# Install tkinter for python3
+sudo apt install -y python3-tk
 
 echo "╚══╣ Install: Docker Engine (FINISHED) ╠══╝"
 echo "Please, reboot your OS"

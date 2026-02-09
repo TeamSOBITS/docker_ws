@@ -40,19 +40,19 @@ class ContainerExecuter():
             
             # コンテナの実行中の場合は"restart"，"stop"，"exec"というボタンを表示させる
             if is_running:
-                button = tkinter.Button(self.tk, width=4, text="    ",    command=self.button_clicked_callback("dummy",   container_id)).place(x=100, y=i*30)
-                button = tkinter.Button(self.tk, width=4, text="restart", command=self.button_clicked_callback("restart", container_id)).place(x=160, y=i*30)
-                button = tkinter.Button(self.tk, width=4, text="stop",    command=self.button_clicked_callback("stop",    container_id)).place(x=220, y=i*30)
-                button = tkinter.Button(self.tk, width=4, text="exec",    command=self.button_clicked_callback("exec",    container_id)).place(x=280, y=i*30)
+                tkinter.Button(self.tk, width=4, text="    ",    command=self.button_clicked_callback("dummy",   container_name)).place(x=100, y=i*30)
+                tkinter.Button(self.tk, width=4, text="restart", command=self.button_clicked_callback("restart", container_name)).place(x=160, y=i*30)
+                tkinter.Button(self.tk, width=4, text="stop",    command=self.button_clicked_callback("stop",    container_name)).place(x=220, y=i*30)
+                tkinter.Button(self.tk, width=4, text="exec",    command=self.button_clicked_callback("exec",    container_name)).place(x=280, y=i*30)
 
             else:
-                button = tkinter.Button(self.tk, width=4, text="start", command=self.button_clicked_callback("start", container_id)).place(x=100, y=i*30)
-                button = tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=160, y=i*30)
-                button = tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=220, y=i*30)
-                button = tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_id)).place(x=280, y=i*30)
+                tkinter.Button(self.tk, width=4, text="start", command=self.button_clicked_callback("start", container_name)).place(x=100, y=i*30)
+                tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_name)).place(x=160, y=i*30)
+                tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_name)).place(x=220, y=i*30)
+                tkinter.Button(self.tk, width=4, text="    ",  command=self.button_clicked_callback("dummy", container_name)).place(x=280, y=i*30)
 
-            label = tkinter.Label(text=container_name, font=("",15)).place(x=340, y=i*30)
-
+            tkinter.Label(text=container_name, font=("",15)).place(x=340, y=i*30)
+            tkinter.Button(self.tk, width=4, text="down", fg="red", command=self.button_clicked_callback("down", container_name)).place(x=750, y=i*30)
 	    #GUI再起動用のボタンを定義
         btn = tkinter.Button(self.tk, width=3, text="refresh", command=self.refresh_gui)
         btn.place(x=0, y=0)
@@ -64,28 +64,34 @@ class ContainerExecuter():
         self.tk.mainloop()
 
 
-    def button_clicked_callback(self, operation, container_id):
+    def button_clicked_callback(self, operation, container_name):
         def inner():
             if operation == "dummy":
                 pass
 
             else:
+                service_name = self.get_service_name(container_name)
+
                 if operation == "exec":
-                    print("[%s] container has been executed."%container_id)
-                    cmd = "gnome-terminal -- bash -c 'docker exec -it --user ${USER} %s /bin/bash; bash'"%(container_id)
-                
+                    print("[%s] container has been executed."%container_name)
+                    cmd = "gnome-terminal -- bash -c 'docker compose -p %s exec -it --user ${USERNAME} %s /bin/bash; bash'"%(container_name, service_name)
+
                 elif operation == "start":
-                    print("[%s] container has been started."%container_id)
-                    cmd = "docker start %s "%(container_id)
+                    print("[%s] container has been started."%container_name)
+                    cmd = "docker compose -p %s start "%(container_name)
 
                 elif operation == "restart":
-                    print("[%s] container has been restarted."%container_id)
-                    cmd = "docker restart %s "%(container_id)
-                
-                elif operation == "stop":
-                    print("[%s] container has been stopped."%container_id)
-                    cmd = "docker stop %s "%(container_id)
+                    print("[%s] container has been restarted."%container_name)
+                    cmd = "docker compose -p %s restart "%(container_name)
 
+                elif operation == "stop":
+                    print("[%s] container has been stopped."%container_name)
+                    cmd = "docker compose -p %s stop "%(container_name)
+
+                elif operation == "down":
+                    print("[%s] container is being downed..."%container_name)
+                    cmd = "docker compose -p %s down "%(container_name)
+                    
                 os.system(cmd) #回避策としてos.systemを使用
                 self.refresh_gui()
 
@@ -128,6 +134,16 @@ class ContainerExecuter():
                 container_info =  [x for x in container_info if x]
                 if is_running :  self.running_containers_info.append(container_info)
                 else :           self.containers_info.append(container_info)
+
+    # コンテナ名からdocker-composeのサービス名を取得する関数
+    def get_service_name(self, container_name):
+            try:
+                cmd = ["docker", "inspect", "-f", '{{ index .Config.Labels "com.docker.compose.service" }}', container_name]
+                service_name = subprocess.check_output(cmd).decode().strip()
+                return service_name
+            except Exception as e:
+                print(f"Error getting service name for {container_name}: {e}")
+                return None
     
 
 def main():

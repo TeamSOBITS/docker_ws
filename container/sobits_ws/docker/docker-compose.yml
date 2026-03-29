@@ -46,6 +46,7 @@ services:
       - /dev/bus/usb:/dev/bus/usb
       - /etc/udev/rules.d/:/etc/udev/rules.d/
       - /dev/serial/by-id/:/dev/serial/by-id/
+      - /dev/v4l/by-id/:/dev/v4l/by-id/
     group_add:
       - adm
       - audio

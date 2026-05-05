@@ -98,7 +98,7 @@ ARG ROS_WORKSPACE=colcon_ws
 
 COPY --from=ros_prebuilt /etc/apt/sources.list.d/ros* /etc/apt/sources.list.d/
 COPY --from=ros_prebuilt /usr/share/keyrings/ros* /usr/share/keyrings/
-COPY ros_entrypoint.sh /ros_entrypoint.sh
+COPY ros_entrypoint.sh /home/${USERNAME}/ros_entrypoint.sh
 
 USER root
 # Configure ROS environment
@@ -115,7 +115,7 @@ RUN if [ "${INSTALL_GAZEBO}" = "true" ]; then \
 USER ${USERNAME}
 RUN rosdep update && \
     mkdir -p ~/${ROS_WORKSPACE}/src && \
-    echo "source /ros_entrypoint.sh" >> /home/${USERNAME}/.bashrc
+    echo "source /home/${USERNAME}/ros_entrypoint.sh" >> /home/${USERNAME}/.bashrc
 
 # =========================================================================================
 #  FINAL STAGE : Cleanup and Final Setup

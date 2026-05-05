@@ -21,7 +21,7 @@ export INSTALL_CV2="false"      # Set to "true" or "false"
 # -- Component Versions --
 export ROS_DISTRO="jazzy"      # ROS 1: "noetic", ROS 2: "humble", "jazzy"
 export ROS_DOMAIN_ID="0"       # Applicable only for ROS 2
-export PYTORCH_VERSION="2.9.0" # PyTorch version 
+export PYTORCH_VERSION="2.11.0" # PyTorch version 
 export CV2_VERSION="4.13.0"    # OpenCV version
 
 # -- ROS Workspace --
@@ -39,7 +39,7 @@ export LOCAL_GID=$(id -g)
 # () The name of the image based on the configuration
 export IMAGE_NAME="${DOCKERHUB_USERNAME}/workspace:ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}"
 if [ "${COMPUTE_TYPE}" == "gpu" ]; then
-  export IMAGE_NAME+="-cuda${CUDA_VERSION%.*}"
+  export IMAGE_NAME+="-cuda${CUDA_VERSION}"
 fi
 if [ "${INSTALL_PYTORCH}" == "true" ]; then
   export IMAGE_NAME+="-pytorch${PYTORCH_VERSION}"

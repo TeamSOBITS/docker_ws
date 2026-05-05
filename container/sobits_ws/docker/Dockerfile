@@ -70,11 +70,8 @@ FROM ${PYTORCH_IMAGE_TAG} AS pytorch_prebuilt
 FROM ${PYTORCH_BASE_STAGE} AS base_with_pytorch
 ARG UBUNTU_VERSION=24.04
 COPY --from=pytorch_prebuilt /opt/pytorch/ /opt/pytorch/
-RUN if [ "${UBUNTU_VERSION}" = "22.04" ]; then \
-    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/python3.10/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc; \
-    elif [ "${UBUNTU_VERSION}" = "24.04" ]; then \
-    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/python3.12/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc; \
-    fi;
+RUN PYTHON_DIR=$(ls /opt/pytorch/.venv/lib/ | grep -m1 python3) && \
+    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/${PYTHON_DIR}/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc
     
 # =========================================================================================
 #  OPENCV STAGE : Application WITH OpenCV

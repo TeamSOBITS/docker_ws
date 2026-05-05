@@ -38,8 +38,15 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${LOCAL_UID}/pulse/native
+    ulimits:
+      rtprio: 98
+      rttime: -1
+      memlock:
+        soft: -1
+        hard: -1
     devices:
       - /dev/snd
+      - /dev/cpu_dma_latency
     volumes:
       - ${XDG_RUNTIME_DIR}/pulse:/run/user/${LOCAL_UID}/pulse
       - ../src:/home/${USERNAME}/${ROS_WORKSPACE}/src

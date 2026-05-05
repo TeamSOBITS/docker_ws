@@ -1,14 +1,14 @@
 # =========================================================================================
 #  ARGUMENTS - Define all build arguments at the top
 # =========================================================================================
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=24.04
 ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
-ARG CUDA_VERSION=12.8.1
-ARG CV2_VERSION=4.12.0
+ARG CUDA_VERSION=13.1.1
+ARG CV2_VERSION=4.13.0
 ARG PYTORCH_VERSION=2.9.0
 ARG ROS_DISTRO=humble
-ARG CV_IMAGE_TAG=sobits/opencv:${CV2_VERSION}-${COMPUTE_TYPE}-ubuntu${UBUNTU_VERSION}
-ARG PYTORCH_IMAGE_TAG=sobits/pytorch:${PYTORCH_VERSION}-cuda${CUDA_VERSION%.*}-ubuntu${UBUNTU_VERSION}
+ARG CV_IMAGE_TAG=sobits/opencv:${CV2_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}
+ARG PYTORCH_IMAGE_TAG=sobits/pytorch:${PYTORCH_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}
 ARG ROS_IMAGE_TAG=ros:${ROS_DISTRO}
 ARG OPENCV_BASE_STAGE=base
 ARG PYTORCH_BASE_STAGE=base
@@ -68,7 +68,7 @@ FROM ${PYTORCH_IMAGE_TAG} AS pytorch_prebuilt
 #  PYTORCH STAGE : Application WITH PyTorch
 # =========================================================================================
 FROM ${PYTORCH_BASE_STAGE} AS base_with_pytorch
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=24.04
 COPY --from=pytorch_prebuilt /opt/pytorch/ /opt/pytorch/
 RUN if [ "${UBUNTU_VERSION}" = "22.04" ]; then \
     echo "export PYTHONPATH=/opt/pytorch/.venv/lib/python3.10/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc; \
@@ -81,7 +81,7 @@ RUN if [ "${UBUNTU_VERSION}" = "22.04" ]; then \
 # =========================================================================================
 FROM ${OPENCV_BASE_STAGE} AS base_with_opencv
 ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
-ARG CV2_VERSION=4.12.0
+ARG CV2_VERSION=4.13.0
 
 # First, bring in the pre-built OpenCV files from our reference stage
 COPY --from=opencv_prebuilt /tmp/opencv_pkg_install/ /tmp/opencv_pkg_install

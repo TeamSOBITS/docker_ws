@@ -3,8 +3,8 @@
 # =========================================================================================
 #  ARGUMENTS
 # =========================================================================================
-ARG UBUNTU_VERSION=22.04
-ARG CUDA_VERSION=12.8.0
+ARG UBUNTU_VERSION=24.04
+ARG CUDA_VERSION=13.1.1
 ARG PYTORCH_VERSION=2.9.0
 ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
 

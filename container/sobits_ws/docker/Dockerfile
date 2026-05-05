@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         bash-completion lsb-release dpkg-dev pkg-config net-tools iputils-ping \
         usbutils libusb-1.0-0-dev libudev-dev uuid-dev \
         python3 python3-pip python3-venv python3-dev \
+        rt-tests tuna \
     && rm -rf /var/lib/apt/lists/*
 
 # Add user

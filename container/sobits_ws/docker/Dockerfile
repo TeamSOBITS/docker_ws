@@ -6,7 +6,7 @@ ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
 ARG CUDA_VERSION=13.1.1
 ARG CV2_VERSION=4.13.0
 ARG PYTORCH_VERSION=2.9.0
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=jazzy
 ARG CV_IMAGE_TAG=sobits/opencv:${CV2_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}
 ARG PYTORCH_IMAGE_TAG=sobits/pytorch:${PYTORCH_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}
 ARG ROS_IMAGE_TAG=ros:${ROS_DISTRO}
@@ -91,7 +91,7 @@ RUN bash /tmp/install_opencv.sh runtime ${COMPUTE_TYPE} ${CV2_VERSION}
 # =========================================================================================
 FROM ${ROS_BASE_STAGE} AS base_with_ros
 ARG USERNAME=sobits
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=jazzy
 ARG ROS_DOMAIN_ID=0
 ARG INSTALL_GAZEBO=true
 ARG ROS_WORKSPACE=colcon_ws

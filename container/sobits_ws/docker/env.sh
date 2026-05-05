@@ -19,7 +19,7 @@ export INSTALL_PYTORCH="false"  # Set to "true" or "false"
 export INSTALL_CV2="false"      # Set to "true" or "false"
 
 # -- Component Versions --
-export ROS_DISTRO="humble"     # ROS 1: "noetic", ROS 2: "humble", "jazzy"
+export ROS_DISTRO="jazzy"      # ROS 1: "noetic", ROS 2: "humble", "jazzy"
 export ROS_DOMAIN_ID="0"       # Applicable only for ROS 2
 export PYTORCH_VERSION="2.9.0" # PyTorch version 
 export CV2_VERSION="4.13.0"    # OpenCV version

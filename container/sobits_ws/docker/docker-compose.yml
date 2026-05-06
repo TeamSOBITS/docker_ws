@@ -38,6 +38,8 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${LOCAL_UID}/pulse/native
+    cap_add:
+      - SYS_NICE
     ulimits:
       rtprio: 98
       rttime: -1

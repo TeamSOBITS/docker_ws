@@ -56,6 +56,7 @@ services:
       - /etc/udev/rules.d/:/etc/udev/rules.d/
       - /dev/serial/by-id/:/dev/serial/by-id/
       - /dev/v4l/by-id/:/dev/v4l/by-id/
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
     group_add:
       - adm
       - audio

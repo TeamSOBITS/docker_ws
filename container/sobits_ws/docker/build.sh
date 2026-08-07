@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e # Exit immediately if a command exits with a non-zero status.
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # Load environment variables
 if [[ -f "./env.sh" ]]; then
@@ -17,11 +18,11 @@ if [[ -z "${DOCKERHUB_USERNAME}" ]]; then
 fi
 
 # Construct the unique tag for our reusable OpenCV image
-CV_IMAGE_TAG="${DOCKERHUB_USERNAME}/opencv:${CV2_VERSION}-${COMPUTE_TYPE}-ubuntu${UBUNTU_VERSION}"
+CV_IMAGE_TAG="${DOCKERHUB_USERNAME}/opencv:${CV2_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}"
+PYTORCH_IMAGE_TAG="${DOCKERHUB_USERNAME}/pytorch:${PYTORCH_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}"
 if [[ "${COMPUTE_TYPE}" == "gpu" ]]; then
-    PYTORCH_IMAGE_TAG="${DOCKERHUB_USERNAME}/pytorch:${PYTORCH_VERSION}-cuda${CUDA_VERSION%.*}-ubuntu${UBUNTU_VERSION}"
-else
-    PYTORCH_IMAGE_TAG="${DOCKERHUB_USERNAME}/pytorch:${PYTORCH_VERSION}-cpu-ubuntu${UBUNTU_VERSION}"
+    CV_IMAGE_TAG+="-cuda${CUDA_VERSION}"
+    PYTORCH_IMAGE_TAG+="-cuda${CUDA_VERSION}"
 fi
 ROS_IMAGE_TAG="ros:${ROS_DISTRO}"
 
@@ -86,24 +87,6 @@ ROS_BASE_STAGE=${ROS_BASE_STAGE}
 FINAL_STAGE=${FINAL_STAGE}
 EOF
 
-if [[ "${INSTALL_ROS}" == "true" ]]; then
-    if [[ "${ROS_DISTRO}" == "noetic" ]]; then
-cat > ros_entrypoint.sh <<EOF
-source /opt/ros/${ROS_DISTRO}/setup.bash
-source ~/${ROS_WORKSPACE}/devel/setup.bash
-export ROS_MASTER_URI=http://localhost:11311
-alias cm='CURRENT_DIR=\`pwd\` && cd ~/${ROS_WORKSPACE}/ && catkin_make && source ~/.bashrc && cd \${CURRENT_DIR}'
-EOF
-    else
-cat > ros_entrypoint.sh <<EOF
-source /opt/ros/${ROS_DISTRO}/setup.bash
-source ~/${ROS_WORKSPACE}/install/setup.bash
-source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
-export ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
-alias cb='CURRENT_DIR=\`pwd\` && cd ~/${ROS_WORKSPACE}/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'
-EOF
-    fi
-fi
 # =============================================================================
 # Main Command Logic
 # =============================================================================
@@ -192,6 +175,25 @@ case ${COMMAND} in
       echo "Using pre-built ROS image: ${ROS_IMAGE_TAG}"
     fi
     echo ""
+
+    if [[ "${INSTALL_ROS}" == "true" ]]; then
+        if [[ "${ROS_DISTRO}" == "noetic" ]]; then
+cat > ros_entrypoint.sh <<EOF
+source /opt/ros/${ROS_DISTRO}/setup.bash
+source ~/${ROS_WORKSPACE}/devel/setup.bash
+export ROS_MASTER_URI=http://localhost:11311
+alias cm='CURRENT_DIR=\`pwd\` && cd ~/${ROS_WORKSPACE}/ && catkin_make && source ~/.bashrc && cd \${CURRENT_DIR}'
+EOF
+        else
+cat > ros_entrypoint.sh <<EOF
+source /opt/ros/${ROS_DISTRO}/setup.bash
+source ~/${ROS_WORKSPACE}/install/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+export ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
+alias cb='CURRENT_DIR=\`pwd\` && cd ~/${ROS_WORKSPACE}/ && colcon build --symlink-install && source ~/.bashrc && cd \${CURRENT_DIR}'
+EOF
+        fi
+    fi
 
     if [ "${COMPUTE_TYPE}" = "gpu" ]; then
         if ! command -v nvidia-smi &> /dev/null; then

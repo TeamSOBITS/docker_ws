@@ -1,14 +1,14 @@
 # =========================================================================================
 #  ARGUMENTS - Define all build arguments at the top
 # =========================================================================================
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=24.04
 ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
-ARG CUDA_VERSION=12.8.1
-ARG CV2_VERSION=4.12.0
-ARG PYTORCH_VERSION=2.9.0
-ARG ROS_DISTRO=humble
-ARG CV_IMAGE_TAG=sobits/opencv:${CV2_VERSION}-${COMPUTE_TYPE}-ubuntu${UBUNTU_VERSION}
-ARG PYTORCH_IMAGE_TAG=sobits/pytorch:${PYTORCH_VERSION}-cuda${CUDA_VERSION%.*}-ubuntu${UBUNTU_VERSION}
+ARG CUDA_VERSION=13.1.1
+ARG CV2_VERSION=4.13.0
+ARG PYTORCH_VERSION=2.11.0
+ARG ROS_DISTRO=jazzy
+ARG CV_IMAGE_TAG=sobits/opencv:${CV2_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}
+ARG PYTORCH_IMAGE_TAG=sobits/pytorch:${PYTORCH_VERSION}-ubuntu${UBUNTU_VERSION}-${COMPUTE_TYPE}
 ARG ROS_IMAGE_TAG=ros:${ROS_DISTRO}
 ARG OPENCV_BASE_STAGE=base
 ARG PYTORCH_BASE_STAGE=base
@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         bash-completion lsb-release dpkg-dev pkg-config net-tools iputils-ping \
         usbutils libusb-1.0-0-dev libudev-dev uuid-dev \
         python3 python3-pip python3-venv python3-dev \
+        rt-tests tuna \
     && rm -rf /var/lib/apt/lists/*
 
 # Add user
@@ -68,20 +69,17 @@ FROM ${PYTORCH_IMAGE_TAG} AS pytorch_prebuilt
 #  PYTORCH STAGE : Application WITH PyTorch
 # =========================================================================================
 FROM ${PYTORCH_BASE_STAGE} AS base_with_pytorch
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=24.04
 COPY --from=pytorch_prebuilt /opt/pytorch/ /opt/pytorch/
-RUN if [ "${UBUNTU_VERSION}" = "22.04" ]; then \
-    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/python3.10/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc; \
-    elif [ "${UBUNTU_VERSION}" = "24.04" ]; then \
-    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/python3.12/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc; \
-    fi;
+RUN PYTHON_DIR=$(ls /opt/pytorch/.venv/lib/ | grep -m1 python3) && \
+    echo "export PYTHONPATH=/opt/pytorch/.venv/lib/${PYTHON_DIR}/site-packages:\$PYTHONPATH" >> /home/${USERNAME}/.bashrc
     
 # =========================================================================================
 #  OPENCV STAGE : Application WITH OpenCV
 # =========================================================================================
 FROM ${OPENCV_BASE_STAGE} AS base_with_opencv
 ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
-ARG CV2_VERSION=4.12.0
+ARG CV2_VERSION=4.13.0
 
 # First, bring in the pre-built OpenCV files from our reference stage
 COPY --from=opencv_prebuilt /tmp/opencv_pkg_install/ /tmp/opencv_pkg_install
@@ -94,14 +92,14 @@ RUN bash /tmp/install_opencv.sh runtime ${COMPUTE_TYPE} ${CV2_VERSION}
 # =========================================================================================
 FROM ${ROS_BASE_STAGE} AS base_with_ros
 ARG USERNAME=sobits
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=jazzy
 ARG ROS_DOMAIN_ID=0
 ARG INSTALL_GAZEBO=true
 ARG ROS_WORKSPACE=colcon_ws
 
 COPY --from=ros_prebuilt /etc/apt/sources.list.d/ros* /etc/apt/sources.list.d/
 COPY --from=ros_prebuilt /usr/share/keyrings/ros* /usr/share/keyrings/
-COPY ros_entrypoint.sh /ros_entrypoint.sh
+COPY ros_entrypoint.sh /home/${USERNAME}/ros_entrypoint.sh
 
 USER root
 # Configure ROS environment
@@ -118,7 +116,7 @@ RUN if [ "${INSTALL_GAZEBO}" = "true" ]; then \
 USER ${USERNAME}
 RUN rosdep update && \
     mkdir -p ~/${ROS_WORKSPACE}/src && \
-    echo "source /ros_entrypoint.sh" >> /home/${USERNAME}/.bashrc
+    echo "source /home/${USERNAME}/ros_entrypoint.sh" >> /home/${USERNAME}/.bashrc
 
 # =========================================================================================
 #  FINAL STAGE : Cleanup and Final Setup

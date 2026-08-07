@@ -3,9 +3,9 @@
 # =========================================================================================
 #  ARGUMENTS
 # =========================================================================================
-ARG UBUNTU_VERSION=22.04
-ARG CUDA_VERSION=12.8.0
-ARG PYTORCH_VERSION=2.9.0
+ARG UBUNTU_VERSION=24.04
+ARG CUDA_VERSION=13.1.1
+ARG PYTORCH_VERSION=2.11.0
 ARG COMPUTE_TYPE=cpu # Can be 'cpu' or 'gpu'
 
 # =========================================================================================
@@ -42,14 +42,20 @@ RUN uv venv --system-site-packages
 RUN echo "Installing PyTorch ${PYTORCH_VERSION}..." >&2; \
     # Check Ubuntu version to determine pip installation method
     UBUNTU_MAJOR=$(echo ${UBUNTU_VERSION} | cut -d. -f1); \
-    # Determine CUDA tag for PyTorch installation
+    # Map CUDA version to the nearest PyTorch wheel tag (PyTorch only publishes
+    # wheels for specific CUDA releases, not every patch/minor version).
     CUDA_TAG="cpu"; \
     if [ ${COMPUTE_TYPE} = "gpu" ] && echo ${CUDA_VERSION} | grep -qE '^[0-9]+'; then \
         CUDA_MAJOR=$(echo ${CUDA_VERSION} | cut -d. -f1); \
         CUDA_MINOR=$(echo ${CUDA_VERSION} | cut -d. -f2); \
-        CUDA_TAG="cu${CUDA_MAJOR}${CUDA_MINOR}"; \
+        if [ "${CUDA_MAJOR}" -ge 13 ]; then CUDA_TAG="cu130"; \
+        elif [ "${CUDA_MAJOR}" = "12" ]; then \
+            if   [ "${CUDA_MINOR}" -ge 8 ]; then CUDA_TAG="cu128"; \
+            elif [ "${CUDA_MINOR}" -ge 6 ]; then CUDA_TAG="cu126"; \
+            elif [ "${CUDA_MINOR}" -ge 4 ]; then CUDA_TAG="cu124"; \
+            else CUDA_TAG="cu121"; fi; \
+        else CUDA_TAG="cu${CUDA_MAJOR}${CUDA_MINOR}"; fi; \
         echo "CUDA Tag detected: ${CUDA_TAG}" >&2; \
     fi; \
     echo "Installing PyTorch with CUDA tag: ${CUDA_TAG}" >&2; \
-    uv pip install -U --no-cache-dir torch==${PYTORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/${CUDA_TAG}; \
-    uv pip uninstall numpy;
+    UV_HTTP_TIMEOUT=600 uv pip install -U --no-cache-dir torch==${PYTORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/${CUDA_TAG}

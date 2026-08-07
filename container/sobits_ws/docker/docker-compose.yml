@@ -38,8 +38,17 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - PULSE_SERVER=unix:/run/user/${LOCAL_UID}/pulse/native
+    cap_add:
+      - SYS_NICE
+    ulimits:
+      rtprio: 98
+      rttime: -1
+      memlock:
+        soft: -1
+        hard: -1
     devices:
       - /dev/snd
+      - /dev/cpu_dma_latency
     volumes:
       - ${XDG_RUNTIME_DIR}/pulse:/run/user/${LOCAL_UID}/pulse
       - ../src:/home/${USERNAME}/${ROS_WORKSPACE}/src
@@ -47,6 +56,7 @@ services:
       - /etc/udev/rules.d/:/etc/udev/rules.d/
       - /dev/serial/by-id/:/dev/serial/by-id/
       - /dev/v4l/by-id/:/dev/v4l/by-id/
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
     group_add:
       - adm
       - audio

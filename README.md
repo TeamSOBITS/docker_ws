@@ -113,12 +113,12 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
     export DOCKERHUB_USERNAME="sobits"
 
     # -- Base System Configuration --
-    export UBUNTU_VERSION="22.04"
+    export UBUNTU_VERSION="24.04"
 
     # -- GPU / CPU Configuration --
     # Set to "true" to build the GPU-enabled container, "false" for CPU-only.
     export COMPUTE_TYPE="gpu"    # Options: "cpu" or "gpu"
-    export CUDA_VERSION="12.8.1" # Required only if COMPUTE_TYPE is "gpu"
+    export CUDA_VERSION="13.1.1" # Required only if COMPUTE_TYPE is "gpu"
 
     # -- Component Installation Flags --
     export INSTALL_ROS="true"       # Set to "true" or "false"
@@ -127,10 +127,10 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
     export INSTALL_CV2="false"      # Set to "true" or "false"
 
     # -- Component Versions --
-    export ROS_DISTRO="humble"     # ROS 1: "noetic", ROS 2: "humble", "jazzy"
-    export ROS_DOMAIN_ID="0"       # Applicable only for ROS 2
-    export PYTORCH_VERSION="2.9.0" # PyTorch version 
-    export CV2_VERSION="4.12.0"    # OpenCV version
+    export ROS_DISTRO="jazzy"       # ROS 1: "noetic", ROS 2: "humble", "jazzy"
+    export ROS_DOMAIN_ID="0"        # Applicable only for ROS 2
+    export PYTORCH_VERSION="2.11.0" # PyTorch version 
+    export CV2_VERSION="4.13.0"     # OpenCV version
 
     # -- ROS Workspace --
     export ROS_WORKSPACE="colcon_ws" # ROS workspace name
@@ -142,8 +142,14 @@ Docker環境セットアップの方法とDockerfileをまとめたリポジト�
 3. Dockerfileからイメージをビルドします.
     ```bash
     $ cd {コンテナPATH}/docker
-    $ bash build.sh
+    $ bash build.sh [コマンド]
     ```
+
+    | コマンド | 説明 |
+    | --- | --- |
+    | `sobits` (デフォルト) | メインのアプリケーションイメージをビルドします．`INSTALL_ROS="true"`の場合，`ros_entrypoint.sh`を自動生成します． |
+    | `opencv` | 再利用可能なOpenCVベースイメージをビルドし，Docker Hubへのプッシュを選択できます． |
+    | `pytorch` | 再利用可能なPyTorchベースイメージをビルドし，Docker Hubへのプッシュを選択できます． |
 
 4. イメージからコンテナを起動します．
     ```bash
@@ -196,15 +202,17 @@ nvidia-smi
 |:--------------:|:------------:|:------------:|:------------:|
 | 12.4.1         | ✓            | -            | 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0 |
 | 12.5.1         | ✓            | -            | - |
-| 12.6.0         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0, 2.9.0 |
-| 12.6.1         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0 |
-| 12.6.2         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0 |
-| 12.6.3         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1,  2.8.0 |
-| 12.8.0         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0,  2.9.0 |
-| 12.8.1         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0 |
-| 12.9.0         | ✓            | ✓            | 2.8.0 |
-| 12.9.1         | ✓            | ✓            | 2.8.0 |
-| 13.0.0         | ✓            | ✓            | 2.9.0 |
+| 12.6.0         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1, 2.8.0, 2.9.0 |
+| 12.6.1         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1, 2.8.0 |
+| 12.6.2         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1, 2.8.0 |
+| 12.6.3         | ✓            | ✓            | 2.6.0, 2.7.0, 2.7.1, 2.8.0 |
+| 12.8.0         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0, 2.9.0, 2.9.1, 2.10.0 |
+| 12.8.1         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0, 2.9.0, 2.9.1, 2.10.0 |
+| 12.9.0         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0, 2.9.0, 2.9.1, 2.10.0 |
+| 12.9.1         | ✓            | ✓            | 2.7.0, 2.7.1, 2.8.0, 2.9.0, 2.9.1, 2.10.0 |
+| 13.0.0         | ✓            | ✓            | 2.9.0, 2.9.1, 2.10.0, 2.11.0 |
+| 13.1.0         | ✓            | ✓            | 2.9.0, 2.9.1, 2.10.0, 2.11.0 |
+| 13.1.1         | ✓            | ✓            | 2.9.0, 2.9.1, 2.10.0, 2.11.0 |
 
 詳細は[Installing previous versions of PyTorch](https://pytorch.org/get-started/previous-versions/)を確認してください．
 
@@ -225,7 +233,7 @@ nvidia-smi
 
         - 例： opencvがない場合       
             ```sh
-            bash buid.sh opencv
+            bash build.sh opencv
             ```
             足りないものをすべてビルドした後に
             ```sh

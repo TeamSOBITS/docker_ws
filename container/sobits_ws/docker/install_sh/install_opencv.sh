@@ -85,8 +85,9 @@ install_runtime_dependencies() {
     echo "Updating package list and installing RUNTIME dependencies..."
     sudo apt-get update
 
-    # Python
-    sudo apt-get install -y python3-dev python3-numpy
+    # Python (numpy installed via pip to ensure numpy 2.x)
+    sudo apt-get install -y python3-dev python3-pip
+    PIP_BREAK_SYSTEM_PACKAGES=1 pip3 install --upgrade "numpy>=2.0"
 
     # Math and Linear Algebra Libraries for Performance
     sudo apt-get install -y libatlas-base-dev libeigen3-dev # liblapacke-dev
@@ -165,6 +166,7 @@ build_opencv() {
         "-D BUILD_opencv_python3=ON"
         "-D PYTHON3_EXECUTABLE=$(which python3)"
         "-D PYTHON3_INCLUDE_DIR=$(python3 -c "from sysconfig import get_paths; print(get_paths()['include'])")"
+        "-D PYTHON3_NUMPY_INCLUDE_DIRS=$(python3 -c "import numpy; print(numpy.get_include())")"
         # "-D PYTHON3_PACKAGES_PATH=$(python3 -c "from site import getsitepackages; print(getsitepackages()[0])")"
         "-D PYTHON3_PACKAGES_PATH=${INSTALL_PATH}/lib/${PYTHON_VERSION_DIR}/dist-packages"
 
